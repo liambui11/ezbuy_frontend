@@ -1,0 +1,70 @@
+import { IoPersonOutline } from "react-icons/io5";
+import { BsHandbag } from "react-icons/bs";
+import { NAV_MENU, NAV_ACTIONS } from "@/constants/navbar";
+import Image from "next/image";
+import Link from "next/link";
+import CatalogButton from "./CatalogButton";
+import SearchButton from "./SearchButton";
+
+const ICONS: Record<string, React.ReactNode> = {
+  cart: <BsHandbag size={20} />,
+  login: <IoPersonOutline size={20} />,
+};
+
+export default function Navbar() {
+  return (
+    <nav
+      className=" w-full sticky  top-0 left-0 z-50   bg-white/70 dark:bg-card/60
+  bg-gradient-to-b from-primary-200/25 to-transparent
+  backdrop-blur-md supports-[backdrop-filter]:backdrop-blur-md
+  border-b border-border/60 shadow-sm"
+    >
+      <div className=" max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
+        {/* group logo menu */}
+        <div className="flex items-center flex-1 cursor-pointer">
+          {/* logo */}
+          <div className="relative h-12 w-28 sm:h-14 sm:w-32 md:h-16 md:w-36 lg:h-20 lg:w-40">
+            <Image
+              alt="EZPhone Logo"
+              src="/images/logo/ezphone_logo.png"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+          {/* menu */}
+          <div className="flex items-center justify-between space-x-8">
+            <CatalogButton />
+            <div className="hidden md:flex space-x-10">
+              {NAV_MENU.map((menu) => (
+                <Link
+                  key={menu.href}
+                  href={menu.href}
+                  className="relative text-black font-[550] text-[15px] lg:text-[18px] group"
+                >
+                  {menu.label}
+                  {/* underline custom */}
+                  <span className="absolute left-0 -bottom-1 w-0 h-[3px] bg-primary rounded-full transition-all duration-300 group-hover:w-full"></span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+        {/* nav button */}
+        <div className="flex items-center space-x-3 md:space-x-9">
+          <SearchButton />
+          {NAV_ACTIONS.map((action) => (
+            <Link
+              key={action.href}
+              href={action.href}
+              className="flex space-x-1 md:space-x-3 items-center text-primary hover:text-primary-700 font-[550] text-[15px] lg:text-[18px]"
+            >
+              {ICONS[action.icon]}
+              <span className="hidden md:flex">{action.label}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </nav>
+  );
+}
