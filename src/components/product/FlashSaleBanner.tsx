@@ -1,99 +1,86 @@
 "use client";
 
 import Image from "next/image";
-import { FaStar, FaRegHeart, FaBolt } from "react-icons/fa";
+import { FaBolt } from "react-icons/fa";
 
-interface ProductCardProps {
+interface ProductWithPromotionProps {
   name: string;
-  image: string;
-  oldPrice: number;
-  newPrice: number;
-  discountPercent: number;
-  smemberDiscount?: string;
-  studentDiscount?: string;
+  image_url: string;
+  price?: number; // có thể null/undefined
   description?: string;
-  rating?: number;
+  promotion_name?: string;
+  promotion_price?: number; // có thể null/undefined
 }
 
-const formatCurrency = (price: number) => {
-  return price.toLocaleString('vi-VN');
+const formatCurrency = (price?: number) => {
+  if (price == null || isNaN(price)) return "—";
+  return price.toLocaleString("vi-VN");
 };
 
-export default function FlashSaleBanner({
+export default function ProductPromotionCard({
   name,
-  image,
-  oldPrice,
-  newPrice,
-  discountPercent,
-  smemberDiscount,
-  studentDiscount,
+  image_url,
+  price,
   description,
-  rating = 5,
-}: ProductCardProps) {
+  promotion_name,
+  promotion_price,
+}: ProductWithPromotionProps) {
   return (
-    <div className="bg-card border border-border rounded-xl shadow-md hover:shadow-lg transition p-5 flex flex-row items-center space-x-5 min-h-[220px]">
-      
-      <div className="relative w-1/4 flex-shrink-0 flex justify-center">
-        <span className="absolute top-[-10px] left-[-10px] bg-danger text-white text-sm font-bold px-3 py-1 rounded-br-lg rounded-tl-lg shadow-md flex items-center">
-          <FaBolt className="mr-1" /> GIẢM SỐC {discountPercent}%
-        </span>
+    <div className="relative bg-card border border-border rounded-2xl shadow-md hover:shadow-lg transition-all p-5 flex items-center space-x-6 min-h-[200px]">
+      {/* Badge khuyến mãi */}
+      {promotion_name && (
+        <div className="absolute -top-2 left-0 bg-danger text-white text-sm font-semibold px-3 py-1 rounded-br-lg rounded-tl-lg shadow-md flex items-center">
+          <FaBolt className="mr-1" /> {promotion_name}
+        </div>
+      )}
 
-        <Image
-          src={image}
-          alt={name}
-          width={200}
-          height={200}
-          className="object-contain h-40 w-full"
-        />
+      {/* Ảnh sản phẩm */}
+      <div className="w-1/4 flex justify-center items-center">
+        <div className="relative w-[120px] h-[120px]">
+          <Image
+            src={image_url || "/images/no-image.png"}
+            alt={name}
+            fill
+            sizes="120px"
+            className="object-contain rounded-md"
+          />
+        </div>
       </div>
 
-      <div className="flex-grow w-2/4">
-        <h2 className="text-xl text-primary-700 font-bold line-clamp-2 hover:underline cursor-pointer">
+      {/* Thông tin sản phẩm */}
+      <div className="w-2/4 flex flex-col justify-between h-full">
+        <h2 className="text-lg font-bold text-primary-700 line-clamp-2 hover:underline cursor-pointer">
           {name}
         </h2>
-        
+
         {description && (
           <p className="text-sm text-foreground/80 mt-1 line-clamp-2">
             {description}
           </p>
         )}
-        <div className="flex items-center text-yellow-500 text-base gap-1 mt-2">
-          {Array.from({ length: 5 }, (_, i) => (
-            <FaStar key={i} className={i < rating ? "text-warning" : "text-secondary"} />
-          ))}
-          <span className="text-sm text-secondary-600 ml-1">({rating} sao)</span>
-        </div>
       </div>
 
-      <div className="w-1/4 flex-shrink-0 flex flex-col items-end space-y-2">
+      {/* Giá và nút mua */}
+      <div className="w-1/4 flex flex-col items-end">
         <div className="text-right">
-            <span className="text-danger font-extrabold text-3xl block">
-                {formatCurrency(newPrice)}đ
+          {promotion_price ? (
+            <>
+              <span className="text-danger font-extrabold text-2xl block">
+                {formatCurrency(promotion_price)}đ
+              </span>
+              <span className="line-through text-secondary text-sm block mt-1">
+                {formatCurrency(price)}đ
+              </span>
+            </>
+          ) : (
+            <span className="text-foreground font-bold text-2xl block">
+              {formatCurrency(price)}đ
             </span>
-            <span className="line-through text-secondary ml-2 text-base block mt-1">
-                {formatCurrency(oldPrice)}đ
-            </span>
+          )}
         </div>
 
-        <div className="text-right">
-            {smemberDiscount && (
-                <p className="text-xs text-primary-700 bg-primary-200 px-2 py-1 rounded font-semibold">
-                    Smember giảm thêm {smemberDiscount}
-                </p>
-            )}
-            {studentDiscount && (
-                <p className="text-xs text-secondary-600 bg-border px-2 py-1 rounded mt-1">
-                    S-Student giảm {studentDiscount}
-                </p>
-            )}
-        </div>
-
-        <button className="w-full mt-3 bg-primary hover:bg-primary-700 text-white font-bold py-3 rounded-lg transition shadow-md">
-          MUA NGAY
-        </button>
-        
-        <button className="text-sm text-primary-700 hover:text-primary underline mt-1 flex items-center gap-1">
-            <FaRegHeart /> Thêm vào yêu thích
+        <button className="mt-4 w-32 bg-primary hover:bg-primary-700 text-white font-semibold py-2 rounded-lg transition shadow-md">
+          Mua ngay
         </button>
       </div>
     </div>

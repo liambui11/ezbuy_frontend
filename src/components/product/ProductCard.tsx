@@ -1,42 +1,35 @@
 "use client";
 
 import Image from "next/image";
-import { FaStar, FaRegHeart } from "react-icons/fa";
+import { FaCartShopping } from "react-icons/fa6";
 
 interface ProductCardProps {
+  id: number;
   name: string;
-  image: string;
-  oldPrice: number;
-  newPrice: number;
-  discountPercent: number;
-  smemberDiscount?: string;
-  studentDiscount?: string;
   description?: string;
-  rating?: number;
+  image_url: string;
+  price: number;
+  quantity_in_stock: number;
+  category_id: number;
+  manufacturer_id: number;
+  slug: string;
 }
 
 export default function ProductCard({
+  id,
   name,
-  image,
-  oldPrice,
-  newPrice,
-  discountPercent,
-  smemberDiscount,
-  studentDiscount,
   description,
-  rating = 5,
+  image_url,
+  price,
+  quantity_in_stock,
+  slug,
 }: ProductCardProps) {
   return (
     <div className="relative bg-white border rounded-2xl shadow hover:shadow-xl transition p-4 flex flex-col w-60">
-      {/* Badge giảm giá */}
-      <span className="absolute top-3 left-3 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full">
-        Giảm {discountPercent}%
-      </span>
-
-      {/* Ảnh */}
+      {/* Ảnh sản phẩm */}
       <div className="flex justify-center">
         <Image
-          src={image}
+          src={image_url || "/images/no-image.png"}
           alt={name}
           width={220}
           height={220}
@@ -52,37 +45,26 @@ export default function ProductCard({
       {/* Giá */}
       <div className="mt-2">
         <span className="text-red-600 font-bold text-lg">
-          {newPrice.toLocaleString()}đ
-        </span>
-        <span className="line-through text-gray-400 ml-2 text-sm">
-          {oldPrice.toLocaleString()}đ
+          {price?.toLocaleString("vi-VN") ?? "Liên hệ"}đ
         </span>
       </div>
 
-      {/* Ưu đãi */}
-      {smemberDiscount && (
-        <p className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded mt-2">
-          Smember giảm đến {smemberDiscount}
-        </p>
-      )}
-      {studentDiscount && (
-        <p className="text-xs text-purple-600 bg-purple-100 px-2 py-1 rounded mt-1">
-          S-Student giảm thêm {studentDiscount}
-        </p>
-      )}
-
-      {/* Mô tả */}
+      {/* Mô tả (tùy chọn) */}
       {description && (
-        <p className="text-xs text-gray-500 mt-2 line-clamp-2">{description}</p>
+        <p className="text-xs text-gray-500 mt-2 line-clamp-2">
+          {description}
+        </p>
       )}
 
-      {/* Rating + Yêu thích */}
-      <div className="mt-3 flex justify-between items-center">
-        <div className="flex items-center text-yellow-500 text-sm gap-1">
-          <FaStar /> <span className="text-gray-700">{rating}</span>
-        </div>
-        <button className="flex items-center gap-1 text-blue-500 hover:text-blue-700 text-sm">
-          <FaRegHeart /> Yêu thích
+      {/* Nút mua */}
+      <div className="mt-4 flex justify-between items-center">
+        <button
+          className="flex items-center justify-center w-full py-2 bg-primary-600 text-primary-700 
+                     font-semibold rounded-lg hover:bg-primary-700 transition 
+                     duration-300 shadow-md hover:shadow-lg hover:text-white text-sm"
+        >
+          <FaCartShopping className="mr-2" />
+          Buy Now
         </button>
       </div>
     </div>
