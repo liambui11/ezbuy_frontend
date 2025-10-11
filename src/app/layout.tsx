@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
 import Chatbox from "@/components/chatbox/Chatbot";
+import AppProviders from "./providers";
+import CartDrawerOverlay from "@/components/common/CartDrawerOverlay";
 
 export const metadata: Metadata = {
   title: "EZPhone",
@@ -18,10 +20,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <Navbar />
-        {children}
-        <Chatbox />
+      <body className="bg-white">
+        <AppProviders>
+          <Navbar />
+          {children}
+          <Chatbox />
+          <CartDrawerOverlay />
+        </AppProviders>
       </body>
     </html>
   );

@@ -1,23 +1,26 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { IoChatbubbleEllipsesOutline, IoClose } from "react-icons/io5"
+import Image from "next/image";
+import { useState } from "react";
+import { IoChatbubbleEllipsesOutline, IoClose } from "react-icons/io5";
 
 export default function Chatbox() {
-  const [open, setOpen] = useState(false)
-  const [messages, setMessages] = useState<{ sender: "user" | "bot"; text: string }[]>([])
-  const [input, setInput] = useState("")
+  const [open, setOpen] = useState(false);
+  const [messages, setMessages] = useState<
+    { sender: "user" | "bot"; text: string }[]
+  >([]);
+  const [input, setInput] = useState("");
 
   const handleSend = () => {
-    if (!input.trim()) return
-    setMessages([...messages, { sender: "user", text: input }])
-    setInput("")
+    if (!input.trim()) return;
+    setMessages([...messages, { sender: "user", text: input }]);
+    setInput("");
 
     // giả lập bot trả lời
     setTimeout(() => {
-      setMessages((prev) => [...prev, { sender: "bot", text: "Long ăn cứt" }])
-    }, 800)
-  }
+      setMessages((prev) => [...prev, { sender: "bot", text: "Long ăn cứt" }]);
+    }, 800);
+  };
 
   return (
     <div className="fixed bottom-8 right-5 z-50">
@@ -25,9 +28,18 @@ export default function Chatbox() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="w-14 h-14 flex items-center justify-center bg-primary text-white rounded-full shadow-lg hover:bg-primary-700 transition cursor-pointer"
+          className="w-14 h-14 flex items-center justify-center text-white rounded-full 
+               shadow-[0_0_10px_3px_rgba(59,130,246,0.7)]
+               hover:shadow-[0_0_20px_6px_rgba(59,130,246,0.9)]
+               transition cursor-pointer overflow-hidden"
         >
-          <IoChatbubbleEllipsesOutline size={28} />
+          {/* <IoChatbubbleEllipsesOutline size={28} /> */}
+          <Image
+            src="/images/chatbot/chatbot.jpg"
+            alt="chatbot_icon"
+            width={58}
+            height={55}
+          />
         </button>
       )}
 
@@ -78,5 +90,5 @@ export default function Chatbox() {
         </div>
       )}
     </div>
-  )
+  );
 }

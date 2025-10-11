@@ -4,9 +4,9 @@ import { CATEGORIES } from "@/constants/navbar";
 
 export default function Home() {
   return (
-    <div>
-      <Hero/>
-      <CategoryCarousel title="Category" categories={CATEGORIES}/>
+    <div className="bg-white">
+      <Hero />
+      <CategoryCarousel title="Category" categories={CATEGORIES} />
     </div>
   );
 }

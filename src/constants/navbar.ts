@@ -17,18 +17,6 @@ export const NAV_MENU = [
   },
 ];
 
-export const NAV_ACTIONS = [
-  {
-    label: "Cart",
-    href: "/cart",
-    icon: "cart",
-  },
-  {
-    label: "Log in",
-    href: "/login",
-    icon: "login",
-  },
-];
 
 export const CATALOG_ITEMS = [
   { id: 1,label: "Apple", href: "/catalog/apple" , imageUrl: "/images/categories/iphone.jpg"},
