@@ -2,15 +2,25 @@
 
 import { useRef, useState } from "react"
 import { CiSearch } from "react-icons/ci"
+import { useRouter } from "next/navigation"
 
 export default function SearchButton() {
   const [open, setOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const router = useRouter();
 
   const handleIconClick = () => {
     setOpen(true)
     // Chờ 1 frame để class w-xx áp dụng rồi focus
     requestAnimationFrame(() => inputRef.current?.focus())
+  }
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && inputRef.current?.value.trim()){
+      const query = inputRef.current.value.trim();
+      router.push(`/search?q=${encodeURIComponent(query)}`);
+      setOpen(false);
+    }
   }
 
   return (
@@ -45,12 +55,9 @@ export default function SearchButton() {
           outline-none focus:border-primary focus:ring-2 focus:ring-primary/30
           transition-all duration-300 ease-in-out
           ${open ? "w-40 md:w-60 opacity-100" : "w-0 opacity-0 pointer-events-none"}`}
-        onKeyDown={(e) => {
-          if (e.key === "Escape") {
-            (e.target as HTMLInputElement).blur()
-            setOpen(false)
-          }
-        }}
+          onKeyDown={handleSearch} 
+          onKeyUp={(e) => e.key === "Escape" && setOpen(false)}
+  
         aria-label="Search"
       />
     </div>

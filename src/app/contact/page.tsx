@@ -1,103 +1,128 @@
-import { FaFacebook } from "react-icons/fa";
-import { FaInstagram } from "react-icons/fa";
+import { FaFacebook, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
-import { CiLocationOn } from "react-icons/ci";
-import { CiMail } from "react-icons/ci";
-import { MdOutlineMessage } from "react-icons/md";
+import { CiLocationOn, CiMail } from "react-icons/ci";
+import { FaPhoneAlt, FaEnvelopeOpenText } from "react-icons/fa";
+
+interface ContactItemProps {
+  icon: React.ReactElement; // Kiểu dữ liệu chính xác cho icon (React Element)
+  title: string;
+  content: string;
+  link?: string;
+  isLink?: boolean;
+}
+
+const ContactItem: React.FC<ContactItemProps> = ({ 
+    icon, 
+    title, 
+    content, 
+    link, 
+    isLink = false 
+}) => (
+  <div className="flex items-start p-4 bg-white rounded-xl shadow-md border border-border transition hover:shadow-lg">
+    <div className="flex-shrink-0 text-primary mt-1">
+      {icon}
+    </div>
+    <div className="ml-4">
+      <h3 className="text-lg font-semibold text-primary-700 mb-1">{title}</h3>
+      {isLink ? (
+        <a 
+          href={link} 
+          className="text-foreground hover:text-primary-700 font-medium underline-offset-4"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {content}
+        </a>
+      ) : (
+        <p className="text-foreground font-medium">{content}</p>
+      )}
+    </div>
+  </div>
+);
+
 export default function ContactPage() {
-    return (
-      <div className="max-w-5xl mx-auto px-4 py-10">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800">Liên hệ với EZPhone</h1>
-        <p className="text-gray-600 mb-10">
-          Chúng tôi luôn sẵn sàng hỗ trợ bạn 24/7. Dưới đây là các kênh liên hệ chính thức của EZPhone.
+  return (
+    <div className="max-w-6xl mx-auto px-6 py-16">
+      
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-extrabold text-primary-700 mb-3">
+          Liên hệ với EZPhone
+        </h1>
+        <p className="text-lg text-secondary-600 max-w-2xl mx-auto">
+          Chúng tôi luôn sẵn sàng hỗ trợ bạn 24/7. Dưới đây là các kênh liên hệ chính thức và nhanh chóng của EZPhone.
         </p>
-  
-        <div className="grid md:grid-cols-2 gap-10">
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-xl font-semibold text-gray-800 mb-2">Chăm sóc khách hàng</h2>
-              <p className="text-gray-700">Hotline: <span className="font-medium">1900 1234</span></p>
-              <p className="text-gray-700">Điện thoại: <span className="font-medium">(+84) 12 345 6789</span></p>
-            </div>
-  
-            <div>
-              <h2 className="text-xl font-semibold text-gray-800 mb-2">Địa chỉ</h2>
-              <p className="flex text-gray-700">
-                <CiLocationOn size={25}/>123 Đường vào tim em ôi băng giá, Quận 1, TP. Hồ Chí Minh
-              </p>
-            </div>
-  
-            <div>
-              <h2 className="text-xl font-semibold text-gray-800 mb-2">Mạng xã hội</h2>
-              <ul className="flex space-x-3">
-                <li>
-                  <a href="https://facebook.com" target="_blank" className="text-blue-600 hover:underline ">
-                    <FaFacebook size={30}/>
-                  </a>
-                </li>
-                <li>
-                  <a href="https://instagram.com" target="_blank" className="text-pink-500 hover:underline">
-                    <FaInstagram size={30}/>
-                  </a>
-                </li>
-                <li>
-                  <a href="" target="_blank" className="text-cyan-600 hover:underline">
-                    <FaXTwitter size={30}/>
-                  </a>
-                </li>
-              </ul>
-            </div>
-  
-            <div>
-              <h2 className="text-xl font-semibold text-gray-800 mb-2">
-                Email
-              </h2>
-              <p className="flex items-center gap-2 text-gray-700">
-                <CiMail size={20}/>support@ezphone.vn
-              </p>
-            </div>
-          </div>
-  
-          {/* Form liên hệ */}
-          <div>
-            <h2 className="flex items-center gap-2 text-xl font-semibold text-gray-800 mb-4">
-              <MdOutlineMessage size={25}/>Gửi tin nhắn
-            </h2>
-            <form className="space-y-4">
-              <div>
-                <label className="block text-gray-700 mb-1">Họ và tên</label>
-                <input
-                  type="text"
-                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400"
-                  placeholder="Nhập họ và tên"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 mb-1">Email</label>
-                <input
-                  type="email"
-                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400"
-                  placeholder="Nhập email"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 mb-1">Tin nhắn</label>
-                <textarea
-                  rows={4}
-                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400"
-                  placeholder="Nội dung liên hệ"
-                ></textarea>
-              </div>
-              <button
-                type="submit"
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
-              >
-                Gửi
-              </button>
-            </form>
-          </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* KHỐI 1: Hotline & Email (Quan trọng nhất) */}
+        
+        <ContactItem
+          icon={<FaPhoneAlt size={24} />}
+          title="Hotline Hỗ trợ"
+          content="1900 1234"
+          link="tel:19001234"
+          isLink={true}
+        />
+        
+        <ContactItem
+          icon={<CiMail size={28} />}
+          title="Email Hỗ trợ Khách hàng"
+          content="support@ezphone.vn"
+          link="mailto:support@ezphone.vn"
+          isLink={true}
+        />
+
+        
+        <div className="md:col-span-2 lg:col-span-1">
+            <ContactItem
+              icon={<CiLocationOn size={28} />}
+              title="Địa chỉ Trụ sở chính"
+              content="123 Đường vào tim em ôi băng giá, Quận 1, TP. Hồ Chí Minh"
+            />
         </div>
       </div>
-    );
-  }
-  
+      
+      {/* --- PHÂN CÁCH --- */}
+
+      <div className="mt-12 pt-8 border-t border-border">
+          <h2 className="text-2xl font-bold text-primary-700 mb-4 flex items-center gap-2">
+            <FaEnvelopeOpenText size={24} /> Kết nối qua Mạng xã hội
+          </h2>
+          
+          <ul className="flex space-x-6">
+            <li>
+              <a 
+                href="https://facebook.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-primary hover:text-primary-700 transition"
+              >
+                <FaFacebook size={40} />
+              </a>
+            </li>
+            <li>
+              <a 
+                href="https://instagram.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-pink-500 hover:text-pink-600 transition"
+              >
+                <FaInstagram size={40} />
+              </a>
+            </li>
+            <li>
+              <a 
+                href="https://twitter.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-secondary-600 hover:text-foreground transition"
+              >
+                <FaXTwitter size={40} />
+              </a>
+            </li>
+          </ul>
+      </div>
+
+    </div>
+  );
+}

@@ -1,20 +1,17 @@
 // app/promotions/page.tsx
-// import Banner from "@/components/promotions/Banner";
+import Campaign from "@/components/promotions/Campaign";
 import HotDeals from "@/components/promotions/HotDeals";
-import SmemberDeals from "@/components/promotions/SmemberDeals";
-import FlashSale from "@/components/promotions/FlashSale";
-// import ComboDeals from "@/components/promotions/ComboDeals";
-import BrandPromotions from "@/components/promotions/BrandPromotion";
+import NewDeals from "@/components/promotions/NewDeals";
+import StudentFlashSale from "@/components/promotions/StudentFlashSale";
+import CampaignHero from "@/components/promotions/Campaign";
 
 export default function PromotionsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      {/* <Banner /> */}
+      <Campaign />
+      <StudentFlashSale />
       <HotDeals />
-      <SmemberDeals />
-      <FlashSale />
-      {/* <ComboDeals /> */}
-      <BrandPromotions />
+      <NewDeals />
     </div>
   );
 }
