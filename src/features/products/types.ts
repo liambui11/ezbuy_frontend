@@ -4,7 +4,7 @@ export interface Product {
     name: string
     price: number
     brand: string
-    imageUrl: string
+    image_url: string
     description?: string
     inStock: boolean
   }

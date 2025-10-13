@@ -4,15 +4,15 @@ import Image from "next/image";
 import { FaCartShopping } from "react-icons/fa6";
 
 interface ProductCardProps {
-  id: number;
+  id: string;
   name: string;
   description?: string;
   image_url: string;
   price: number;
-  quantity_in_stock: number;
-  category_id: number;
-  manufacturer_id: number;
-  slug: string;
+  // quantity_in_stock: number;
+  // category_id: number;
+  // manufacturer_id: number;
+  // slug: string;
 }
 
 export default function ProductCard({
@@ -21,8 +21,8 @@ export default function ProductCard({
   description,
   image_url,
   price,
-  quantity_in_stock,
-  slug,
+  // quantity_in_stock,
+  // slug,
 }: ProductCardProps) {
   return (
     <div className="relative bg-white border rounded-2xl shadow hover:shadow-xl transition p-4 flex flex-col w-60">

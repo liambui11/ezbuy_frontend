@@ -3,7 +3,6 @@
 @import "swiper/css/navigation";
 @import "swiper/css/pagination";
 
-
 /* ezphone-tailwind-theme.css
  * Tailwind v4 color tokens for the EZPhone brand
  * Import file này trước các @tailwind directives
@@ -11,26 +10,26 @@
 
 @theme {
   /* Brand */
-  --color-primary: #0e7cc9;                /* EZ blue */
-  --color-primary-foreground: #ffffff;     /* Text on primary */
-  --color-primary-700: #0b5fa0;            /* Darker blue for hovers */
-  --color-primary-400: #3498db;            /* Lighter blue / accents */
+  --color-primary: #0e7cc9; /* EZ blue */
+  --color-primary-foreground: #ffffff; /* Text on primary */
+  --color-primary-700: #0b5fa0; /* Darker blue for hovers */
+  --color-primary-400: #3498db; /* Lighter blue / accents */
   --color-primary-200: #c9e5fd;
 
   /* Neutral / Secondary */
-  --color-secondary: #979ea4;              /* Tech-silver (icons, secondary text) */
-  --color-secondary-600: #7b838a;          /* Hover / headings if needed */
+  --color-secondary: #979ea4; /* Tech-silver (icons, secondary text) */
+  --color-secondary-600: #7b838a; /* Hover / headings if needed */
 
   /* Surfaces */
-  --color-background: #ffffff;             /* Page background (light) */
-  --color-foreground: #333333;             /* Primary body text */
-  --color-muted: #ebebeb;                  /* Subtle backgrounds / separators */
-  --color-border: #ececec;                 /* Card borders / inputs */
-  --color-card: #ffffff;                   /* Cards / panels */
-  --color-popover: #ffffff;                /* Menus / popovers */
+  --color-background: #ffffff; /* Page background (light) */
+  --color-foreground: #333333; /* Primary body text */
+  --color-muted: #ebebeb; /* Subtle backgrounds / separators */
+  --color-border: #ececec; /* Card borders / inputs */
+  --color-card: #ffffff; /* Cards / panels */
+  --color-popover: #ffffff; /* Menus / popovers */
 
   /* States */
-  --color-ring: #0e7cc9;                   /* Focus ring */
+  --color-ring: #0e7cc9; /* Focus ring */
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
@@ -59,10 +58,13 @@
   color-scheme: light dark;
 }
 
-
 @keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .animate-spin-slow {

@@ -28,6 +28,10 @@ export default function ProfileCard() {
     router.push("/profile/changepassword")
   }
 
+  const handlePurchaseHistory = () => {
+    router.push("/profile/purchasehistory")
+  }
+
   return (
     <div className="bg-card shadow-lg rounded-2xl p-8 w-full max-w-4xl mx-auto border border-border">
       {/* Header */}
@@ -96,7 +100,9 @@ export default function ProfileCard() {
         >
           Change Password
         </button>
-        <button className="bg-success text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition font-medium">
+        <button
+          onClick={handlePurchaseHistory} 
+          className="bg-success text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition font-medium">
           Purchase History
         </button>
       </div>
