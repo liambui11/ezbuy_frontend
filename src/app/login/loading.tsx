@@ -19,7 +19,7 @@ export default function GlobalLoading() {
           {/* logo ở giữa */}
           <div className="absolute inset-2 rounded-full flex items-center justify-center bg-white shadow">
             <Image
-              src="/images/logo/ezphone_logo.png"
+              src="/images/logo/ezbuy_logo.png"
               alt="EZPhone"
               width={56}
               height={56}

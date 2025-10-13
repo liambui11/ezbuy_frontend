@@ -42,7 +42,7 @@ export default function RegisterPage() {
         <h1 className="mb-6 flex flex-col items-center text-center text-2xl font-bold text-primary">
           <div className="relative w-17 h-17">
             <Image
-              src="/images/logo/ezphone_logo.png"
+              src="/images/logo/ezbuy_logo.png"
               alt="EZPhone Logo"
               fill
               sizes="56px"

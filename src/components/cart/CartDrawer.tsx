@@ -86,7 +86,7 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
           {items.length === 0 ? (
             <div className="flex flex-1 flex-col items-center justify-center text-center px-6">
               <div className="relative h-12 w-28 mb-3">
-                <Image alt="EZPhone" src="/images/logo/ezphone_logo.png" fill className="object-contain" />
+                <Image alt="EZPhone" src="/images/logo/ezbuy_logo.png" fill className="object-contain" />
               </div>
               <p className="text-base font-medium">Your cart is empty</p>
               <p className="text-sm text-gray-600 mt-1">

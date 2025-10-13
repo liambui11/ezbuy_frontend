@@ -8,7 +8,7 @@ export default function NotFound() {
       {/* Brand logo in a soft ring */}
       <div className="mb-6 rounded-full p-4 ring-8 ring-primary/10">
         <div className="relative h-14 w-14">
-          <Image src="/images/logo/ezphone_logo.png" alt="EZPhone" fill priority />
+          <Image src="/images/logo/ezbuy_logo.png" alt="EZPhone" fill priority />
         </div>
       </div>
 

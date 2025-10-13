@@ -61,11 +61,12 @@ export default function CartPage() {
     return (
       <div className="mx-auto flex min-h-[60vh] max-w-2xl flex-col items-center justify-center text-center">
         <div className="mb-6 rounded-full p-4 ring-8 ring-primary/10">
-          <div className="relative h-14 w-14">
+          <div className="relative h-18 w-18 rounded-full flex items-center justify-center">
             <Image
-              src="/images/logo/ezphone_logo.png"
+              src="/images/logo/ezbuy_logo.png"
               alt="EZPhone"
-              fill
+              width={350}
+              height={350}
               priority
             />
           </div>

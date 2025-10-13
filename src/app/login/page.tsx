@@ -71,7 +71,7 @@ export default function LoginPage() {
         <div className="flex flex-col items-center gap-2 mb-8">
           <div className="relative w-14 h-14">
             <Image
-              src="/images/logo/ezphone_logo.png"
+              src="/images/logo/ezbuy_logo.png"
               alt="EZPhone Logo"
               fill
               sizes="56px"
@@ -84,7 +84,7 @@ export default function LoginPage() {
           </h1>
           <p className="text-sm text-muted-foreground text-center">
             Sign in to continue shopping smart with{" "}
-            <span className="font-medium text-primary">EZPhone</span>.
+            <span className="font-medium text-primary">EZBuy</span>.
           </p>
         </div>
 
@@ -113,7 +113,7 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   className="h-11 px-3 rounded-lg border border-gray-300 bg-background text-foreground outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/60"
-                  placeholder="ezphone@example.com"
+                  placeholder="ezbuy@example.com"
                 />
               </div>
 
