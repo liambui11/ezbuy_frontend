@@ -5,11 +5,11 @@ import React from 'react';
 export type OrderStatus = 'PENDING' | 'CONFIRMED' | 'SHIPPING' | 'COMPLETED' | 'CANCELLED';
 
 const statusMap: Record<OrderStatus, { text: string; class: string }> = {
-    PENDING: { text: 'pending', class: 'bg-[--color-warning]/10 text-[--color-warning] border-[--color-warning]' },
-    CONFIRMED: { text: 'confirmed', class: 'bg-[--color-primary-200] text-[--color-primary] border-[--color-primary]' },
-    SHIPPING: { text: 'shipping', class: 'bg-[--color-primary-200] text-[--color-primary] border-[--color-primary]' },
-    COMPLETED: { text: 'completed', class: 'bg-[--color-success]/10 text-[--color-success] border-[--color-success]' },
-    CANCELLED: { text: 'cancelled', class: 'bg-[--color-danger]/10 text-[--color-danger] border-[--color-danger]' },
+    PENDING: { text: 'pending', class: 'bg-warning/10' },
+    CONFIRMED: { text: 'confirmed', class: 'bg-primary-200' },
+    SHIPPING: { text: 'shipping', class: 'bg-primary-200' },
+    COMPLETED: { text: 'completed', class: 'bg-success' },
+    CANCELLED: { text: 'cancelled', class: 'bg-danger/10' },
 };
 
 export const StatusBadge: React.FC<{ status: OrderStatus }> = ({ status }) => {
@@ -17,7 +17,7 @@ export const StatusBadge: React.FC<{ status: OrderStatus }> = ({ status }) => {
   
     return (
       <span
-        className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold border shadow-sm ${badge.class}`}
+        className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm ${badge.class}`}
       >
         {badge.text}
       </span>

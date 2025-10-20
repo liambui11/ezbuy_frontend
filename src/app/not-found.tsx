@@ -7,11 +7,12 @@ export default function NotFound() {
     <div className="mx-auto flex min-h-[60vh] max-w-2xl flex-col items-center justify-center px-4 text-center">
       {/* Brand logo in a soft ring */}
       <div className="mb-6 rounded-full p-4 ring-8 ring-primary/10">
-        <div className="relative h-14 w-14">
+        <div className="relative h-18 w-18 flex items-center justify-center">
           <Image
-            src="/images/logo/ezphone_logo.png"
+            src="/images/logo/ezbuy_logo.png"
             alt="EZPhone"
-            fill
+            width={250}
+            height={250}
             priority
           />
         </div>

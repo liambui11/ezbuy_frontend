@@ -14,7 +14,7 @@ const formatCurrency = (amount: number) =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
 
 const OrderStatCard: React.FC<{ icon: React.ElementType, title: string, value: string, color: string }> = ({ icon: Icon, title, value, color }) => (
-  <div className="bg-[--color-card] p-5 rounded-2xl shadow-md border border-[--color-border] hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+  <div className="bg-primary-200 p-5 rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
     <div className={`p-3 inline-flex rounded-xl bg-[${color}]/10 text-[${color}] mb-3`}>
       <Icon className="w-6 h-6" />
     </div>
@@ -45,14 +45,14 @@ export default function OrderListPage() {
   const tableHeaders = ['Order ID', 'Customer', 'Total Amount', 'Order Date', 'Payment Method', 'Status', 'Actions'];
 
   const tableData = orders.map(order => [
-    <span className="font-mono text-[--color-primary] font-semibold">#{order.id}</span>,
+    <span className="font-mono font-semibold">{order.id}</span>,
     <div className="flex flex-col">
-      <span className="font-medium text-[--color-foreground]">{order.receiver_name}</span>
-      <span className="text-xs text-[--color-secondary-600]">{order.phone}</span>
+      <span className="font-medium">{order.receiver_name}</span>
+      <span className="text-xs">{order.phone}</span>
     </div>,
-    <span className="font-bold text-[--color-primary]">{formatCurrency(order.total_amount)}</span>,
+    <span className="font-bold text-primary">{formatCurrency(order.total_amount)}</span>,
     <span className="text-[--color-foreground]">{format(order.order_date, 'MM/dd/yyyy HH:mm')}</span>,
-    <span className="text-[--color-secondary-600] text-sm">{getPaymentMethodName(order.payment_id)}</span>,
+    <span className="text-sm">{getPaymentMethodName(order.payment_id)}</span>,
     <StatusBadge status={order.status} />,
     <Link
       href={`/admin/orders/${order.id}`}

@@ -1,15 +1,10 @@
-import { IoPersonOutline } from "react-icons/io5";
-import { BsHandbag } from "react-icons/bs";
-import { NAV_MENU, NAV_ACTIONS } from "@/constants/navbar";
+import { NAV_MENU } from "@/constants/navbar";
 import Image from "next/image";
 import Link from "next/link";
 import CatalogButton from "./CatalogButton";
 import SearchButton from "./SearchButton";
-
-const ICONS: Record<string, React.ReactNode> = {
-  cart: <BsHandbag size={20} />,
-  login: <IoPersonOutline size={20} />,
-};
+import CartButton from "../cart/CartButton";
+import UserButton from "./UserButton";
 
 export default function Navbar() {
   return (
@@ -26,8 +21,9 @@ export default function Navbar() {
           <div className="relative h-12 w-28 sm:h-14 sm:w-32 md:h-16 md:w-36 lg:h-20 lg:w-40">
             <Image
               alt="EZPhone Logo"
-              src="/images/logo/ezphone_logo.png"
-              fill
+              src="/images/logo/ezbuy_logo.png"
+              width={230}
+              height={230}
               className="object-contain"
               priority
             />
@@ -53,16 +49,8 @@ export default function Navbar() {
         {/* nav button */}
         <div className="flex items-center space-x-3 md:space-x-9">
           <SearchButton />
-          {NAV_ACTIONS.map((action) => (
-            <Link
-              key={action.href}
-              href={action.href}
-              className="flex space-x-1 md:space-x-3 items-center text-primary hover:text-primary-700 font-[550] text-[15px] lg:text-[18px]"
-            >
-              {ICONS[action.icon]}
-              <span className="hidden md:flex">{action.label}</span>
-            </Link>
-          ))}
+          <CartButton />
+          <UserButton />
         </div>
       </div>
     </nav>

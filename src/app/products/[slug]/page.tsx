@@ -2,59 +2,47 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import AddToCartButton from "@/components/cart/AddToCartButton";
+import { ProductRow } from "@/lib/redux/slices/cartSlice";
 
 // -------- Types --------
 type Product = {
-  id: number | string;
-  slug: string;
+  id: string;
   name: string;
-  brand?: string;
-  shortDesc?: string;
   description?: string;
+  image_url?: string | null;
+  slug: string;
   price: number;
-  priceBeforeDiscount?: number | null;
-  thumbnail: string;
-  images?: string[];
+  quantity_in_stock: number;
   specs?: Record<string, string | number>;
-  inStock?: boolean;
-  rating?: number;
+  brand?: string;
 };
 
 // -------- Hardcode DB --------
 const PRODUCTS: Product[] = [
   {
-    id: 1,
-    slug: "iphone-15-pro-max-256gb",
+    id: "1",
     name: "iPhone 15 Pro Max 256GB",
-    brand: "Apple",
-    shortDesc: "Titanium design, A17 Pro, 120Hz ProMotion.",
     description:
       "iPhone 15 Pro Max with A17 Pro chip, 120Hz ProMotion display, improved cameras and USB-C. Great battery and premium build.",
+    slug: "iphone-15-pro-max-256gb",
+    brand: "Apple",
     price: 1199,
-    priceBeforeDiscount: 1299,
-    thumbnail: "/images/hero/iphone_mockup2.png",
-    images: [
-      "/images/demo/iphone15pm_1.jpg",
-      "/images/demo/iphone15pm_2.jpg",
-      "/images/demo/iphone15pm_3.jpg",
-      "/images/demo/iphone15pm_4.jpg",
-    ],
+    image_url: "/images/hero/iphone_mockup2.png",
     specs: {
-      Display: '6.7" OLED 120Hz',
-      Chipset: "A17 Pro",
       RAM: "8 GB",
       Storage: "256 GB",
       Battery: "4422 mAh",
-      Camera: "48MP + 12MP + 12MP",
+      Display: '6.7" OLED 120Hz',
+      System: "A17 Pro",
     },
-    inStock: true,
-    rating: 4.8,
+    quantity_in_stock: 10,
   },
 ];
 
-function getProductBySlug(slug: string): Product | null {
-  return PRODUCTS.find((p) => p.slug === slug) ?? null;
-}
+// function getProductBySlug(slug: string): Product | null {
+//   return PRODUCTS.find((p) => p.slug === slug) ?? null;
+// }
 
 // -------- Page --------
 export default function ProductDetailPage({
@@ -62,15 +50,29 @@ export default function ProductDetailPage({
 }: {
   params: { slug: string };
 }) {
-  const product = getProductBySlug(params.slug);
+  // const product = getProductBySlug(params.slug);
+  const product = {
+    id: "1",
+    name: "iPhone 15 Pro Max 256GB",
+    description:
+      "iPhone 15 Pro Max with A17 Pro chip, 120Hz ProMotion display, improved cameras and USB-C. Great battery and premium build.",
+    slug: "iphone-15-pro-max-256gb",
+    brand: "Apple",
+    price: 1199,
+    image_url: "/images/hero/iphone_mockup2.png",
+    specs: {
+      RAM: "8 GB",
+      Storage: "256 GB",
+      Battery: "4422 mAh",
+      Display: '6.7" OLED 120Hz',
+      System: "A17 Pro",
+    },
+    quantity_in_stock: 10,
+  }
   if (!product) return notFound();
-
-  const discount =
-    product.priceBeforeDiscount && product.priceBeforeDiscount > product.price
-      ? Math.round(
-          (1 - product.price / (product.priceBeforeDiscount as number)) * 100
-        )
-      : null;
+  const normalized: ProductRow = {
+    ...product,
+  };
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
@@ -91,31 +93,17 @@ export default function ProductDetailPage({
         {/* Gallery */}
         <div className="space-y-4">
           <div className="relative aspect-square overflow-hidden">
-            <Image
-              src={product.thumbnail}
-              alt={product.name}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
-              priority
-            />
+            {product.image_url && (
+              <Image
+                src={product.image_url}
+                alt={product.name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
+              />
+            )}
           </div>
-
-          {/* {product.images && product.images.length > 0 && (
-            <div className="grid grid-cols-4 gap-3">
-              {product.images.slice(0, 8).map((src, i) => (
-                <div key={i} className="relative aspect-square overflow-hidden rounded-xl border">
-                  <Image
-                    src={src}
-                    alt={`${product.name} #${i + 1}`}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 25vw, 12vw"
-                  />
-                </div>
-              ))}
-            </div>
-          )} */}
         </div>
 
         {/* Info */}
@@ -138,49 +126,30 @@ export default function ProductDetailPage({
                 currency: "USD",
               })}
             </div>
-            {product.priceBeforeDiscount &&
-              product.priceBeforeDiscount > product.price && (
-                <>
-                  <div className="text-lg line-through text-muted-foreground">
-                    {Number(product.priceBeforeDiscount).toLocaleString(
-                      "en-US",
-                      {
-                        style: "currency",
-                        currency: "USD",
-                      }
-                    )}
-                  </div>
-                  {discount !== null && (
-                    <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
-                      -{discount}%
-                    </span>
-                  )}
-                </>
-              )}
-          </div>
-
-          {/* Stock + rating */}
-          <div className="flex items-center gap-4 text-sm">
-            <span
-              className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 ${
-                product.inStock
-                  ? "bg-green-100 text-green-700"
-                  : "bg-zinc-100 text-zinc-600"
-              }`}
-            >
-              <span className="inline-block h-2 w-2 rounded-full bg-current" />
-              {product.inStock ? "In stock" : "Out of stock"}
-            </span>
+            {/* Stock + rating */}
+            <div className="flex items-center gap-4 text-sm">
+              <span
+                className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 ${
+                  product.quantity_in_stock
+                    ? "bg-green-100 text-green-700"
+                    : "bg-zinc-100 text-zinc-600"
+                }`}
+              >
+                <span className="inline-block h-2 w-2 rounded-full bg-current" />
+                {product.quantity_in_stock ? "In stock" : "Out of stock"}
+              </span>
+            </div>
           </div>
 
           {/* Actions */}
           <div className="flex items-center gap-3 pt-2">
-            <button
+            {/* <button
               className="rounded-2xl bg-primary px-6 py-3 text-primary-foreground shadow-sm transition hover:bg-primary-700 cursor-pointer"
               disabled={!product.inStock}
             >
               Add to cart
-            </button>
+            </button> */}
+            <AddToCartButton product={normalized}/>
 
             <button
               className="rounded-2xl border px-6 py-3 transition hover:border-primary hover:text-primary cursor-pointer"

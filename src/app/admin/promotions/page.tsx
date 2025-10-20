@@ -9,19 +9,30 @@ import { fetchPromotions } from '@/features/promotions/services';
 import { Promotion } from '@/features/promotions/types';
 import { format, isFuture, isPast } from 'date-fns';
 
-const formatDiscount = (value: number) => {
-    if (value <= 1) return `${(value * 100).toFixed(0)}%`;
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+const formatDiscount = (discount_value: any) => {
+  const value = parseFloat(discount_value);
+
+  if (isNaN(value) || value === 0) return "N/A"; // nếu không có giá trị
+
+  if (value <= 1) {
+    return `${(value * 100).toFixed(0)}%`; // ví dụ 0.3 -> 30%
+  }
+
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(value);
 };
 
+
 const getStatusDisplay = (promo: Promotion) => {
-    if (promo.is_active === 0 || (promo.end_date && isPast(promo.end_date))) {
-        return { text: 'Disabled / Expired', class: 'bg-[--color-danger]/10 text-[--color-danger]' };
+    if (promo.is_active === 0 || (promo.endDate && isPast(promo.endDate))) {
+        return { text: 'Disabled', class: 'bg-danger' };
     }
-    if (promo.start_date && isFuture(promo.start_date)) {
-        return { text: 'Upcoming', class: 'bg-[--color-primary-200] text-[--color-primary]' }; 
+    if (promo.startDate && isFuture(promo.startDate)) {
+        return { text: 'Upcoming', class: 'bg-primary-200' }; 
     }
-    return { text: 'Active', class: 'bg-[--color-success]/10 text-[--color-success]' };
+    return { text: 'Active', class: 'bg-success' };
 }
 
 export default function PromotionListPage() {
@@ -35,15 +46,19 @@ export default function PromotionListPage() {
       }
   };
 
-  useEffect(() => {
-    const loadPromotions = async () => {
-      setIsLoading(true);
-      const data = await fetchPromotions();
-      setPromotions(data);
-      setIsLoading(false);
-    };
-    loadPromotions();
-  }, []);
+  useEffect(()=>{
+      const loadData = async () =>{
+        try{
+          const data = await fetchPromotions();
+          setPromotions(data);
+        }catch(error){
+          console.error("Lỗi khi tải khuyến mãi:", error);
+        }finally{
+          setIsLoading(false)
+        }
+      };
+      loadData();
+    },[])
 
   const tableHeaders = ['Code', 'Description', 'Value', 'Timeframe', 'Status', 'Actions'];
 
@@ -52,23 +67,23 @@ export default function PromotionListPage() {
     
     return [
         // CODE: Màu Primary (Xanh thương hiệu)
-        <span className="font-mono text-[--color-primary] font-extrabold">{promo.code || 'Auto'}</span>,
+        <span className="font-mono text-primary font-extrabold">{promo.code || 'Auto'}</span>,
         
         // DESCRIPTION: Chữ bình thường nhưng hơi đậm
-        <span className="text-[--color-foreground]">{promo.description}</span>,
+        <span className="text-foreground">{promo.description}</span>,
         
         // VALUE: Màu Success (Xanh lục) và đậm
-        <span className="font-bold text-[--color-success]">{formatDiscount(promo.discount_value)}</span>,
+        <span className="font-bold text-[--color-success]">{formatDiscount(promo.discountValue)}</span>,
         
         // TIMEFRAME
         <div className="flex flex-col text-sm text-[--color-secondary-600] space-y-1">
             <span className="flex items-center">
                 <Calendar className="w-3 h-3 mr-1 text-[--color-info]" />
-                Start: {promo.start_date ? format(promo.start_date, 'MM/dd/yyyy') : 'N/A'}
+                Start: {promo.startDate ? format(promo.startDate, 'MM/dd/yyyy') : 'N/A'}
             </span>
             <span className="flex items-center">
                 <Clock className="w-3 h-3 mr-1 text-[--color-danger]" />
-                End: {promo.end_date ? format(promo.end_date, 'MM/dd/yyyy') : 'N/A'}
+                End: {promo.endDate ? format(promo.endDate, 'MM/dd/yyyy') : 'N/A'}
             </span>
         </div>,
         
@@ -82,7 +97,7 @@ export default function PromotionListPage() {
             {/* Edit Button */}
             <Link 
                 href={`/admin/promotions/${promo.id}`} 
-                className="text-[--color-primary] hover:text-[--color-primary-700] p-1 rounded-full hover:bg-[--color-primary-200]"
+                className="text-primary hover:text-primary-700 p-1 rounded-full hover:bg-primary-200"
                 title="Edit"
             >
               <Edit className="w-5 h-5" />
@@ -91,7 +106,7 @@ export default function PromotionListPage() {
             {/* Delete Button */}
             <button
                 onClick={() => handleDelete(promo.id, promo.code || `#${promo.id}`)}
-                className="text-[--color-danger] hover:text-[--color-danger-700] p-1 rounded-full hover:bg-[--color-danger]/10"
+                className="hover:text-danger-700 p-1 rounded-full hover:bg-danger/5"
                 title="Delete"
             >
                 <Trash2 className="w-5 h-5" />

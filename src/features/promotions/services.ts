@@ -1,26 +1,35 @@
 // src/features/promotions/services.ts
-
-import { mockPromotions } from './mockData';
+import axios from 'axios';
 import { Promotion } from './types';
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const API_BASE = 'http://localhost:8081/api/promotions';
 
-// Hàm Mock: Lấy tất cả khuyến mãi
+// 🧠 Lấy tất cả khuyến mãi
 export const fetchPromotions = async (): Promise<Promotion[]> => {
-    await delay(300);
-    return JSON.parse(JSON.stringify(mockPromotions));
+    const response = await axios.get(API_BASE);
+    // Dữ liệu backend trả về nằm trong response.data.data.content
+    return response.data.data.content;
 };
 
-// Hàm Mock: Lấy chi tiết một khuyến mãi
+// 🧠 Lấy chi tiết 1 khuyến mãi theo ID
 export const fetchPromotionById = async (id: number): Promise<Promotion | undefined> => {
-    await delay(300);
-    return mockPromotions.find(promo => promo.id === id);
+    const response = await axios.get(`${API_BASE}/${id}`);
+    return response.data.data;
 };
 
-// Hàm Mock: Tạo/Cập nhật khuyến mãi (chỉ log ra)
-export const savePromotionMock = async (data: Promotion) => {
-    await delay(500);
-    console.log(`[MOCK API] Đã lưu khuyến mãi: ${data.code}`);
-    // Trong thực tế, bạn sẽ gọi fetch() hoặc axios.post/put() ở đây
-    return { success: true, data: { ...data, id: data.id || Date.now() } };
+// 🧠 Tạo hoặc cập nhật khuyến mãi (ADMIN)
+export const savePromotion = async (data: Promotion) => {
+    if (data.id) {
+        const response = await axios.put(`${API_BASE}/${data.id}`, data);
+        return response.data;
+    } else {
+        const response = await axios.post(API_BASE, data);
+        return response.data;
+    }
+};
+
+// 🧠 Xóa khuyến mãi (ADMIN)
+export const deletePromotion = async (id: number) => {
+    const response = await axios.delete(`${API_BASE}/${id}`);
+    return response.data;
 };

@@ -9,11 +9,11 @@ export default function Hero() {
         {/* Text Content */}
         <div className="flex-1 flex flex-col gap-6 text-center md:text-left">
           <h1 className="text-4xl md:text-5xl font-bold text-primary-700 leading-tight">
-            <span className="text-primary">EZPhone</span> – Your Trusted
-            Smartphone Store
+            <span className="text-primary">EZBuy</span> – Your Trusted
+            Store
           </h1>
           <p className="text-lg md:text-xl text-gray-600 max-w-xl mx-auto md:mx-0">
-            Discover the latest smartphones at the best prices. Genuine
+            Discover the latest products at the best prices. Genuine
             products, easy installment plans, and 12-month warranty included.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">

@@ -1,71 +1,3 @@
-// // src/app/admin/layout.tsx
-
-// import React from 'react';
-// import Link from 'next/link';
-// import { 
-//   Package, Truck, Percent, Users, LayoutDashboard, LogOut, Settings, List
-// } from 'lucide-react';
-// // Import mock data
-// import { ADMIN_NAME } from '@/features/orders/mockData'; 
-
-// // --- Component Sidebar ---
-// const AdminSidebar: React.FC = () => {
-//   const navItems = [
-//     { href: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
-//     // 4 Chức năng chính
-//     { href: '/admin/orders', icon: Truck, label: 'Quản lý Đơn hàng' },
-//     { href: '/admin/products', icon: Package, label: 'Quản lý Sản phẩm' },
-//     { href: '/admin/categories', icon: List, label: 'Quản lý Danh mục' }, // Thêm Danh mục
-//     { href: '/admin/promotions', icon: Percent, label: 'Quản lý Khuyến mãi' },
-//     // Chức năng phụ
-//     { href: '/admin/settings', icon: Settings, label: 'Cài đặt' },
-//   ];
-
-//   return (
-//     <nav className="flex flex-col space-y-2 p-4 w-64 bg-[--color-card] border-r border-[--color-border] h-full shadow-lg fixed top-0 left-0 bottom-0 overflow-y-auto z-10">
-//       <div className="text-2xl font-extrabold text-[--color-primary] mb-8 mt-2">
-//         EZPhone Admin
-//       </div>
-//       <div className="flex-1 space-y-1">
-//         {navItems.map((item) => (
-//           <Link 
-//             key={item.href} 
-//             href={item.href}
-//             className="flex items-center space-x-3 p-3 rounded-lg text-[--color-foreground] hover:bg-[--color-primary-200] hover:text-[--color-primary] transition-colors duration-200"
-//           >
-//             <item.icon className="w-5 h-5" />
-//             <span className="font-medium">{item.label}</span>
-//           </Link>
-//         ))}
-//       </div>
-      
-//       <div className="pt-4 border-t border-[--color-border]">
-//         <button className="flex items-center space-x-3 p-3 w-full rounded-lg text-[--color-secondary-600] hover:bg-[--color-muted] transition-colors duration-200">
-//             <LogOut className="w-5 h-5" />
-//             <span className="font-medium">Đăng xuất</span>
-//         </button>
-//       </div>
-//     </nav>
-//   );
-// };
-
-// // --- Admin Layout Chính ---
-// export default function AdminLayout({ children }: { children: React.ReactNode }) {
-//     return (
-//       // Đây là layout độc lập, chỉ chứa Sidebar và Header Admin
-//       <div className="flex min-h-screen bg-[--color-background]">
-//         <AdminSidebar /> 
-//         <main className="flex-1 p-6 lg:p-10 ml-64"> 
-//           {/* Header Admin */}
-//           <header className="flex justify-between items-center pb-6 mb-6 border-b border-[--color-border]">
-//             <h1 className="text-2xl font-bold text-[--color-foreground]">Quản lý Hệ thống</h1>
-//             {/* ... */}
-//           </header>
-//           {children}
-//         </main>
-//       </div>
-//     );
-//   }
 'use client'
 
 import React from "react";
@@ -162,7 +94,7 @@ function AdminShell({ children }: { children: React.ReactNode }) {
 function Topbar({ onMenu }: { onMenu: () => void }) {
   return (
     <header className="fixed inset-x-0 top-0 z-40 h-14 border-b bg-white/90 backdrop-blur">
-<div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4">
+      <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4">
         <div className="flex items-center gap-2">
           <button onClick={onMenu} className="rounded p-2 hover:bg-gray-100 lg:hidden">
             <Menu className="h-5 w-5" />
@@ -246,7 +178,7 @@ function NavList({ onNavigate }: { onNavigate?: () => void } = {}) {
 function UserMenu() {
   const [open, setOpen] = React.useState(false);
   return (
-<div className="relative">
+    <div className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
         className="flex items-center gap-2 rounded-xl border px-3 py-1.5 text-sm hover:bg-gray-50"
