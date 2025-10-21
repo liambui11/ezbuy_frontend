@@ -1,9 +1,12 @@
+
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
 import Chatbox from "@/components/chatbox/Chatbot";
 import AppProviders from "./providers";
 import CartDrawerOverlay from "@/components/common/CartDrawerOverlay";
+import GlobalRouteGuard from "@/lib/guards/GlobalRouteGuard";
+
 
 export const metadata: Metadata = {
   title: "EZBuy",
@@ -22,6 +25,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-white">
         <AppProviders>
+          {/* <GlobalRouteGuard /> */}
           <Navbar />
           {children}
           <Chatbox />

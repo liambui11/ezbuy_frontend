@@ -6,27 +6,22 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 
-/*
-  How to use
-  ----------
-  1) Save this file as: app/(auth)/login/page.tsx
-     (Create the folders if they don't exist.)
-  2) Ensure your Tailwind v4 theme defines brand colors, e.g. --color-primary: #0e7cc9
-  3) Wire up the onSubmit() to your real API later (fetch('/api/login', ...))
-
-  Notes
-  -----
-  - Uses Next.js <Image> and <Link> (no <img> / <a> as requested)
-  - Pure Tailwind, no extra UI libs
-  - Accessible form fields with labels & aria attributes
-  - Includes a simple client-side demo validation
-*/
+type ApiLoginResponse = {
+  status: number;
+  message: string;
+  data?: {
+    accessToken: string;
+    fullName: string;
+    imageUrl: string | null;
+    role: "CUSTOMER" | "ADMIN" | string;
+  };
+};
 
 export default function LoginPage() {
+  const URL_API = process.env.NEXT_PUBLIC_API_URL;
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,13 +41,41 @@ export default function LoginPage() {
 
     try {
       setSubmitting(true);
-      // TODO: replace with your API call
-      // const res = await fetch("/api/auth/login", { method: "POST", body: JSON.stringify({ email, password, remember })});
-      // if (!res.ok) throw new Error("Invalid credentials");
+      const res = await fetch(`${URL_API}/api/auth/login`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email, password: password }),
+      });
+      if (!res.ok) throw new Error("Invalid credentials");
 
-      // Simulate successful login
-      await new Promise((r) => setTimeout(r, 900));
-      router.push("/"); // go home after login
+      const data: ApiLoginResponse = await res.json();
+
+      if (!res.ok || data.status !== 200 || !data.data?.accessToken) {
+        setError(data.message || "Registration failed");
+        return;
+      }
+
+      localStorage.setItem("accessToken", data.data?.accessToken);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          fullName: data.data.fullName,
+          imageUrl: data.data.imageUrl,
+          role: data.data.role,
+          email: email,
+        })
+      );
+
+      document.cookie = `role=${data.data.role}; Path=/; SameSite=Lax`;
+      document.cookie = `logged_in=1; Path=/; SameSite=Lax`;
+
+      window.dispatchEvent(new Event("auth:changed"));
+      if (data.data.role === "ADMIN") {
+        router.replace("/admin/categories");
+      } else {
+        router.replace("/");
+      }
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -65,7 +88,7 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-primary/5 to-background flex items-center justify-center px-4 py-10">
+    <main className="bg-gradient-to-b from-primary/5 to-background flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-[420px]">
         {/* Brand header */}
         <div className="flex flex-col items-center gap-2 mb-8">
@@ -143,19 +166,6 @@ export default function LoginPage() {
                   placeholder="••••••••"
                 />
               </div>
-
-              <label className="flex items-center gap-2 select-none">
-                <input
-                  type="checkbox"
-                  checked={remember}
-                  onChange={(e) => setRemember(e.target.checked)}
-                  className="size-4 rounded border border-gray-300 focus:ring-2 focus:ring-primary/40"
-                  aria-label="Remember me"
-                />
-                <span className="text-sm text-muted-foreground">
-                  Remember me
-                </span>
-              </label>
 
               <button
                 type="submit"
