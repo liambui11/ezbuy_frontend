@@ -4,19 +4,19 @@ import { CiLocationOn, CiMail } from "react-icons/ci";
 import { FaPhoneAlt, FaEnvelopeOpenText } from "react-icons/fa";
 
 interface ContactItemProps {
-  icon: React.ReactElement; // Kiểu dữ liệu chính xác cho icon (React Element)
+  icon: React.ReactElement;
   title: string;
   content: string;
   link?: string;
   isLink?: boolean;
 }
 
-const ContactItem: React.FC<ContactItemProps> = ({ 
-    icon, 
-    title, 
-    content, 
-    link, 
-    isLink = false 
+const ContactItem: React.FC<ContactItemProps> = ({
+  icon,
+  title,
+  content,
+  link,
+  isLink = false,
 }) => (
   <div className="flex items-start p-4 bg-white rounded-xl shadow-md border border-border transition hover:shadow-lg">
     <div className="flex-shrink-0 text-primary mt-1">
@@ -25,8 +25,8 @@ const ContactItem: React.FC<ContactItemProps> = ({
     <div className="ml-4">
       <h3 className="text-lg font-semibold text-primary-700 mb-1">{title}</h3>
       {isLink ? (
-        <a 
-          href={link} 
+        <a
+          href={link}
           className="text-foreground hover:text-primary-700 font-medium underline-offset-4"
           target="_blank"
           rel="noopener noreferrer"
@@ -46,19 +46,19 @@ export default function ContactPage() {
       
       <div className="text-center mb-12">
         <h1 className="text-4xl font-extrabold text-primary-700 mb-3">
-          Liên hệ với EZPhone
+          Contact EZPhone
         </h1>
         <p className="text-lg text-secondary-600 max-w-2xl mx-auto">
-          Chúng tôi luôn sẵn sàng hỗ trợ bạn 24/7. Dưới đây là các kênh liên hệ chính thức và nhanh chóng của EZPhone.
+          We’re always ready to assist you 24/7. Below are EZPhone’s official and fastest contact channels.
         </p>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {/* KHỐI 1: Hotline & Email (Quan trọng nhất) */}
+        {/* BLOCK 1: Hotline & Email (Most Important) */}
         
         <ContactItem
           icon={<FaPhoneAlt size={24} />}
-          title="Hotline Hỗ trợ"
+          title="Support Hotline"
           content="1900 1234"
           link="tel:19001234"
           isLink={true}
@@ -66,61 +66,60 @@ export default function ContactPage() {
         
         <ContactItem
           icon={<CiMail size={28} />}
-          title="Email Hỗ trợ Khách hàng"
+          title="Customer Support Email"
           content="support@ezphone.vn"
           link="mailto:support@ezphone.vn"
           isLink={true}
         />
 
-        
         <div className="md:col-span-2 lg:col-span-1">
-            <ContactItem
-              icon={<CiLocationOn size={28} />}
-              title="Địa chỉ Trụ sở chính"
-              content="123 Đường vào tim em ôi băng giá, Quận 1, TP. Hồ Chí Minh"
-            />
+          <ContactItem
+            icon={<CiLocationOn size={28} />}
+            title="Head Office Address"
+            content="123 The Road to Your Heart, District 1, Ho Chi Minh City"
+          />
         </div>
       </div>
       
-      {/* --- PHÂN CÁCH --- */}
+      {/* --- SEPARATOR --- */}
 
       <div className="mt-12 pt-8 border-t border-border">
-          <h2 className="text-2xl font-bold text-primary-700 mb-4 flex items-center gap-2">
-            <FaEnvelopeOpenText size={24} /> Kết nối qua Mạng xã hội
-          </h2>
+        <h2 className="text-2xl font-bold text-primary-700 mb-4 flex items-center gap-2">
+          <FaEnvelopeOpenText size={24} /> Connect with Us on Social Media
+        </h2>
           
-          <ul className="flex space-x-6">
-            <li>
-              <a 
-                href="https://facebook.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-primary hover:text-primary-700 transition"
-              >
-                <FaFacebook size={40} />
-              </a>
-            </li>
-            <li>
-              <a 
-                href="https://instagram.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-pink-500 hover:text-pink-600 transition"
-              >
-                <FaInstagram size={40} />
-              </a>
-            </li>
-            <li>
-              <a 
-                href="https://twitter.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-secondary-600 hover:text-foreground transition"
-              >
-                <FaXTwitter size={40} />
-              </a>
-            </li>
-          </ul>
+        <ul className="flex space-x-6">
+          <li>
+            <a 
+              href="https://facebook.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-primary hover:text-primary-700 transition"
+            >
+              <FaFacebook size={40} />
+            </a>
+          </li>
+          <li>
+            <a 
+              href="https://instagram.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-pink-500 hover:text-pink-600 transition"
+            >
+              <FaInstagram size={40} />
+            </a>
+          </li>
+          <li>
+            <a 
+              href="https://twitter.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-secondary-600 hover:text-foreground transition"
+            >
+              <FaXTwitter size={40} />
+            </a>
+          </li>
+        </ul>
       </div>
 
     </div>

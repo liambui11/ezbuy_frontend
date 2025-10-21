@@ -1,17 +1,19 @@
-// src/features/products/services.ts
 import { Product } from "./types"
-import { mockProducts } from "./mockData"
 
-// 🧠 This file simulates API calls
-// Later you can replace with real fetch like: fetch("/api/products")
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081/api/products"
 
 export async function getAllProducts(): Promise<Product[]> {
-  // simulate network delay
-  await new Promise((res) => setTimeout(res, 200))
-  return mockProducts
+  const res = await fetch(API_URL, { cache: "no-store" })
+  if (!res.ok) throw new Error("Failed to fetch products")
+
+  const data = await res.json()
+  // Nếu backend trả về { data: { content: [...] } } thì map lại
+  return data.data?.content ?? data.data ?? []
 }
 
-export async function getProductById(id: string): Promise<Product | undefined> {
-  await new Promise((res) => setTimeout(res, 200))
-  return mockProducts.find((p) => p.id === id)
+export async function getProductById(id: number): Promise<Product> {
+  const res = await fetch(`${API_URL}/${id}`, { cache: "no-store" })
+  if (!res.ok) throw new Error("Failed to fetch product")
+  const data = await res.json()
+  return data.data
 }

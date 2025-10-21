@@ -1,11 +1,14 @@
-// src/features/products/types.ts
 export interface Product {
-    id: string
-    name: string
-    price: number
-    brand: string
-    imageUrl: string
-    description?: string
-    inStock: boolean
-  }
-  
+  id: number
+  name: string
+  description?: string
+  imageUrl: string
+  slug: string
+  price: number
+  quantity_in_stock: number
+  category_id: number
+  manufacturer_id: number
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
