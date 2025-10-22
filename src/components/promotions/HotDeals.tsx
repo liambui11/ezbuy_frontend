@@ -11,9 +11,11 @@ export default function PromotionPage() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const allProducts = await getAllProducts();
+        const response  = await getAllProducts();
         // Lấy 5 sản phẩm đầu tiên (hoặc sắp xếp theo nhu cầu)
-        setProducts(allProducts.slice(0, 5));
+        const items = response.content || response?.content || []; // lấy mảng sản phẩm thật sự
+        setProducts(items.slice(0, 5));
+        // setProducts(allProducts.slice(0, 5));
       } catch (error) {
         console.error("Failed to fetch products:", error);
       }
