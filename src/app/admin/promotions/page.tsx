@@ -8,6 +8,8 @@ import { AdminTable } from '@/components/admin/AdminTable';
 import { fetchPromotions } from '@/features/promotions/services';
 import { Promotion } from '@/features/promotions/types';
 import { format, isFuture, isPast } from 'date-fns';
+import { useRouter } from "next/navigation";
+import { routerServerGlobal } from 'next/dist/server/lib/router-utils/router-server-context';
 
 const formatDiscount = (discount_value: any) => {
   const value = parseFloat(discount_value);
@@ -38,6 +40,8 @@ const getStatusDisplay = (promo: Promotion) => {
 export default function PromotionListPage() {
   const [promotions, setPromotions] = useState<Promotion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+
 
   const handleDelete = (promoId: number, promoCode: string) => {
       if (window.confirm(`Are you sure you want to delete promotion code ${promoCode}?`)) {
@@ -64,7 +68,6 @@ export default function PromotionListPage() {
 
   const tableData = promotions.map(promo => {
     const statusDisplay = getStatusDisplay(promo);
-    
     return [
         // CODE: Màu Primary (Xanh thương hiệu)
         <span className="font-mono text-primary font-extrabold">{promo.code || 'Auto'}</span>,
@@ -119,13 +122,13 @@ export default function PromotionListPage() {
     <>
       <div className="flex justify-between items-center mb-6 border-b border-[--color-border] pb-4">
         <h2 className="text-3xl font-extrabold text-[--color-primary]">Promotion Management</h2>
-        <Link 
-          href="/admin/promotions/create" 
+        <button 
+          onClick={()=>router.push("/admin/promotions/addpromotions")}
           className="flex items-center space-x-2 px-6 py-2.5 text-[--color-primary-foreground] bg-[--color-accent] rounded-xl font-bold shadow-lg hover:bg-[#6c42d3] transition-all duration-300 transform hover:scale-[1.02]"
         >
             <Plus className="w-5 h-5" />
             <span>Add New Promotion</span>
-        </Link>
+        </button>
       </div>
       {isLoading ? (
         <div className="flex justify-center items-center h-48 bg-[--color-card] rounded-lg border border-[--color-border]">

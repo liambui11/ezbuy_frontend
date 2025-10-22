@@ -11,9 +11,11 @@ export default function PromotionPage() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const allProducts = await getAllProducts();
+        const response  = await getAllProducts();
         // Lấy 5 sản phẩm đầu tiên (hoặc sắp xếp theo nhu cầu)
-        setProducts(allProducts.slice(0, 5));
+        const items = response.content || response?.content || []; // lấy mảng sản phẩm thật sự
+        setProducts(items.slice(0, 5));
+        // setProducts(allProducts.slice(0, 5));
       } catch (error) {
         console.error("Failed to fetch products:", error);
       }
@@ -23,7 +25,7 @@ export default function PromotionPage() {
   }, []);
 
   return (
-    <div className="bg-primary-700 py-7 rounded-2xl shadow mb-7">
+    <div className=" py-7 rounded-xl shadow mb-7">
       <div className="max-w-7xl mx-auto px-4">
         <h1 className="text-3xl font-bold text-white text-center py-3">
           Hot Phone Promotion

@@ -1,42 +1,42 @@
-"use client"
+"use client";
 
-import { useRef, useState } from "react"
-import { CiSearch } from "react-icons/ci"
-import { useRouter } from "next/navigation"
+import { useRef, useState } from "react";
+import { CiSearch } from "react-icons/ci";
+import { useRouter } from "next/navigation";
 
 export default function SearchButton() {
-  const [open, setOpen] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const [open, setOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
+  // Khi nhấn icon
   const handleIconClick = () => {
-    setOpen(true)
-    // Chờ 1 frame để class w-xx áp dụng rồi focus
-    requestAnimationFrame(() => inputRef.current?.focus())
-  }
+    setOpen(true);
+    requestAnimationFrame(() => inputRef.current?.focus());
+  };
 
+  // Khi nhấn Enter
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && inputRef.current?.value.trim()){
+    if (e.key === "Enter" && inputRef.current?.value.trim()) {
       const query = inputRef.current.value.trim();
       router.push(`/search?q=${encodeURIComponent(query)}`);
       setOpen(false);
     }
-  }
+  };
 
   return (
     <div
       className="relative flex items-center text-primary"
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => {
-        if (document.activeElement !== inputRef.current) setOpen(false)
+        if (document.activeElement !== inputRef.current) setOpen(false);
       }}
       onFocus={() => setOpen(true)}
       onBlur={(e) => {
-        // nếu blur ra ngoài toàn bộ wrapper thì mới đóng
-        if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false)
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false);
       }}
     >
-      {/* Icon */}
+      {/* Icon tìm kiếm */}
       <button
         type="button"
         onClick={handleIconClick}
@@ -46,7 +46,7 @@ export default function SearchButton() {
         <CiSearch size={25} />
       </button>
 
-      {/* Input */}
+      {/* Ô nhập */}
       <input
         ref={inputRef}
         type="search"
@@ -55,11 +55,10 @@ export default function SearchButton() {
           outline-none focus:border-primary focus:ring-2 focus:ring-primary/30
           transition-all duration-300 ease-in-out
           ${open ? "w-40 md:w-60 opacity-100" : "w-0 opacity-0 pointer-events-none"}`}
-          onKeyDown={handleSearch} 
-          onKeyUp={(e) => e.key === "Escape" && setOpen(false)}
-  
+        onKeyDown={handleSearch}
+        onKeyUp={(e) => e.key === "Escape" && setOpen(false)}
         aria-label="Search"
       />
     </div>
-  )
+  );
 }
