@@ -1,3 +1,5 @@
+"use client"
+
 import { NAV_MENU } from "@/constants/navbar";
 import Image from "next/image";
 import Link from "next/link";
@@ -5,8 +7,30 @@ import CatalogButton from "./CatalogButton";
 import SearchButton from "./SearchButton";
 import CartButton from "../cart/CartButton";
 import UserButton from "./UserButton";
+import { useEffect, useState } from "react";
+
+type User = {
+  fullName: string;
+  imageUrl: string | null;
+  role: string;
+  email: string;
+};
 
 export default function Navbar() {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const load = () => {
+      const u = localStorage.getItem("user");
+      setUser(u ? JSON.parse(u) : null);
+    };
+    load();
+    window.addEventListener("auth:changed", load);
+    return () => window.removeEventListener("auth:changed", load);
+  }, []);
+
+  if (user && user.role === "ADMIN") return null;
+
   return (
     <nav
       className=" w-full sticky  top-0 left-0 z-50   bg-white/70 dark:bg-card/60

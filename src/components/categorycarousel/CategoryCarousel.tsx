@@ -2,27 +2,43 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import axios from "axios";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, A11y } from "swiper/modules";
+import { useEffect, useState } from "react";
 
 type Category = {
-  id: string | number;
+  id: number;
   name: string;
-  href: string;
-  imageUrl: string; 
+  imageUrl: string;
+  parentId: number;
+  slug: string;
 };
 
-type Props = {
-  title?: string;
-  categories: Category[];
-  className?: string;
-};
 
-export default function CategoryCarousel({ title = "Shop by Category", categories}: Props) {
+export default function CategoryCarousel() {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const [categories, setCategories] = useState<Category[]>([])
+ const [loading, setLoading] = useState(true) 
+
+  useEffect(() => {
+    axios
+      .get(`${API_URL}/api/categories`) 
+      .then((res) => {
+        setCategories(res.data.data.content);
+      })
+      .catch((err) => {
+        console.error("Lỗi khi fetch API:", err);
+      })
+      .finally(() => setLoading(false));
+  }, [API_URL]);
+
+
+
   return (
     <section className="max-w-7xl mx-auto px-6 md:px-12">
       <div className=" mb-3 flex items-end justify-between">
-        <h2 className="text-lg lg:text-xl font-semibold text-foreground">{title}</h2>
+        <h2 className="text-lg lg:text-xl font-semibold text-foreground">CATEGORIES</h2>
 
         {/* Nút điều hướng (custom) */}
         <div className="flex items-center gap-2">
@@ -58,11 +74,12 @@ export default function CategoryCarousel({ title = "Shop by Category", categorie
         }}
         className="!pb-8" 
       >
-        {categories.map((cat) => (
+        { !loading && categories.map((cat) => (
           <SwiperSlide key={cat.id} aria-label={cat.name}>
             <Link
-              href={cat.href}
+              href={`/categories/${cat.slug}`}
               className="group block rounded-2xl border border-border overflow-hidden bg-card shadow-sm hover:shadow-md transition-shadow"
+            onClick={(e) => e.stopPropagation()} 
             >
               {/* Khung ảnh: sử dụng tỉ lệ 4/5 để hợp với ảnh danh mục */}
               <div className="relative aspect-square w-full overflow-hidden">

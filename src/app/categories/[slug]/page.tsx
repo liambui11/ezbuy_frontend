@@ -179,6 +179,8 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
   const cat = getCategoryBySlug(params.slug) ?? CATEGORIES[0];
   const products = getProductsByCategory(cat.id);
 
+  const { slug } = params;  
+
   return (
     <div className="mx-auto max-w-6xl p-4 md:p-6">
       {/* Header: image left (fit), name right */}

@@ -30,7 +30,7 @@ export default function GlobalLoading() {
 
         {/* dòng trạng thái */}
         <p className="text-sm md:text-base font-medium text-primary">
-          Loading EZPhone…
+          Loading EZBuy…
         </p>
 
         {/* thanh tiến trình nhấp nháy nhẹ */}
