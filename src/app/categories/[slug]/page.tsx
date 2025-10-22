@@ -243,9 +243,9 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
                   id={p.id}
                   name={p.name}
                   description={p.description}
-                  image_url={p.image_url}
+                  imageUrl={p.image_url}
                   price={p.price}
-                  quantity_in_stock={p.in_stock ? 10 : 0} // map from in_stock
+                  quantity_in_stock={p.in_stoSSck ? 10 : 0} // map from in_stock
                   category_id={p.category_id}
                   manufacturer_id={0} // mock
                   slug={p.slug}

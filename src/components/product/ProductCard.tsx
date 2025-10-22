@@ -17,7 +17,7 @@ export default function ProductCard({
   console.log("image_url:", imageUrl);
   return (
     <Link 
-    href="/products/${id}"
+    href={`/products/${id}`}
     className="relative bg-white border border-muted rounded-2xl shadow hover:shadow-xl transition p-4 flex flex-col w-60">
       {/* Ảnh sản phẩm */}
       <div className="flex justify-center">
