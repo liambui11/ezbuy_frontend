@@ -29,11 +29,6 @@ function currency(v: number) {
   return v.toLocaleString("en-US", { style: "currency", currency: "USD" });
 }
 
-// function calcShipping(method: ShippingMethod, itemCount: number) {
-//   if (itemCount === 0) return 0;
-//   return method === "EXPRESS" ? 7.9 : 2.9;
-// }
-
 function clampPhoneDigits(v: string) {
   return v.replace(/[^0-9+]/g, "");
 }

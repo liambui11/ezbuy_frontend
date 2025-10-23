@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import AddToCartButton from "@/components/cart/AddToCartButton";
-import { ProductRow } from "@/lib/redux/slices/cartSlice";
+// import { ProductRow } from "@/lib/redux/slices/cartSlice";
 import { Product } from "@/features/products/types";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
