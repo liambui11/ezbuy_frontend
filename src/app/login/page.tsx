@@ -5,6 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
+import { useAppDispatch } from "@/lib/redux/hook";
+import { fetchCartWithTotal } from "@/lib/redux/slices/cartSlice";
+import { notify } from "@/lib/notification/notistack";
 
 type ApiLoginResponse = {
   status: number;
@@ -24,6 +27,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -69,6 +73,10 @@ export default function LoginPage() {
 
       document.cookie = `role=${data.data.role}; Path=/; SameSite=Lax`;
       document.cookie = `logged_in=1; Path=/; SameSite=Lax`;
+
+      await dispatch(fetchCartWithTotal());
+
+      notify("Login successful", { variant: "success" });
 
       window.dispatchEvent(new Event("auth:changed"));
       if (data.data.role === "ADMIN") {
@@ -170,7 +178,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="mt-1 inline-flex h-11 items-center justify-center rounded-lg bg-primary px-4 text-primary-foreground font-medium shadow-sm hover:bg-primary-700 disabled:opacity-60 disabled:cursor-not-allowed transition"
+                className="mt-1 inline-flex h-11 items-center justify-center rounded-lg bg-primary px-4 text-primary-foreground font-medium shadow-sm hover:bg-primary-700 disabled:opacity-60 disabled:cursor-not-allowed transition cursor-pointer"
                 aria-busy={submitting}
               >
                 {submitting ? "Signing in…" : "Sign in"}
