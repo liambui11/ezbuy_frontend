@@ -9,21 +9,21 @@ interface AdminTableProps {
 
 export const AdminTable: React.FC<AdminTableProps> = ({ headers, data }) => {
     return (
-        <div className="overflow-hidden rounded-2xl border border-[--color-border] shadow-md">
-        <table className="min-w-full divide-y divide-[--color-border] bg-[--color-card]">
-          <thead className="bg-[--color-muted]/70 backdrop-blur">
+        <div className="overflow-hidden rounded-2xl border border-muted shadow-md">
+        <table className="min-w-full divide-y divide-border bg-card">
+          <thead className="bg-muted/70 backdrop-blur">
             <tr>
               {headers.map((header, index) => (
                 <th
                   key={index}
-                  className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-[--color-secondary-600]"
+                  className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-secondary-600"
                 >
                   {header}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-[--color-border]">
+          <tbody className="divide-y divide-border">
             {data.map((row, rowIndex) => (
               <tr
                 key={rowIndex}

@@ -5,8 +5,9 @@ import { Promotion } from './types';
 const API_BASE = 'http://localhost:8081/api/promotions';
 
 // 🧠 Lấy tất cả khuyến mãi
-export const fetchPromotions = async (): Promise<Promotion[]> => {
-    const response = await axios.get(API_BASE);
+export const fetchPromotions = async (code?: string): Promise<Promotion[]> => {
+    const url = code? `${API_BASE}?code=${encodeURIComponent(code)}` : API_BASE;
+    const response = await axios.get(url);
     // Dữ liệu backend trả về nằm trong response.data.data.content
     return response.data.data.content;
 };
@@ -17,7 +18,6 @@ export const fetchPromotionById = async (id: number): Promise<Promotion | undefi
     return response.data.data;
 };
 
-// 🧠 Tạo hoặc cập nhật khuyến mãi (ADMIN)
 export const savePromotion = async (data: Promotion) => {
     if (data.id) {
         const response = await axios.put(`${API_BASE}/${data.id}`, data);
@@ -28,7 +28,6 @@ export const savePromotion = async (data: Promotion) => {
     }
 };
 
-// 🧠 Xóa khuyến mãi (ADMIN)
 export const deletePromotion = async (id: number) => {
     const response = await axios.delete(`${API_BASE}/${id}`);
     return response.data;

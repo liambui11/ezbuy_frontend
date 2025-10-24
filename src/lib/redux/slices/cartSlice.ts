@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
-
+import { Product } from "@/features/products/types";
 /** ===== Types khớp với bảng products ===== */
 export type ProductRow = {
   id: string;
@@ -11,7 +11,7 @@ export type ProductRow = {
 };
 
 export type CartItem = {
-  productId: string;
+  productId: number;
   slug: string;
   name: string;
   imageUrl?: string | null;
@@ -42,12 +42,12 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     // Payload nhận đúng ProductRow + qty (tùy chọn). Không kiểm tra điều kiện gì cả.
-    addItem: (state, action: PayloadAction<ProductRow & { qty?: number }>) => {
+    addItem: (state, action: PayloadAction<Product & { qty?: number }>) => {
       const {
         id,
         name,
         slug,
-        image_url,
+        imageUrl,
         price,
         quantity_in_stock,
         qty = 1,
@@ -60,7 +60,7 @@ const cartSlice = createSlice({
         productId: id,
         slug,
         name,
-        imageUrl: image_url ?? null,
+        imageUrl: imageUrl ?? null,
         price: Number(price),
         qty: nextQty,
         stock: quantity_in_stock,

@@ -3,8 +3,9 @@ import { addItem, type ProductRow } from "@/lib/redux/slices/cartSlice";
 
 import React from "react";
 import { useDispatch } from "react-redux";
+import { Product } from "@/features/products/types";
 
-const AddToCartButton = ({ product }: { product: ProductRow }) => {
+const AddToCartButton = ({ product }: { product: Product }) => {
   const dispatch = useDispatch();
   return (
     <div>

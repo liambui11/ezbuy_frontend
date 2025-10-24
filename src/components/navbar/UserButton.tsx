@@ -16,7 +16,6 @@ export default function UserButton() {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
-  // ✅ Lấy user từ localStorage khi component mount
   useEffect(() => {
     const saved = localStorage.getItem("user");
     if (saved) {
@@ -63,13 +62,16 @@ export default function UserButton() {
   const avatarSrc = user.imageUrl || "/images/profile/default-avatar.jpg";
 
   const logOutHandle = async () => {
-    const res = await fetch("http://localhost:8081/api/auth/logout", {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`,
+      {
         method: "POST",
         credentials: "include",
         headers: {
-        "Content-Type": "application/json",
+          "Content-Type": "application/json",
+        },
       }
-      });
+    );
 
     localStorage.removeItem("accessToken");
     localStorage.removeItem("user");

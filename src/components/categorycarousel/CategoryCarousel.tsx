@@ -6,6 +6,7 @@ import axios from "axios";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, A11y } from "swiper/modules";
 import { useEffect, useState } from "react";
+import CategoryCard from "./CategoryCard";
 
 type Category = {
   id: number;
@@ -13,17 +14,17 @@ type Category = {
   imageUrl: string;
   parentId: number;
   slug: string;
+  active: boolean;
 };
-
 
 export default function CategoryCarousel() {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  const [categories, setCategories] = useState<Category[]>([])
- const [loading, setLoading] = useState(true) 
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios
-      .get(`${API_URL}/api/categories`) 
+      .get(`${API_URL}/api/categories`)
       .then((res) => {
         setCategories(res.data.data.content);
       })
@@ -33,12 +34,14 @@ export default function CategoryCarousel() {
       .finally(() => setLoading(false));
   }, [API_URL]);
 
-
+  console.log(categories);
 
   return (
     <section className="max-w-7xl mx-auto px-6 md:px-12">
       <div className=" mb-3 flex items-end justify-between">
-        <h2 className="text-lg lg:text-xl font-semibold text-foreground">CATEGORIES</h2>
+        <h2 className="text-lg lg:text-xl font-semibold text-foreground">
+          CATEGORIES
+        </h2>
 
         {/* Nút điều hướng (custom) */}
         <div className="flex items-center gap-2">
@@ -60,7 +63,11 @@ export default function CategoryCarousel() {
       <Swiper
         modules={[Navigation, Pagination, Autoplay, A11y]}
         navigation={{ prevEl: ".cat-prev", nextEl: ".cat-next" }}
-        pagination={{ clickable: true, bulletClass: "swiper-pagination-bullet", bulletActiveClass: "swiper-pagination-bullet-active" }}
+        pagination={{
+          clickable: true,
+          bulletClass: "swiper-pagination-bullet",
+          bulletActiveClass: "swiper-pagination-bullet-active",
+        }}
         autoplay={{ delay: 3500, disableOnInteraction: false }}
         a11y={{ enabled: true }}
         spaceBetween={16}
@@ -72,43 +79,14 @@ export default function CategoryCarousel() {
           1024: { slidesPerView: 5 },
           1280: { slidesPerView: 6 },
         }}
-        className="!pb-8" 
+        className="!pb-8"
       >
-        { !loading && categories.map((cat) => (
-          <SwiperSlide key={cat.id} aria-label={cat.name}>
-            <Link
-              href={`/categories/${cat.slug}`}
-              className="group block rounded-2xl border border-border overflow-hidden bg-card shadow-sm hover:shadow-md transition-shadow"
-            onClick={(e) => e.stopPropagation()} 
-            >
-              {/* Khung ảnh: sử dụng tỉ lệ 4/5 để hợp với ảnh danh mục */}
-              <div className="relative aspect-square w-full overflow-hidden">
-                <Image
-                  src={cat.imageUrl}
-                  alt={cat.name}
-                  fill
-                  sizes="(max-width: 768px) 50vw, 20vw"
-                  className="object-contain object-center transition-transform duration-300 group-hover:scale-[1.04]"
-                  priority={false}
-                />
-
-                {/* Overlay gradient rất nhẹ để chữ luôn rõ nếu cần */}
-                <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300
-                                bg-gradient-to-t from-primary/10 via-transparent to-transparent" />
-              </div>
-
-              {/* Tên danh mục */}
-              <div className="p-3 flex items-center justify-center">
-                <span
-                  className="text-sm font-medium text-foreground/90 
-                             bg-clip-text group-hover:bg-gradient-to-r group-hover:from-primary group-hover:to-primary-400 group-hover:text-transparent"
-                >
-                  {cat.name}
-                </span>
-              </div>
-            </Link>
-          </SwiperSlide>
-        ))}
+        {!loading &&
+          categories.map((cat) => (
+            <SwiperSlide key={cat.id} aria-label={cat.name}>
+              <CategoryCard {...cat}/>
+            </SwiperSlide>
+          ))}
       </Swiper>
     </section>
   );
