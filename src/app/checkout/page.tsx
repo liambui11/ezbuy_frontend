@@ -4,11 +4,15 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useAppSelector } from "@/lib/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hook";
 import { selectItemsArray, selectCount } from "@/lib/redux/slices/cartSlice";
 import { GoTrash } from "react-icons/go";
 import api from "@/lib/api/api";
 import { notify } from "@/lib/notification/notistack";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { fetchCartWithTotal } from "@/lib/redux/slices/cartSlice";
+import Swal from "sweetalert2";
 
 // ---- Types ---------------------------------------------------------------
 
@@ -29,12 +33,14 @@ function clampPhoneDigits(v: string) {
 
 export default function CheckoutPage() {
   const items = useAppSelector(selectItemsArray);
-
+  const router = useRouter();
   const [shippingMethod, setShippingMethod] =
     useState<ShippingMethod>("STANDARD");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("COD");
   const [promo, setPromo] = useState("");
   const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
+  const [discountValue, setdiscountValue] = useState(0);
+  const dispatch = useAppDispatch();
 
   const subtotal = useMemo(
     () =>
@@ -42,8 +48,8 @@ export default function CheckoutPage() {
     [items]
   );
   const discount = useMemo(
-    () => (appliedPromo ? Math.min(subtotal * 0.05, 20) : 0),
-    [appliedPromo, subtotal]
+    () => (appliedPromo ? (discountValue * subtotal) / 100 : 0),
+    [appliedPromo, subtotal, discountValue]
   );
   const total = useMemo(
     () => Math.max(subtotal - discount, 0),
@@ -55,7 +61,7 @@ export default function CheckoutPage() {
     phone: "",
     shippingAddress: "",
     note: "",
-    promoCode: null,
+    promoCode: "",
   });
 
   const [addrUI, setAddrUI] = useState({
@@ -88,37 +94,66 @@ export default function CheckoutPage() {
     return Object.keys(e).length === 0;
   }
 
-  function handlePlaceOrder() {
+  const handlePlaceOrder = async () => {
     if (items.length === 0) {
       notify("Your cart is empty.", { variant: "warning" });
       return;
     }
     if (!validate()) return;
 
+    const result = await Swal.fire({
+      title: "Confirm your order",
+      text: "Are you sure you want to place this order?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, place order",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#0e7cc9",
+    });
+
+    if (!result.isConfirmed) return;
     setPlacing(true);
 
-    console.log(form);
-    notify("Order successful", { variant: "success" });
-
-    // try{
-    //   const res = await api.post(`${process.env.NEXT_PUBLIC_API_URL}/api/orders`)
-    // }
-    // catch{
-
-    // }
-  }
+    try {
+      await api.post(`${process.env.NEXT_PUBLIC_API_URL}/api/orders`, {
+        receiverName: form.receiverName,
+        shippingAddress: form.shippingAddress,
+        phone: form.phone,
+        note: form.note,
+        paymentId: 1,
+        promoCode: "EZBuy",
+      });
+      notify("Order successful", { variant: "success" });
+      window.dispatchEvent(new Event("auth:changed"));
+      await dispatch(fetchCartWithTotal());
+      router.replace("/");
+    } catch {
+      console.log("form", form);
+      notify("Order failed", { variant: "warning" });
+    } finally {
+      setPlacing(false);
+    }
+  };
 
   const applyPromo = async () => {
     const code = promo.trim().toUpperCase();
     if (!code) return;
-    // Mock rule: accept EZ5, PHONE5, WELCOME — give 5% up to $20
-    if (["EZ5", "PHONE5", "WELCOME"].includes(code)) {
+
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/promotions/${code}`
+      );
       setAppliedPromo(code);
-      setPromo("");
-    } else {
-      notify("Invalid or expired promo code", { variant: "error" });
+      setForm({ ...form, promoCode: code });
+      setdiscountValue(res.data.data.discountValue);
+      notify("Promotion applied successfully", { variant: "success" });
+    } catch {
+      setAppliedPromo("");
+      setForm({ ...form, promoCode: "" });
+      setdiscountValue(0);
+      notify("Invalid or expired promotion code", { variant: "error" });
     }
-  }
+  };
 
   const labelCls = "block text-sm font-medium text-gray-700 mb-1";
   const inputCls =
@@ -379,7 +414,7 @@ export default function CheckoutPage() {
             </div>
             {appliedPromo && (
               <p className="mt-1 text-xs text-green-700">
-                Applied code: {appliedPromo} (5% up to $20)
+                Promo code: {appliedPromo} - {discountValue}% off!
               </p>
             )}
 
@@ -407,7 +442,7 @@ export default function CheckoutPage() {
             <button
               onClick={handlePlaceOrder}
               disabled={placing || items.length === 0}
-              className="mt-5 w-full rounded-2xl bg-primary py-3 text-white font-semibold hover:bg-primary-700 disabled:opacity-60 disabled:cursor-not-allowed transition"
+              className="mt-5 w-full rounded-2xl bg-primary py-3 text-white font-semibold hover:bg-primary-700 disabled:opacity-60 disabled:cursor-not-allowed transition cursor-pointer"
             >
               {placing
                 ? "Placing order..."
