@@ -621,9 +621,3 @@ function Th({ label, sortable, onClick, active, asc, className, }: { label: stri
   );
 }
 
-/* ============================= Tailwind primary tokens (optional)
-:root { --color-primary: 14 124 201; }  // EZPhone blue #0e7cc9
-.bg-primary { background-color: rgb(var(--color-primary)); }
-.text-primary { color: rgb(var(--color-primary)); }
-.ring-primary\/30 { --tw-ring-color: color-mix(in srgb, rgb(var(--color-primary)) 30%, transparent); }
-=================================================================== */

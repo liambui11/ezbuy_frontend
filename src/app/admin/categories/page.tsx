@@ -5,12 +5,8 @@ import {
   ChevronLeft, ChevronRight, Check, Loader2,
   Image as ImageIcon
 } from "lucide-react";
+import api from "@/lib/api/api";
 
-/**
- * EZPhone — Admin Category Manager (LOCAL, no API)
- * - No API calls. Uses hardcoded mock data and local state CRUD.
- * - Place at: app/(admin)/categories/page.tsx
- */
 
 type Category = {
   id: number;
@@ -91,7 +87,6 @@ function CategoryForm({
   const [slug, setSlug] = useState(initial?.slug ?? "");
   const [imageUrl, setImageUrl] = useState(initial?.image_url ?? "");
   const [parentId, setParentId] = useState<number | "" | null>(initial?.parent_id ?? "");
-  const [isActive, setIsActive] = useState<boolean>(initial?.is_active ?? true);
   const [touched, setTouched] = useState(false);
 
   useEffect(() => {
@@ -111,7 +106,6 @@ function CategoryForm({
           name: name.trim(),
           slug: (slug.trim() || slugifyVi(name)).toLowerCase(),
           image_url: imageUrl.trim() || null,
-          is_active: !!isActive,
           parent_id: parentId === "" ? null : (parentId as number),
         } as Omit<Category, "id">;
         onSubmit(payload);
@@ -185,16 +179,6 @@ function CategoryForm({
               ))}
           </select>
         </div>
-        <div className="flex items-center gap-3 pt-2">
-          <input
-            id="is_active"
-            type="checkbox"
-            className="h-4 w-4 rounded border-gray-300"
-            checked={isActive}
-            onChange={(e) => setIsActive(e.target.checked)}
-          />
-          <label htmlFor="is_active" className="text-sm">Active</label>
-        </div>
       </div>
 
       <div className="flex items-center justify-end gap-3 pt-2">
@@ -232,6 +216,10 @@ export default function CategoryManagerPage() {
 
   // load mock
   useEffect(() => {
+    const fetchData = async () =>{
+      const res = await api.get(`/api/categories`)
+      console.log("categoires admin",res)
+    }
     try {
       setLoading(true);
       setError(null);
@@ -241,6 +229,7 @@ export default function CategoryManagerPage() {
     } finally {
       setLoading(false);
     }
+    fetchData()
   }, []);
 
   // parentId -> parentName
@@ -365,7 +354,7 @@ export default function CategoryManagerPage() {
                 asc={sortAsc}
               />
               <Th label="Parent" />
-              <Th label="Active" className="w-28" />
+              {/* <Th label="Active" className="w-28" /> */}
               <Th label="Image" className="w-24" />
               <Th label="Actions" className="w-40" />
             </tr>
@@ -404,21 +393,6 @@ export default function CategoryManagerPage() {
                 <td className="p-3 text-sm text-gray-700">{c.slug}</td>
                 <td className="p-3 text-sm text-gray-700">
                   {c.parent_id ? parentNameMap.get(c.parent_id) ?? "—" : "—"}
-                </td>
-                <td className="p-3">
-                  <button
-                    onClick={() => handleToggleActive(c)}
-                    className={cx(
-                      "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold",
-                      c.is_active
-                        ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200"
-                        : "bg-gray-100 text-gray-600 ring-1 ring-gray-200"
-                    )}
-                    title="Toggle"
-                  >
-                    <Check className={cx("h-3.5 w-3.5", !c.is_active && "opacity-30")} />
-                    {c.is_active ? "Active" : "Inactive"}
-                  </button>
                 </td>
                 <td className="p-3">
                   {c.image_url ? (
@@ -514,9 +488,3 @@ function Th({
   );
 }
 
-/* ============================= Tailwind primary tokens (optional)
-:root { --color-primary: 14 124 201; }  // EZPhone blue #0e7cc9
-.bg-primary { background-color: rgb(var(--color-primary)); }
-.text-primary { color: rgb(var(--color-primary)); }
-.ring-primary\/30 { --tw-ring-color: color-mix(in srgb, rgb(var(--color-primary)) 30%, transparent); }
-=================================================================== */

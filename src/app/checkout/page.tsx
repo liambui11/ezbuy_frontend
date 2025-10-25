@@ -5,8 +5,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hook";
-import { selectItemsArray, selectCount } from "@/lib/redux/slices/cartSlice";
-import { GoTrash } from "react-icons/go";
+import { selectItemsArray } from "@/lib/redux/slices/cartSlice";
 import api from "@/lib/api/api";
 import { notify } from "@/lib/notification/notistack";
 import axios from "axios";
@@ -121,7 +120,7 @@ export default function CheckoutPage() {
         phone: form.phone,
         note: form.note,
         paymentId: 1,
-        promoCode: "EZBuy",
+        promoCode: form.promoCode || null,
       });
       notify("Order successful", { variant: "success" });
       window.dispatchEvent(new Event("auth:changed"));
@@ -141,7 +140,7 @@ export default function CheckoutPage() {
 
     try {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/promotions/${code}`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/promotions/check?code=${code}`
       );
       setAppliedPromo(code);
       setForm({ ...form, promoCode: code });
