@@ -1,25 +1,27 @@
 "use client";
 
-import React, {
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-  forwardRef,
-} from "react";
+import React, { useCallback, useRef, useState, forwardRef } from "react";
 import Image from "next/image";
 import { IoClose } from "react-icons/io5";
 import { FaImage } from "react-icons/fa6";
 import ProductCard from "@/components/product/ProductCard";
-import { PRODUCTS, type Product } from "@/constants/products";
-import { imageToFeature, l2, type Feature } from "@/lib/vision/extractFeatures";
+import { ProductClient } from "@/features/products/types";
 import HScroll from "@/components/common/HScroll";
-
-/* ===================== Types ===================== */
+import api from "@/lib/api/api";
 
 type BotTextMsg = { id: string; role: "bot"; type: "text"; text: string };
-type UserImageMsg = { id: string; role: "user"; type: "image"; previewUrl: string };
-type BotResultsMsg = { id: string; role: "bot"; type: "results"; products: Product[] };
+type UserImageMsg = {
+  id: string;
+  role: "user";
+  type: "image";
+  previewUrl: string;
+};
+type BotResultsMsg = {
+  id: string;
+  role: "bot";
+  type: "results";
+  products: ProductClient[];
+};
 type BotTypingMsg = { id: string; role: "bot"; type: "typing" };
 type ChatMsg = BotTextMsg | UserImageMsg | BotResultsMsg | BotTypingMsg;
 
@@ -33,7 +35,6 @@ export default function Chatbot() {
   const [state, setState] = useState<SearchState>("idle");
   const [errorMsg, setErrorMsg] = useState<string>("");
 
-  const [results, setResults] = useState<Product[]>([]);
   const [messages, setMessages] = useState<ChatMsg[]>(() => [
     {
       id: crypto.randomUUID(),
@@ -48,14 +49,10 @@ export default function Chatbot() {
   const inputRef = useRef<HTMLInputElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
 
-  // Cache computed image features for all products
-  const [catalogFeats, setCatalogFeats] = useState<Record<number, Feature>>({});
-
   const onPick = () => inputRef.current?.click();
 
   const resetAll = useCallback(() => {
     setFile(null);
-    setResults([]);
     setErrorMsg("");
     setState("idle");
     setMessages([
@@ -99,25 +96,15 @@ export default function Chatbot() {
       ...prev,
       { id: crypto.randomUUID(), role: "user", type: "image", previewUrl: url },
     ]);
+
+    setState("preview"); // 1. Đổi state để ẩn UploadBubble
+    doSearch(f);
   };
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     if (f) handleFile(f);
   };
-
-  const canSearch = useMemo(() => !!file && state !== "loading", [file, state]);
-
-  // Compute / retrieve feature for a product
-  const ensureProductFeature = useCallback(
-    async (p: Product): Promise<Feature> => {
-      if (catalogFeats[p.id]) return catalogFeats[p.id];
-      const feat = await imageToFeature(p.image_url);
-      setCatalogFeats((prev) => ({ ...prev, [p.id]: feat }));
-      return feat;
-    },
-    [catalogFeats]
-  );
 
   const scrollToBottom = () => {
     requestAnimationFrame(() => {
@@ -128,38 +115,32 @@ export default function Chatbot() {
     });
   };
 
-  const doSearch = async () => {
-    if (!file) return;
+  const doSearch = async (newFile?: File) => {
+    const fileToUpload = newFile || file;
+    if (!fileToUpload) return;
+
+    const formData = new FormData();
+    formData.append("file", fileToUpload);
     try {
       setState("loading");
       setErrorMsg("");
 
-      // Show typing
       setMessages((prev) => [
         ...prev,
         { id: crypto.randomUUID(), role: "bot", type: "typing" },
       ]);
       scrollToBottom();
 
-      // 1) Extract query feature
-      const q = await imageToFeature(file);
+      const res = await api.post("/api/search/by-image", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-      // 2) Compare with product features
-      const scored: Array<{ p: Product; d: number }> = [];
-      for (const p of PRODUCTS) {
-        const f = await ensureProductFeature(p);
-        const d = l2(q, f);
-        scored.push({ p, d });
-      }
-
-      // 3) Sort ascending and take top 3
-      scored.sort((a, b) => a.d - b.d);
-      const top3 = scored.slice(0, 3).map((x) => x.p);
-
-      setResults(top3);
+      const products = res.data.data.products;
+      // setResults(products);
       setState("done");
 
-      // Replace typing with result bubble
       setMessages((prev) => {
         const withoutTyping = prev.filter((m) => m.type !== "typing");
         return [
@@ -168,7 +149,7 @@ export default function Chatbot() {
             id: crypto.randomUUID(),
             role: "bot",
             type: "results",
-            products: top3,
+            products: products,
           },
         ];
       });
@@ -185,8 +166,7 @@ export default function Chatbot() {
             id: crypto.randomUUID(),
             role: "bot",
             type: "text",
-            text:
-              "Sorry, something went wrong while processing the image. Please try again.",
+            text: "Sorry, something went wrong while processing the image. Please try again.",
           },
         ];
       });
@@ -262,34 +242,12 @@ export default function Chatbot() {
                 JPG/PNG/WebP • Processed locally in your browser
               </div>
               <div className="flex items-center gap-2">
-                <input
-                  ref={inputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={onInputChange}
-                />
-                <button
-                  type="button"
-                  onClick={onPick}
-                  className="px-3 py-2 text-sm rounded-md border hover:bg-gray-100"
-                >
-                  Upload
-                </button>
                 <button
                   type="button"
                   onClick={resetAll}
-                  className="px-3 py-2 text-sm rounded-md border hover:bg-gray-100"
+                  className="px-3 py-2 text-sm rounded-md bg-primary text-white disabled:opacity-50 cursor-pointer"
                 >
                   Reset
-                </button>
-                <button
-                  type="button"
-                  disabled={!canSearch}
-                  onClick={doSearch}
-                  className="px-3 py-2 text-sm rounded-md bg-primary text-white disabled:opacity-50"
-                >
-                  {state === "loading" ? "Searching..." : "Suggest products"}
                 </button>
               </div>
             </div>
@@ -341,7 +299,7 @@ const UploadBubble = forwardRef<HTMLInputElement, UploadBubbleProps>(
               <button
                 type="button"
                 onClick={onPick}
-                className="px-3 py-2 text-sm rounded-md border bg-white hover:bg-gray-100"
+                className="px-3 py-2 text-sm rounded-md border bg-white hover:bg-gray-100 cursor-pointer"
               >
                 Choose file
               </button>
@@ -404,7 +362,9 @@ function ChatBubble({ msg }: { msg: ChatMsg }) {
       <div className="flex items-start gap-2">
         <Avatar />
         <div className="bg-white border rounded-2xl px-3 py-2 shadow-sm max-w-full">
-          <div className="text-sm text-gray-800 mb-1">Here are my suggestions:</div>
+          <div className="text-sm text-gray-800 mb-1">
+            Here are my suggestions:
+          </div>
           <div className="w-[18rem] sm:w-[26rem]">
             <HScroll step={300}>
               {msg.products.map((p) => (
@@ -427,7 +387,12 @@ function ChatBubble({ msg }: { msg: ChatMsg }) {
 function Avatar() {
   return (
     <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gray-200 shrink-0">
-      <Image src="/images/chatbot/chatbot.jpg" alt="bot" fill className="object-cover" />
+      <Image
+        src="/images/chatbot/chatbot.jpg"
+        alt="bot"
+        fill
+        className="object-cover"
+      />
     </div>
   );
 }
