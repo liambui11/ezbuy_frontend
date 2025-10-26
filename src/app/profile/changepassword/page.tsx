@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { axiosInstance } from "@/utils/axiosInstance";
 
 export default function ChangePasswordPage() {
   const [form, setForm] = useState({
@@ -9,12 +10,14 @@ export default function ChangePasswordPage() {
     confirmPassword: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (form.newPassword !== form.confirmPassword) {
@@ -22,7 +25,24 @@ export default function ChangePasswordPage() {
       return;
     }
 
-    alert("Password changed successfully!");
+    setLoading(true);
+    try {
+      await axiosInstance.post("http://localhost:8081/api/users/change-password", {
+        oldPassword: form.currentPassword,
+        newPassword: form.newPassword,
+        confirmPassword: form.confirmPassword,
+      });
+
+      alert("Password changed successfully!");
+      setForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    } catch (error: any) {
+      console.error("Error changing password:", error);
+      const msg =
+        error.response?.data?.message || "Failed to change password. Please try again.";
+      alert(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -33,7 +53,9 @@ export default function ChangePasswordPage() {
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-secondary mb-1">Current Password</label>
+          <label className="block text-sm font-medium text-secondary mb-1">
+            Current Password
+          </label>
           <input
             type="password"
             name="currentPassword"
@@ -45,7 +67,9 @@ export default function ChangePasswordPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-secondary mb-1">New Password</label>
+          <label className="block text-sm font-medium text-secondary mb-1">
+            New Password
+          </label>
           <input
             type="password"
             name="newPassword"
@@ -57,7 +81,9 @@ export default function ChangePasswordPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-secondary mb-1">Confirm New Password</label>
+          <label className="block text-sm font-medium text-secondary mb-1">
+            Confirm New Password
+          </label>
           <input
             type="password"
             name="confirmPassword"
@@ -70,9 +96,10 @@ export default function ChangePasswordPage() {
 
         <button
           type="submit"
-          className="w-full bg-primary text-primary-foreground py-2 rounded-lg hover:bg-primary-700 transition font-medium"
+          disabled={loading}
+          className="w-full bg-primary text-primary-foreground py-2 rounded-lg hover:bg-primary-700 transition font-medium disabled:opacity-50"
         >
-          Update Password
+          {loading ? "Updating..." : "Update Password"}
         </button>
       </form>
     </div>

@@ -11,6 +11,8 @@ import { format, isFuture, isPast } from 'date-fns';
 import { useRouter } from "next/navigation";
 import { routerServerGlobal } from 'next/dist/server/lib/router-utils/router-server-context';
 import { FaSearch } from "react-icons/fa";
+import axios from 'axios';
+import { axiosInstance } from '@/utils/axiosInstance';
 
 const formatDiscount = (discount_value: any) => {
   const value = parseFloat(discount_value);
@@ -45,11 +47,32 @@ export default function PromotionListPage() {
   const router = useRouter();
 
 
-  const handleDelete = (promoId: number, promoCode: string) => {
-      if (window.confirm(`Are you sure you want to delete promotion code ${promoCode}?`)) {
-          setPromotions(prev => prev.filter(p => p.id !== promoId));
-          console.log(`Deleting promotion ID: ${promoId}`);
+  const handleDelete = async (promoId: number, promoCode: string) => {
+    const comfirmDelete = window.confirm(
+      `Are you sure you want to delete promotion code ${promoCode}?`
+    );
+    if(!comfirmDelete) return;
+
+    const token = localStorage.getItem("accessToken");
+
+    try{
+      const response = await axiosInstance.delete(
+        `http://localhost:8081/api/promotions/${promoId}`,{
+          headers:{
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 200 || response.status === 204) {
+        alert(" Promotion deleted successfully!");
+        setPromotions((prev) => prev.filter((p) => p.id !== promoId));
+      } else {
+        alert(" Failed to delete promotion!");
       }
+    }catch (error: any) {
+      console.error("Error deleting promotion:", error.response?.data || error.message);
+      alert(" Error deleting promotion");
+    }
   };
 
   const loadData = async (keyword?: string) =>{
@@ -107,7 +130,7 @@ export default function PromotionListPage() {
         <div className="flex space-x-2">
             {/* Edit Button */}
             <Link 
-                href={`/admin/promotions/${promo.id}`} 
+                href={`/admin/promotions/editpromotions/${promo.id}`} 
                 className="text-primary hover:text-primary-700 p-1 rounded-full hover:bg-primary-200"
                 title="Edit"
             >

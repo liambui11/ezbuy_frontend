@@ -1,24 +1,46 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FaShoppingCart } from "react-icons/fa";
 import { MdAttachMoney } from "react-icons/md";
 import {useRouter} from "next/navigation"
+import { fetchUsers } from "@/features/profile/services";
+import type { Profile } from "@/features/profile/types";
 
 
 export default function ProfileCard() {
-  const [user] = useState({
-    name: "Nguyen Ngoc Long",
-    email: "long.nguyen@example.com",
-    phone: "+84 987 654 321",
-    address: "123 Nguyen Trai, District 1, Ho Chi Minh City",
-    avatar: "/images/profile/default-avatar.jpg",
-    orders: 3,
-    spent: 500,
-  });
+  const [user, setUser] = useState<Profile | null>(null);
 
   const router = useRouter();
+
+  useEffect(()=>{
+    const getUser = async () =>{
+      try{
+        const data = await fetchUsers();
+        console.log(data);
+        setUser(data);
+      }catch(err){
+        console.error("Failed to fetch user:", err);
+      }
+    };
+    getUser();
+  },[]);
+
+
+  // useEffect(()=>{
+  //   const getTest = async () =>{
+  //     try{
+  //       const data = await fetchTestRefresh();
+  //       console.log(data);
+  //       // setUser(data);
+  //     }catch(err){
+  //       console.error("Failed to fetch user:", err);
+  //     }
+  //   };
+  //   getTest();
+  // },[]);
+  
 
   const handleEditClick = () => {
     router.push("/profile/editprofile")
@@ -39,15 +61,15 @@ export default function ProfileCard() {
         {/* Avatar + Name */}
         <div className="flex items-center gap-4">
           <Image
-            src={user.avatar}
+            src={user?.userAvatar || "/images/profile/default-avatar.jpg"}
             alt="avatar"
             width={100}
             height={100}
             className="rounded-full border-2 border-primary"
           />
           <div>
-            <h1 className="text-2xl font-semibold text-foreground">{user.name}</h1>
-            <p className="text-secondary text-sm">EZPhone Member</p>
+            <h1 className="text-2xl font-semibold">{user?.firstName} {user?.lastName}</h1>
+            <p className="text-secondary text-sm">EZBuy Member</p>
           </div>
         </div>
 
@@ -55,7 +77,7 @@ export default function ProfileCard() {
         <div className="flex items-center gap-3 bg-primary-200 px-4 py-3 rounded-xl shadow-sm w-full md:w-auto justify-center">
           <FaShoppingCart size={30} className="text-primary-700" />
           <div className="text-center">
-            <div className="text-xl font-bold text-primary-700">{user.orders}</div>
+            <div className="text-xl font-bold text-primary-700">{user?.firstName}</div>
             <p className="text-sm text-secondary">Total Orders</p>
           </div>
         </div>
@@ -64,7 +86,7 @@ export default function ProfileCard() {
         <div className="flex items-center gap-3 bg-primary-200 px-4 py-3 rounded-xl shadow-sm w-full md:w-auto justify-center">
           <MdAttachMoney size={30} className="text-primary-700" />
           <div className="text-center">
-            <div className="text-xl font-bold text-primary-700">{user.spent}.000₫</div>
+            <div className="text-xl font-bold text-primary-700">{user?.address}.000₫</div>
             <p className="text-sm text-secondary">Total Spent</p>
           </div>
         </div>
@@ -74,15 +96,15 @@ export default function ProfileCard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6 text-foreground">
         <div>
           <p className="font-semibold text-primary">Email</p>
-          <p className="bg-muted rounded-lg p-3 mt-1 text-foreground">{user.email}</p>
+          <p className="bg-muted rounded-lg p-3 mt-1 text-foreground">{user?.email}</p>
         </div>
         <div>
           <p className="font-semibold text-primary">Phone Number</p>
-          <p className="bg-muted rounded-lg p-3 mt-1 text-foreground">{user.phone}</p>
+          <p className="bg-muted rounded-lg p-3 mt-1 text-foreground">{user?.phone}</p>
         </div>
         <div className="sm:col-span-2">
           <p className="font-semibold text-primary">Address</p>
-          <p className="bg-muted rounded-lg p-3 mt-1 text-foreground">{user.address}</p>
+          <p className="bg-muted rounded-lg p-3 mt-1 text-foreground">{user?.address}</p>
         </div>
       </div>
 

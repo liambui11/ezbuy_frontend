@@ -11,6 +11,8 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.9.0",
     "axios": "^1.12.2",
+    "js-cookie": "^3.0.5",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.545.0",
     "next": "^15.5.2",
     "notistack": "^3.0.2",
@@ -19,11 +21,13 @@
     "react-icons": "^5.5.0",
     "react-paginate": "^8.3.0",
     "react-redux": "^9.2.0",
+    "sweetalert2": "^11.26.3",
     "swiper": "^12.0.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
