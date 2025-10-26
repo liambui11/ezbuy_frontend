@@ -6,3 +6,9 @@ export type Category = {
   slug: string;
   active: boolean;
 };
+
+export type CategoryNode = {
+  id: number;
+  name: string;
+  children?: CategoryNode[];
+};
