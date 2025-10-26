@@ -12,3 +12,5 @@ export type CategoryNode = {
   name: string;
   children?: CategoryNode[];
 };
+
+export type CategoryRef = Pick<Category, "id" | "name">;

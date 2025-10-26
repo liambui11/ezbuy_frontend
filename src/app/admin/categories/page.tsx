@@ -21,6 +21,7 @@ import { Th } from "@/components/admin/Th";
 import Image from "next/image";
 import { confirmCategoryAction } from "@/components/admin/categories/confirmCategoryAction";
 import { notify } from "@/lib/notification/notistack";
+import ReactPaginate from "react-paginate";
 
 export default function CategoryManagerPage() {
   const [data, setData] = useState<Category[]>([]);
@@ -33,8 +34,9 @@ export default function CategoryManagerPage() {
     Record<number, string>
   >({});
 
-  const [page, setPage] = useState(1);
-  const pageSize = 8;
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const pageSize = 5;
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Category | null>(null);
@@ -48,8 +50,9 @@ export default function CategoryManagerPage() {
         setLoading(true);
         setError(null);
 
-        const res = await api.get(`/api/categories`);
+        const res = await api.get(`/api/categories?page=${page}&size=${pageSize}`);
         setData(res.data.data.content);
+        setTotalPages(res.data.data.totalPages || 1)
         console.log(data);
       } catch (e: unknown) {
         setError(errMsg(e));
@@ -58,7 +61,7 @@ export default function CategoryManagerPage() {
       }
     };
     fetchData();
-  }, []);
+  }, [page, pageSize]);
 
   useEffect(() => {
     async function fetchMissingParents() {
@@ -97,9 +100,9 @@ export default function CategoryManagerPage() {
       if (!confirmed) return;
       await api.delete(`/api/categories/${id}`);
       window.location.reload();
-      notify("Delete succesfully", {variant: "success"})
+      notify("Delete succesfully", { variant: "success" });
     } catch {
-      notify("Something went wrong", {variant: "error"})
+      notify("Something went wrong", { variant: "error" });
     }
   };
 
@@ -138,14 +141,14 @@ export default function CategoryManagerPage() {
               <Th label="#" className="w-14" />
               <Th
                 label="Name"
-                sortable
+                // sortable
                 // onClick={() => handleSort("name")}
                 // active={sortKey === "name"}
                 // asc={sortAsc}
               />
               <Th
                 label="Slug"
-                sortable
+                // sortable
                 // onClick={() => handleSort("slug")}
                 // active={sortKey === "slug"}
                 // asc={sortAsc}
@@ -180,7 +183,7 @@ export default function CategoryManagerPage() {
               data.map((c, idx) => (
                 <tr key={c.id} className="hover:bg-gray-50">
                   <td className="p-3 text-center text-sm text-gray-500">
-                    {(page - 1) * pageSize + idx + 1}
+                    {page * pageSize + idx + 1}
                   </td>
 
                   <td className="p-3">
@@ -232,7 +235,27 @@ export default function CategoryManagerPage() {
               ))}
           </tbody>
         </table>
+        
       </div>
+      <div className="mt-6 flex justify-center ">
+          <ReactPaginate
+            breakLabel="…"
+            nextLabel="Next ›"
+            previousLabel="‹ Prev"
+            onPageChange={({ selected }) => setPage(selected)}
+            pageCount={totalPages}
+            forcePage={page}
+            marginPagesDisplayed={1}
+            pageRangeDisplayed={3}
+            containerClassName="flex items-center gap-1"
+            pageLinkClassName="px-3 py-2 rounded-lg border bg-white text-sm hover:bg-gray-50 cursor-pointer border-secondary-600"
+            previousLinkClassName="px-3 py-2 rounded-lg border bg-white text-sm hover:bg-gray-50 cursor-pointer border-secondary-600"
+            nextLinkClassName="px-3 py-2 rounded-lg border bg-white text-sm hover:bg-gray-50 cursor-pointer border-secondary-600"
+            activeLinkClassName="!bg-[#0e7cc9] !text-white !border-[#0e7cc9]"
+            disabledClassName="opacity-50 cursor-not-allowed"
+            breakLinkClassName="px-2 text-gray-500 select-none"
+          />
+        </div>
 
       {/* Create/Edit Modal */}
       <Modal
@@ -252,18 +275,18 @@ export default function CategoryManagerPage() {
                 if (!confirmed) return;
                 await api.put(`/api/categories/${editing.id}`, fd);
                 window.location.reload();
-                notify("Edit succesfully", {variant: "success"})
+                notify("Edit succesfully", { variant: "success" });
               } else {
                 const confirmed = await confirmCategoryAction("add");
                 if (!confirmed) return;
                 await api.post(`/api/categories`, fd);
                 window.location.reload();
-                notify("Add new category succesfully", {variant: "success"})
+                notify("Add new category succesfully", { variant: "success" });
               }
               setOpen(false);
-            } catch{
-              notify("Something went wrong", {variant: "error"})
-            }finally {
+            } catch {
+              notify("Something went wrong", { variant: "error" });
+            } finally {
               setSubmitting(false);
             }
           }}

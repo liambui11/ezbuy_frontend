@@ -22,8 +22,9 @@ export type ProductClient = {
   slug?: string;
   price: number;
   quantityInStock?: number;
-  categoryName?: number;
-  manufacturer_id?: number;
+  categoryName?: string;
+  manufacturerId?: number;
   is_active?: boolean;
   manufacturerName?: string;
+  categoryId?: number;
 };
