@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { notFound } from "next/navigation";
 import AddToCartButton from "@/components/cart/AddToCartButton";
 // import { ProductRow } from "@/lib/redux/slices/cartSlice";
-import { Product } from "@/features/products/types";
+import { ProductClient } from "@/features/products/types";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -16,7 +15,7 @@ export default function ProductDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = React.use(params);
-  const [product, setProduct] = useState<Product>();
+  const [product, setProduct] = useState<ProductClient>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,7 +31,6 @@ export default function ProductDetailPage({
   console.log("product:", product);
   console.log("productMan:", product?.manufacturerName);
 
-  // return <div>product page</div>;
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
       {/* Breadcrumbs */}
@@ -41,7 +39,7 @@ export default function ProductDetailPage({
           Home
         </Link>
         <span className="mx-2">/</span>
-        <Link href="/product" className="hover:underline">
+        <Link href="/" className="hover:underline">
           Products
         </Link>
         <span className="mx-2">/</span>
@@ -51,13 +49,13 @@ export default function ProductDetailPage({
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         {/* Gallery */}
         <div className="space-y-4">
-          <div className="relative aspect-square overflow-hidden">
+          <div className="relative aspect-square overflow-hidden rounded-2xl bg-muted">
             {product?.imageUrl && (
               <Image
                 src={product?.imageUrl}
                 alt={product?.name}
                 fill
-                className="object-cover"
+                className="object-contain"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
               />
@@ -65,15 +63,22 @@ export default function ProductDetailPage({
           </div>
         </div>
 
-        <div className="space-y-5">
+        {/* Info (sticky) */}
+        <div className="space-y-5 md:sticky md:top-20">
           <h1 className="text-2xl font-semibold tracking-tight">
             {product?.name}
           </h1>
 
-          <div className="text-sm text-muted-foreground">
-            Brand: {product?.manufacturerName}
+          {/* Meta */}
+          <div className="text-sm text-muted-foreground flex items-center gap-2">
+            <span>Brand:</span>
+            <span className="text-foreground">{product?.manufacturerName}</span>
+            <span className="mx-2"> • </span>
+            <span>Category:</span>
+            <span className="text-foreground">{product?.categoryName}</span>
           </div>
 
+          {/* Price + Stock */}
           <div className="flex items-end gap-3">
             <div className="text-3xl font-bold text-primary">
               {product?.price.toLocaleString("en-US", {
@@ -84,54 +89,25 @@ export default function ProductDetailPage({
             <div className="flex items-center gap-4 text-sm">
               <span
                 className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 ${
-                  product?.quantity_in_stock
-                    ? "bg-green-100 text-green-700"
+                  Number(product?.quantityInStock) > 0
+                    ? "bg-emerald-100 text-emerald-700"
                     : "bg-zinc-100 text-zinc-600"
                 }`}
               >
                 <span className="inline-block h-2 w-2 rounded-full bg-current" />
-                {product?.quantity_in_stock ? "In stock" : "Out of stock"}
+                {Number(product?.quantityInStock) > 0
+                  ? "In stock"
+                  : "Out of stock"}
               </span>
             </div>
           </div>
 
           {/* Actions */}
           <div className="flex items-center gap-3 pt-2">
-            {/* <button
-              className="rounded-2xl bg-primary px-6 py-3 text-primary-foreground shadow-sm transition hover:bg-primary-700 cursor-pointer"
-              disabled={!product.inStock}
-            >
-              Add to cart
-            </button> */}
             {product && <AddToCartButton product={product} />}
-
-            <button
-              className="rounded-2xl border px-6 py-3 transition hover:border-primary hover:text-primary cursor-pointer"
-              aria-label="Buy now"
-            >
-              Buy now
-            </button>
           </div>
 
-          {/* Specs */}
-          {/* {product.specs && Object.keys(product.specs).length > 0 && (
-            <div className="mt-4">
-              <h2 className="mb-3 text-lg font-semibold">Specifications</h2>
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                {Object.entries(product.specs).map(([k, v]) => (
-                  <div
-                    key={k}
-                    className="flex items-center justify-between rounded-xl border px-4 py-3"
-                  >
-                    <span className="text-sm text-muted-foreground">{k}</span>
-                    <span className="text-sm font-medium">{String(v)}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )} */}
-
-          {/* Full description */}
+          {/* Description */}
           {product?.description && (
             <div className="prose prose-zinc max-w-none">
               <h2 className="mb-3 text-lg font-semibold">Description</h2>

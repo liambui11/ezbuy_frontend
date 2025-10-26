@@ -6,182 +6,19 @@ import Image from "next/image";
 import Link from "next/link";
 import ReactPaginate from "react-paginate";
 
-// ⬇️ import your ProductCard component (adjust the path if needed)
 import ProductCard from "@/components/product/ProductCard";
 import axios from "axios";
 import { Product } from "@/features/products/types";
 import { Category } from "@/features/categories/types";
 
-/* ============================= Types ============================= */
-
-// type Product = {
-//   id: number;
-//   name: string;
-//   slug: string;
-//   image_url: string;
-//   price: number;
-//   compare_at_price?: number | null;
-//   in_stock: boolean;
-//   category_id: number;
-//   description?: string;
-// };
-
-/* ============================= Mock Data ============================= */
-// const CATEGORIES: Category[] = [
-//   {
-//     id: 1,
-//     name: "Smartphones",
-//     slug: "smartphones",
-//     image_url: "/images/categories/category_phone.png",
-//     description:
-//       "Latest Android and iOS devices with powerful cameras and performance.",
-//   },
-//   {
-//     id: 2,
-//     name: "HeadPhone",
-//     slug: "headphone",
-//     image_url: "/images/categories/category_headphone.png",
-//     description: "Premium audio for music, calls and gaming.",
-//   },
-//   {
-//     id: 3,
-//     name: "Watch",
-//     slug: "watch",
-//     image_url: "/images/categories/category_watch.png",
-//     description: "Wearables to track fitness and stay connected.",
-//   },
-// ];
-
-// const PRODUCTS: Product[] = [
-//   {
-//     id: 101,
-//     name: "Iphone 17 Promax",
-//     slug: "iphone-17-pro-max-256gb",
-//     image_url: "/images/products/iphone_17_pro_512gb.jpg",
-//     price: 10990000,
-//     compare_at_price: 12990000,
-//     in_stock: true,
-//     category_id: 1,
-//     description: "Flagship performance with great camera.",
-//   },
-
-//   {
-//     id: 102,
-//     name: "Samsung Galaxy S26 Ultra",
-//     slug: "samsung-galaxy-s26-ultra-512gb",
-//     image_url: "/images/products/samsung_s26.jpg",
-//     price: 29990000,
-//     compare_at_price: 32990000,
-//     in_stock: true,
-//     category_id: 1,
-//     description:
-//       "The ultimate Android experience with a pro-grade camera and S Pen.",
-//   },
-//   {
-//     id: 103,
-//     name: "Xiaomi 15 Pro",
-//     slug: "xiaomi-15-pro-256gb-leica",
-//     image_url: "/images/products/xiaomi_15pro.png",
-//     price: 21490000,
-//     compare_at_price: 23990000,
-//     in_stock: true,
-//     category_id: 1,
-//     description: "Co-engineered with Leica for stunning photography.",
-//   },
-//   {
-//     id: 104,
-//     name: "Oppo Reno12 Pro",
-//     slug: "oppo-reno-12-pro-5g",
-//     image_url: "/images/products/oppo-reno12-pro-5g-tim.jpg",
-//     price: 14990000,
-//     compare_at_price: 16500000,
-//     in_stock: false,
-//     category_id: 1,
-//     description: "The Portrait Expert with a sleek design and fast charging.",
-//   },
-//   {
-//     id: 105,
-//     name: "Google Pixel 10",
-//     slug: "google-pixel-10-128gb",
-//     image_url: "/images/products/google_pixel.jpg",
-//     price: 18990000,
-//     compare_at_price: 20990000,
-//     in_stock: true,
-//     category_id: 1,
-//     description: "Smart, helpful, and powered by Google AI.",
-//   },
-//   {
-//     id: 106,
-//     name: "Asus ROG Phone 9",
-//     slug: "asus-rog-phone-9-ultimate",
-//     image_url: "/images/products/asus-rog-phone-9-pro-1.png",
-//     price: 25990000,
-//     compare_at_price: 27990000,
-//     in_stock: true,
-//     category_id: 1,
-//     description: "Unleash your gaming potential with extreme performance.",
-//   },
-
-//   {
-//     id: 201,
-//     name: "Tab Pro 11",
-//     slug: "tab-pro-11",
-//     image_url: "/images/products/tab-pro-11.jpg",
-//     price: 12990000,
-//     compare_at_price: null,
-//     in_stock: true,
-//     category_id: 2,
-//     description: "Sharp display for work and play.",
-//   },
-//   {
-//     id: 202,
-//     name: "iSlate Air 10",
-//     slug: "islate-air-10",
-//     image_url: "/images/products/islate-air-10.jpg",
-//     price: 9990000,
-//     compare_at_price: 10990000,
-//     in_stock: true,
-//     category_id: 2,
-//   },
-//   {
-//     id: 301,
-//     name: "FastCharge 33W",
-//     slug: "fastcharge-33w",
-//     image_url: "/images/products/fastcharge-33w.jpg",
-//     price: 390000,
-//     compare_at_price: null,
-//     in_stock: true,
-//     category_id: 3,
-//   },
-//   {
-//     id: 302,
-//     name: "Type-C Cable 1m",
-//     slug: "typec-cable-1m",
-//     image_url: "/images/products/typec-cable-1m.jpg",
-//     price: 149000,
-//     compare_at_price: 199000,
-//     in_stock: true,
-//     category_id: 3,
-//   },
-// ];
-
-/* ============================= Helpers ============================= */
-// function getCategoryBySlug(slug: string): Category | undefined {
-//   return CATEGORIES.find((c) => c.slug === slug);
-// }
-// function getProductsByCategory(id: number): Product[] {
-//   return PRODUCTS.filter((p) => p.category_id === id);
-// }
 type SortKey = "price" | "name";
 type SortOrder = "asc" | "desc";
-/* ============================= Page ============================= */
+
 export default function CategoryPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  // const cat = getCategoryBySlug(params.slug) ?? CATEGORIES[0];
-  // const products = getProductsByCategory(cat.id);
   const { slug } = React.use(params);
   const [sortKey, setSortKey] = useState<SortKey>("price");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");

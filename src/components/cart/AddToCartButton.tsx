@@ -2,11 +2,11 @@
 import { addToCartServer } from "@/lib/redux/slices/cartSlice";
 
 import React from "react";
-import { Product } from "@/features/products/types";
+import { ProductClient } from "@/features/products/types";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/lib/redux/hook";
 
-const AddToCartButton = ({ product }: { product: Product }) => {
+const AddToCartButton = ({ product }: { product: ProductClient }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -32,8 +32,15 @@ const AddToCartButton = ({ product }: { product: Product }) => {
     <div>
       <button
         onClick={addItemHandle}
-        className="rounded-2xl bg-primary px-6 py-3 text-primary-foreground shadow-sm transition hover:bg-primary-700 cursor-pointer"
-        // disabled={!product.inStock}
+        className={`
+    rounded-2xl px-6 py-3 text-primary-foreground shadow-sm transition
+    ${
+      product.quantityInStock === 0
+        ? "bg-gray-400 cursor-not-allowed"
+        : "bg-primary hover:bg-primary-700 cursor-pointer"
+    }
+  `}
+        disabled={product.quantityInStock === 0}
       >
         Add to cart
       </button>

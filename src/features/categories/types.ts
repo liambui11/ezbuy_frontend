@@ -6,3 +6,11 @@ export type Category = {
   slug: string;
   active: boolean;
 };
+
+export type CategoryNode = {
+  id: number;
+  name: string;
+  children?: CategoryNode[];
+};
+
+export type CategoryRef = Pick<Category, "id" | "name">;
