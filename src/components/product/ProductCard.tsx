@@ -59,8 +59,8 @@
 //       {/* Nút mua */}
 //       <div className="mt-4 flex justify-between items-center">
 //         <button
-//           className="flex items-center justify-center w-full py-2 bg-primary-600 text-primary-700 
-//                      font-semibold rounded-lg hover:bg-primary-700 transition 
+//           className="flex items-center justify-center w-full py-2 bg-primary-600 text-primary-700
+//                      font-semibold rounded-lg hover:bg-primary-700 transition
 //                      duration-300 shadow-md hover:shadow-lg hover:text-white text-sm"
 //         >
 //           <FaCartShopping className="mr-2" />
@@ -77,6 +77,9 @@ import Image from "next/image";
 import { FaCartShopping } from "react-icons/fa6";
 import { Product } from "@/features/products/types";
 import Link from "next/link";
+import { useAppDispatch } from "@/lib/redux/hook";
+import { useRouter } from "next/navigation";
+import { addToCartServer } from "@/lib/redux/slices/cartSlice";
 
 interface ProductCardProps extends Product {}
 
@@ -88,10 +91,32 @@ export default function ProductCard({
   price,
 }: ProductCardProps) {
   console.log("image_url:", imageUrl);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  const addItemHandle = async () => {
+    const token =
+      typeof window !== "undefined"
+        ? localStorage.getItem("accessToken")
+        : null;
+
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
+    try {
+      const product = { id, name, imageUrl, price, description } as Product;
+      await dispatch(addToCartServer({ product, qty: 1 })).unwrap();
+    } catch (e) {
+      throw e;
+    }
+  };
   return (
-    <Link 
-    href={`/products/${id}`}
-    className="relative bg-white border border-muted rounded-2xl shadow hover:shadow-xl transition p-4 flex flex-col w-60">
+    <Link
+      href={`/products/${id}`}
+      className="relative bg-white border border-muted rounded-2xl shadow hover:shadow-xl transition p-4 flex flex-col w-60"
+    >
       {/* Ảnh sản phẩm */}
       <div className="flex justify-center">
         <Image
@@ -126,11 +151,16 @@ export default function ProductCard({
       )}
 
       {/* Nút mua */}
-      <div className="mt-4 flex justify-between items-center">
+      <div className="mt-4 flex justify-between items-center ">
         <button
           className="flex items-center justify-center w-full py-2 bg-primary-600 text-primary-700 
                      font-semibold rounded-lg hover:bg-primary-700 transition 
                      duration-300 shadow-md hover:shadow-lg hover:text-white text-sm"
+          onClick={(e) => {
+            e.preventDefault(); 
+            e.stopPropagation(); 
+            addItemHandle();
+          }}
         >
           <FaCartShopping className="mr-2" />
           Buy Now

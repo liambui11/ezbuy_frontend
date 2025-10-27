@@ -19,10 +19,12 @@ export default function ProductDetailPage({
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/products/${slug}`
-      );
-      setProduct(res.data.data);
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/products/${slug}`
+        );
+        setProduct(res.data.data);
+      } catch {}
     };
 
     fetchData();

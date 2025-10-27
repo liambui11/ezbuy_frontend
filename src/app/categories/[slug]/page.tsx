@@ -31,30 +31,34 @@ export default function CategoryPage({
   };
   const [category, setCategory] = useState<Category>();
   const [products, setProducts] = useState<Product[]>([]);
-  const [page, setPage] = useState(0)
-  const [totalPages, setTotalPages] = useState(1)
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/categories/${slug}`
-      );
-      setCategory(res.data.data);
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/categories/${slug}`
+        );
+        setCategory(res.data.data);
+      } catch {}
     };
 
-    fetchData()
+    fetchData();
   }, [slug]);
 
   useEffect(() => {
-    const fetchData = async () =>{
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/products?categoryId=${slug}&manufacturerId=&sortBy=${sortKey}&sortDir=${sortOrder}&page=${page}&size=8`
-      );
-      setProducts(res.data.data.content)
-      setTotalPages(res.data.data.totalPages || 1)
-    }
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/products?categoryId=${slug}&manufacturerId=&sortBy=${sortKey}&sortDir=${sortOrder}&page=${page}&size=8`
+        );
+        setProducts(res.data.data.content);
+        setTotalPages(res.data.data.totalPages || 1);
+      } catch {}
+    };
 
-    fetchData()
+    fetchData();
   }, [slug, sortKey, sortOrder, page]);
 
   return (
@@ -207,27 +211,26 @@ export default function CategoryPage({
               </li>
             ))}
           </ul>
-          
         )}
         <div className="mt-6 flex justify-center ">
-            <ReactPaginate
-              breakLabel="…"
-              nextLabel="Next ›"
-              previousLabel="‹ Prev"
-              onPageChange={({ selected }) => setPage(selected)}
-              pageCount={totalPages}
-              forcePage={page}
-              marginPagesDisplayed={1}
-              pageRangeDisplayed={3}
-              containerClassName="flex items-center gap-1"
-              pageLinkClassName="px-3 py-2 rounded-lg border bg-white text-sm hover:bg-gray-50 cursor-pointer border-secondary-600"
-              previousLinkClassName="px-3 py-2 rounded-lg border bg-white text-sm hover:bg-gray-50 cursor-pointer border-secondary-600"
-              nextLinkClassName="px-3 py-2 rounded-lg border bg-white text-sm hover:bg-gray-50 cursor-pointer border-secondary-600"
-              activeLinkClassName="!bg-[#0e7cc9] !text-white !border-[#0e7cc9]"
-              disabledClassName="opacity-50 cursor-not-allowed"
-              breakLinkClassName="px-2 text-gray-500 select-none"
-            />
-          </div>
+          <ReactPaginate
+            breakLabel="…"
+            nextLabel="Next ›"
+            previousLabel="‹ Prev"
+            onPageChange={({ selected }) => setPage(selected)}
+            pageCount={totalPages}
+            forcePage={page}
+            marginPagesDisplayed={1}
+            pageRangeDisplayed={3}
+            containerClassName="flex items-center gap-1"
+            pageLinkClassName="px-3 py-2 rounded-lg border bg-white text-sm hover:bg-gray-50 cursor-pointer border-secondary-600"
+            previousLinkClassName="px-3 py-2 rounded-lg border bg-white text-sm hover:bg-gray-50 cursor-pointer border-secondary-600"
+            nextLinkClassName="px-3 py-2 rounded-lg border bg-white text-sm hover:bg-gray-50 cursor-pointer border-secondary-600"
+            activeLinkClassName="!bg-[#0e7cc9] !text-white !border-[#0e7cc9]"
+            disabledClassName="opacity-50 cursor-not-allowed"
+            breakLinkClassName="px-2 text-gray-500 select-none"
+          />
+        </div>
       </section>
     </div>
   );

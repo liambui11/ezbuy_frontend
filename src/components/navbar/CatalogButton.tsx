@@ -24,16 +24,18 @@ export default function CatalogButton() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/categories`
-      );
-      setCategories(res.data.data.content);
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/categories`
+        );
+        setCategories(res.data.data.content);
+      } catch {}
     };
 
     fetchData();
   }, []);
 
-  console.log("mảng",categories);
+  console.log("mảng", categories);
 
   return (
     <div ref={ref} className="relative">
