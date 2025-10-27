@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IoPersonOutline } from "react-icons/io5";
+import { usePathname } from "next/navigation";
 
 type User = {
   fullName: string;
@@ -15,7 +16,10 @@ type User = {
 export default function UserButton() {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
+  // Load user từ localStorage khi mount
   useEffect(() => {
     const saved = localStorage.getItem("user");
     if (saved) {
@@ -27,23 +31,42 @@ export default function UserButton() {
     }
   }, []);
 
+  // Lắng nghe thay đổi auth và popstate để reload user (nếu bạn cần)
   useEffect(() => {
     const load = () => {
       const saved = localStorage.getItem("user");
       setUser(saved ? JSON.parse(saved) : null);
     };
-    load(); // đọc lần đầu
-
-    // nghe sự kiện auth thay đổi
+    load();
     window.addEventListener("auth:changed", load);
-    // (tuỳ chọn) nghe chuyển trang để đồng bộ UI khi navigate
     window.addEventListener("popstate", load);
-
     return () => {
       window.removeEventListener("auth:changed", load);
       window.removeEventListener("popstate", load);
     };
   }, []);
+
+  // Đóng menu khi điều hướng sang route khác
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  // Click outside để đóng menu (thay cho onBlur)
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent | TouchEvent) => {
+      if (!menuRef.current) return;
+      if (!menuRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("touchstart", onDown);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("touchstart", onDown);
+    };
+  }, [open]);
 
   if (!user) {
     return (
@@ -62,16 +85,11 @@ export default function UserButton() {
   const avatarSrc = user.imageUrl || "/images/profile/default-avatar.jpg";
 
   const logOutHandle = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    }).catch(() => { /* ignore network error on logout */ });
 
     localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
@@ -79,20 +97,19 @@ export default function UserButton() {
     document.cookie = "logged_in=; Path=/; Max-Age=0; SameSite=Lax";
 
     window.dispatchEvent(new Event("auth:changed"));
-    window.location.href = "/login"; // logout rồi reload
+    window.location.href = "/login";
   };
 
   return (
-    <div className="relative">
+    <div className="relative" ref={menuRef}>
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
-        onBlur={() => setOpen(false)}
-        className="flex items-center gap-2 group"
+        onClick={() => setOpen(v => !v)}
+        className="flex items-center gap-2 group cursor-pointer"
         aria-haspopup="menu"
         aria-expanded={open}
+        aria-controls="user-menu"
       >
-        {/* Avatar bằng next/image */}
         <div className="relative w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden border border-border">
           <Image
             src={avatarSrc}
@@ -102,32 +119,33 @@ export default function UserButton() {
             className="object-cover"
           />
         </div>
-
-        <span className="hidden md:block font-[550] text-[15px] lg:text-[18px] text-primary group-hover:text-primary-700 cursor-pointer">
+        <span className="hidden md:block font-[550] text-[15px] lg:text-[18px] text-primary group-hover:text-primary-700">
           {user.fullName}
         </span>
       </button>
 
       {open && (
         <div
+          id="user-menu"
           role="menu"
           className="absolute right-0 mt-2 w-44 bg-white dark:bg-card border border-border rounded-xl shadow-lg p-2 z-50 cursor-pointer"
         >
           <Link
-            href="/account"
-            className="block px-3 py-2 rounded-md hover:bg-gradient-to-r hover:from-primary hover:to-primary-400 hover:text-white"
+            href="/profile"
+            className="block px-3 py-2 rounded-md hover:bg-gradient-to-r hover:from-primary hover:to-primary-400 hover:text-white cursor-pointer"
+            onClick={() => setOpen(false)}
           >
             Profile
           </Link>
           <Link
-            href="/orders"
-            className="block px-3 py-2 rounded-md hover:bg-gradient-to-r hover:from-primary hover:to-primary-400 hover:text-white"
+            href="/profile/purchasehistory"
+            className="block px-3 py-2 rounded-md hover:bg-gradient-to-r hover:from-primary hover:to-primary-400 hover:text-white cursor-pointer"
+            onClick={() => setOpen(false)}
           >
             Orders
           </Link>
           <button
             className="w-full text-left px-3 py-2 rounded-md hover:bg-gradient-to-r hover:from-primary hover:to-primary-400 hover:text-white cursor-pointer"
-            onMouseDown={(e) => e.preventDefault()}
             onClick={logOutHandle}
           >
             Sign out
