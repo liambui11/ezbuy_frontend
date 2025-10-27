@@ -207,6 +207,7 @@ export default function CategoryPage({
                   description={p.description}
                   imageUrl={p.imageUrl}
                   price={p.price}
+                  quantityInStock={p.quantityInStock}
                 />
               </li>
             ))}
