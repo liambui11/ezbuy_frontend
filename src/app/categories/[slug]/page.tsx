@@ -8,7 +8,7 @@ import ReactPaginate from "react-paginate";
 
 import ProductCard from "@/components/product/ProductCard";
 import axios from "axios";
-import { Product } from "@/features/products/types";
+import { ProductClient } from "@/features/products/types";
 import { Category } from "@/features/categories/types";
 
 type SortKey = "price" | "name";
@@ -30,7 +30,7 @@ export default function CategoryPage({
     setSortOrder(newOrder);
   };
   const [category, setCategory] = useState<Category>();
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductClient[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -207,6 +207,7 @@ export default function CategoryPage({
                   description={p.description}
                   imageUrl={p.imageUrl}
                   price={p.price}
+                  quantityInStock={p.quantityInStock}
                 />
               </li>
             ))}

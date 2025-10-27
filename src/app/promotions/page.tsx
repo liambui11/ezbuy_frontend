@@ -9,8 +9,8 @@ export default function PromotionsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <Campaign />
-      <StudentFlashSale />
-      <HotDeals />
+      {/* <StudentFlashSale /> */}
+      {/* <HotDeals /> */}
       <NewDeals />
     </div>
   );

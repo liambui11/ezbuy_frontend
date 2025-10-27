@@ -75,13 +75,13 @@
 
 import Image from "next/image";
 import { FaCartShopping } from "react-icons/fa6";
-import { Product } from "@/features/products/types";
+import { ProductClient } from "@/features/products/types";
 import Link from "next/link";
 import { useAppDispatch } from "@/lib/redux/hook";
 import { useRouter } from "next/navigation";
 import { addToCartServer } from "@/lib/redux/slices/cartSlice";
 
-interface ProductCardProps extends Product {}
+interface ProductCardProps extends ProductClient {}
 
 export default function ProductCard({
   id,
@@ -107,7 +107,7 @@ export default function ProductCard({
     }
 
     try {
-      const product = { id, name, imageUrl, price, description } as Product;
+      const product = { id, name, imageUrl, price, description } as ProductClient;
       await dispatch(addToCartServer({ product, qty: 1 })).unwrap();
     } catch (e) {
       throw e;

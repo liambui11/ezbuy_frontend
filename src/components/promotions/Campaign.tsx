@@ -30,7 +30,7 @@ export default function Campaign() {
           <p className="
             text-lg md:text-xl font-medium mb-10 max-w-lg text-secondary-600
           ">
-            Get massive discounts on **all the latest flagship phones**. Plus, receive exclusive gifts worth **$5 Million VND** when shopping at EZPhone! {/* Dịch: Giảm giá cực sốc... */}
+            Get massive discounts on **all the latest flagship phones**. Plus, receive exclusive gifts worth **$50** when shopping at EZBuy!
           </p>
 
           <Link 

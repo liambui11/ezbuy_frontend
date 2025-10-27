@@ -31,7 +31,7 @@ const formatDiscount = (discount_value: any) => {
 
 
 const getStatusDisplay = (promo: Promotion) => {
-    if (promo.is_active === 0 || (promo.endDate && isPast(promo.endDate))) {
+    if (promo.active === 0 || (promo.endDate && isPast(promo.endDate))) {
         return { text: 'Disabled', class: 'bg-danger' };
     }
     if (promo.startDate && isFuture(promo.startDate)) {

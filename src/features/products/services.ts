@@ -1,4 +1,4 @@
-import { Product } from "./types"
+import { ProductClient } from "./types"
 import axios from "axios";
 
 const API_URL = "http://localhost:8081/api/products"
@@ -22,7 +22,7 @@ interface GetProductParams {
 }
 
 interface ProductPage {
-  content: Product[]
+  content: ProductClient[]
   totalPages: number
   totalElements: number
   page: number
@@ -40,7 +40,7 @@ export async function getAllProducts(params: GetProductParams = {}): Promise<Pro
       page: pageData.page ?? 0,
     };
   } catch (error) {
-    console.error("❌ Failed to fetch products:", error);
+    console.error("Failed to fetch products:", error);
     throw new Error("Failed to fetch products");
   }
 }

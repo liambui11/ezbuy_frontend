@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import ProductCard from "@/components/product/ProductCard";
 import { getAllProducts } from "@/features/products/services"; // đường dẫn tới file bạn vừa viết
-import { Product } from "@/features/products/types";
+import { ProductClient } from "@/features/products/types";
 
 export default function PromotionPage() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductClient[]>([]);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -43,11 +43,8 @@ export default function PromotionPage() {
             price={product.price}
             slug={product.slug}
             quantityInStock={product.quantityInStock}
-            category_id={product.category_id}
-            manufacturer_id={product.manufacturer_id}
-            is_active={product.is_active}  
-            created_at={product.created_at} 
-            updated_at={product.updated_at}
+            categoryId={product.categoryId}
+            manufacturerId={product.manufacturerId}
           />
           
           ))}

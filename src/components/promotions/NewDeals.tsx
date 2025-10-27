@@ -12,6 +12,7 @@ export default function PromotionPage() {
     const loadData = async () =>{
       try{
         const data = await fetchPromotions();
+        console.log("Promption test",data)
         setPromotions(data);
       }catch(error){
         console.error("Lỗi khi tải khuyến mãi:", error);
@@ -40,7 +41,7 @@ export default function PromotionPage() {
           <div
             key={promo.id}
             className={`p-6 rounded-2xl border shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${
-              promo.is_active
+              promo.active
                 ? "bg-gradient-to-br from-[var(--color-primary-200)] to-[var(--color-card)] border-[var(--color-border)]"
                 : "bg-[var(--color-muted)] border-[var(--color-border)] opacity-85"
             }`}
@@ -48,19 +49,23 @@ export default function PromotionPage() {
             <div className="flex flex-col justify-between h-full">
               <div>
                 <div className="flex justify-between items-center mb-4">
-                  <span
-                    className={`text-xs font-semibold px-3 py-1 rounded-full ${
-                      promo.is_active
-                        ? "bg-[var(--color-primary)] text-white"
-                        : "bg-[var(--color-secondary)] text-white"
-                    }`}
-                  >
-                    {promo.is_active ? "Đang diễn ra" : "Đã kết thúc"}
-                  </span>
+                <span
+                  className={`text-xs font-semibold px-3 py-1 rounded-full ${
+                    new Date(promo.endDate ?? "").getTime() > Date.now()
+                      ? "bg-[var(--color-primary)] text-white"
+                      : "bg-[var(--color-secondary)] text-white"
+                  }`}
+                >
+                  {new Date(promo.endDate ?? "").getTime() > Date.now()
+                    ? "Đang diễn ra"
+                    : "Đã kết thúc"}
+                </span>
+
+
 
                   {promo.code && (
                     <span className="text-xs bg-[var(--color-warning)] text-white px-3 py-1 rounded-md font-medium">
-                      Id: {promo.code}
+                      Promo_CODE: {promo.code}
                     </span>
                   )}
                 </div>

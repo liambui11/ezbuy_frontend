@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React, { useState } from 'react';
 import axios from 'axios';
@@ -14,7 +14,7 @@ export default function AddPromotion() {
     discountValue: 0,
     startDate: "",
     endDate: "",
-    isActive: true,
+    active: false,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,11 +37,12 @@ export default function AddPromotion() {
 
     const payload = {
       ...promotion,
+      // chuẩn hóa ngày giờ: nếu backend yêu cầu ISO string thì dùng toISOString()
       startDate: promotion.startDate ? `${promotion.startDate}:00` : null,
       endDate: promotion.endDate ? `${promotion.endDate}:00` : null,
     };
 
-    console.log("Payload gửi đi:", payload);
+    console.log("🚀 Payload gửi đi:", payload);
 
     try {
       const res = await axios.post("http://localhost:8081/api/promotions", payload, {
@@ -51,12 +52,23 @@ export default function AddPromotion() {
         },
       });
 
-      console.log("Response:", res.data);
+      console.log("✅ Response:", res.data);
       alert("✅ Promotion created successfully!");
       router.push("/admin/promotions");
     } catch (error: any) {
-      console.error("Error creating promotion:", error.response?.data || error.message);
-      alert("Error creating promotion");
+      // Log chi tiết hơn để biết lỗi từ đâu
+      if (axios.isAxiosError(error)) {
+        console.error("❌ Axios error:", {
+          message: error.message,
+          status: error.response?.status,
+          data: error.response?.data,
+          url: error.config?.url,
+        });
+      } else {
+        console.error("❌ Unknown error:", error);
+      }
+
+      alert("⚠️ Error creating promotion. Check console for details.");
     }
   };
 
@@ -77,8 +89,9 @@ export default function AddPromotion() {
           onSubmit={handleSubmit}
           className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-2xl border border-gray-200"
         >
+          {/* Promotion Code */}
           <div className="mb-2">
-            <label className="block font-medium text-gray-700 mb-2">ID Promotion</label>
+            <label className="block font-medium text-gray-700 mb-2">Promotion Code</label>
             <input
               name="code"
               value={promotion.code}
@@ -88,7 +101,8 @@ export default function AddPromotion() {
             />
           </div>
 
-          <div>
+          {/* Description */}
+          <div className="mb-2">
             <label className="block font-medium text-gray-700 mb-2">Description</label>
             <input
               name="description"
@@ -99,18 +113,20 @@ export default function AddPromotion() {
             />
           </div>
 
-          <div>
-            <label className="block font-medium text-gray-700 mb-2">Discount</label>
+          {/* Discount */}
+          <div className="mb-2">
+            <label className="block font-medium text-gray-700 mb-2">Discount Value</label>
             <input
+              type="number"
               name="discountValue"
               value={promotion.discountValue}
               onChange={handleChange}
-              placeholder="Input Discount"
-              type="number"
+              placeholder="Input Discount Value"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-400 focus:outline-none"
             />
           </div>
 
+          {/* Start - End Date */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
               <label className="block font-medium text-gray-700 mb-2">Start Date</label>
@@ -122,7 +138,6 @@ export default function AddPromotion() {
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-400 focus:outline-none"
               />
             </div>
-
             <div>
               <label className="block font-medium text-gray-700 mb-2">End Date</label>
               <input
@@ -135,17 +150,19 @@ export default function AddPromotion() {
             </div>
           </div>
 
+          {/* Active */}
           <div className="flex items-center justify-between mb-6 pt-4">
             <label className="font-medium text-gray-700">Active</label>
             <input
               type="checkbox"
-              name="isActive"
-              checked={promotion.isActive}
+              name="active"
+              checked={promotion.active}
               onChange={handleChange}
               className="w-5 h-5 text-primary-500 focus:ring-primary-400 border-gray-300 rounded"
             />
           </div>
 
+          {/* Submit */}
           <button
             type="submit"
             className="w-full bg-primary-500 cursor-pointer font-semibold py-2 px-4 rounded-lg hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-400"
