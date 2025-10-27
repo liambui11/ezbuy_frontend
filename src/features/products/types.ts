@@ -5,7 +5,7 @@ export interface Product {
   imageUrl: string;
   slug?: string;
   price: number;
-  quantity_in_stock?: number;
+  quantityInStock?: number;
   category_id?: number;
   manufacturer_id?: number;
   is_active?: boolean;
