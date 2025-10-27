@@ -10,7 +10,7 @@ export default function PromotionsPage() {
     <div className="max-w-7xl mx-auto px-4 py-8">
       <Campaign />
       <StudentFlashSale />
-      {/* <HotDeals /> */}
+      <HotDeals />
       <NewDeals />
     </div>
   );

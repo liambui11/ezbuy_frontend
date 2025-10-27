@@ -42,7 +42,7 @@ export default function PromotionPage() {
             imageUrl={product.imageUrl ?? "/images/logo/ezbuy_logo_favicon.png"}
             price={product.price}
             slug={product.slug}
-            quantity_in_stock={product.quantity_in_stock}
+            quantityInStock={product.quantityInStock}
             category_id={product.category_id}
             manufacturer_id={product.manufacturer_id}
             is_active={product.is_active}  

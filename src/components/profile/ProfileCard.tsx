@@ -73,23 +73,23 @@ export default function ProfileCard() {
           </div>
         </div>
 
-        {/* Orders */}
+        {/* Orders 
         <div className="flex items-center gap-3 bg-primary-200 px-4 py-3 rounded-xl shadow-sm w-full md:w-auto justify-center">
           <FaShoppingCart size={30} className="text-primary-700" />
           <div className="text-center">
             <div className="text-xl font-bold text-primary-700">{user?.firstName}</div>
             <p className="text-sm text-secondary">Total Orders</p>
           </div>
-        </div>
+        </div>*/}
 
-        {/* Total Spent */}
+        {/* Total Spent 
         <div className="flex items-center gap-3 bg-primary-200 px-4 py-3 rounded-xl shadow-sm w-full md:w-auto justify-center">
           <MdAttachMoney size={30} className="text-primary-700" />
           <div className="text-center">
             <div className="text-xl font-bold text-primary-700">{user?.address}.000₫</div>
             <p className="text-sm text-secondary">Total Spent</p>
           </div>
-        </div>
+        </div>*/}
       </div>
 
       {/* Personal Info */}

@@ -89,6 +89,7 @@ export default function ProductCard({
   description,
   imageUrl,
   price,
+  quantityInStock,
 }: ProductCardProps) {
   console.log("image_url:", imageUrl);
   const dispatch = useAppDispatch();
@@ -152,7 +153,32 @@ export default function ProductCard({
 
       {/* Nút mua */}
       <div className="mt-4 flex justify-between items-center ">
-        <button
+        {
+          quantityInStock && quantityInStock > 0 ? (
+            <button
+            className="flex items-center justify-center w-full py-2 bg-primary-600 text-primary-700 
+                       font-semibold rounded-lg hover:bg-primary-700 transition 
+                       duration-300 shadow-md hover:shadow-lg hover:text-white text-sm"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              addItemHandle();
+            }}
+          >
+            <FaCartShopping className="mr-2" />
+            Buy Now
+          </button>
+          ):(
+            <button
+              disabled
+              className="flex items-center justify-center w-full py-2 bg-red-500 text-white 
+                        font-semibold rounded-lg cursor-not-allowed opacity-80 text-sm"
+            >
+              Out of Stock
+            </button>
+          )
+        }
+        {/* <button
           className="flex items-center justify-center w-full py-2 bg-primary-600 text-primary-700 
                      font-semibold rounded-lg hover:bg-primary-700 transition 
                      duration-300 shadow-md hover:shadow-lg hover:text-white text-sm"
@@ -164,7 +190,7 @@ export default function ProductCard({
         >
           <FaCartShopping className="mr-2" />
           Buy Now
-        </button>
+        </button> */}
       </div>
     </Link>
   );
