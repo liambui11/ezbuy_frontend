@@ -29,6 +29,7 @@ export default function CategoryManagerPage() {
   const [error, setError] = useState<string | null>(null);
 
   const [query, setQuery] = useState("");
+  const [appliedQuery, setAppliedQuery] = useState("");
   const [tree, setTree] = useState<CategoryNode[]>([]);
   const [parentNameCache, setParentNameCache] = useState<
     Record<number, string>
@@ -50,10 +51,19 @@ export default function CategoryManagerPage() {
         setLoading(true);
         setError(null);
 
-        const res = await api.get(`/api/categories?page=${page}&size=${pageSize}`);
-        setData(res.data.data.content);
-        setTotalPages(res.data.data.totalPages || 1)
-        console.log(data);
+        const res = await api.get(
+          `/api/categories?page=${page}&size=${pageSize}&keyword=${appliedQuery}`
+        );
+
+        const content = res.data?.data?.content ?? [];
+        const total = res.data?.data?.totalPages ?? 1;
+
+        setData(content);
+        setTotalPages(total);
+
+        if (page >= total && total > 0) {
+          setPage(0);
+        }
       } catch (e: unknown) {
         setError(errMsg(e));
       } finally {
@@ -61,7 +71,7 @@ export default function CategoryManagerPage() {
       }
     };
     fetchData();
-  }, [page, pageSize]);
+  }, [page, pageSize, appliedQuery]);
 
   useEffect(() => {
     async function fetchMissingParents() {
@@ -115,6 +125,12 @@ export default function CategoryManagerPage() {
     setOpen(true);
   }
 
+  const handleSearch = () => {
+    const q = query.trim();
+    setAppliedQuery(q);
+    setPage(0);
+  };
+
   return (
     <div className="mx-auto max-w-6xl p-4 md:p-6">
       <div className="mb-5 flex flex-col justify-between gap-3 md:flex-row md:items-center">
@@ -125,6 +141,21 @@ export default function CategoryManagerPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
+          <div className="relative w-60">
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search products..."
+              className="w-full rounded-xl border border-gray-300 px-4 py-2 pr-10 focus:border-primary/6 focus:ring-2 focus:ring-primary outline-none"
+            />
+            <button
+              onClick={handleSearch}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-primary cursor-pointer"
+            >
+              <Search className="h-5 w-5" />
+            </button>
+          </div>
           <button
             onClick={openCreate}
             className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 font-semibold text-white hover:opacity-90 cursor-pointer"
@@ -235,27 +266,26 @@ export default function CategoryManagerPage() {
               ))}
           </tbody>
         </table>
-        
       </div>
       <div className="mt-6 flex justify-center ">
-          <ReactPaginate
-            breakLabel="…"
-            nextLabel="Next ›"
-            previousLabel="‹ Prev"
-            onPageChange={({ selected }) => setPage(selected)}
-            pageCount={totalPages}
-            forcePage={page}
-            marginPagesDisplayed={1}
-            pageRangeDisplayed={3}
-            containerClassName="flex items-center gap-1"
-            pageLinkClassName="px-3 py-2 rounded-lg border bg-white text-sm hover:bg-gray-50 cursor-pointer border-secondary-600"
-            previousLinkClassName="px-3 py-2 rounded-lg border bg-white text-sm hover:bg-gray-50 cursor-pointer border-secondary-600"
-            nextLinkClassName="px-3 py-2 rounded-lg border bg-white text-sm hover:bg-gray-50 cursor-pointer border-secondary-600"
-            activeLinkClassName="!bg-[#0e7cc9] !text-white !border-[#0e7cc9]"
-            disabledClassName="opacity-50 cursor-not-allowed"
-            breakLinkClassName="px-2 text-gray-500 select-none"
-          />
-        </div>
+        <ReactPaginate
+          breakLabel="…"
+          nextLabel="Next ›"
+          previousLabel="‹ Prev"
+          onPageChange={({ selected }) => setPage(selected)}
+          pageCount={totalPages}
+          forcePage={page}
+          marginPagesDisplayed={1}
+          pageRangeDisplayed={3}
+          containerClassName="flex items-center gap-1"
+          pageLinkClassName="px-3 py-2 rounded-lg border bg-white text-sm hover:bg-gray-50 cursor-pointer border-secondary-600"
+          previousLinkClassName="px-3 py-2 rounded-lg border bg-white text-sm hover:bg-gray-50 cursor-pointer border-secondary-600"
+          nextLinkClassName="px-3 py-2 rounded-lg border bg-white text-sm hover:bg-gray-50 cursor-pointer border-secondary-600"
+          activeLinkClassName="!bg-[#0e7cc9] !text-white !border-[#0e7cc9]"
+          disabledClassName="opacity-50 cursor-not-allowed"
+          breakLinkClassName="px-2 text-gray-500 select-none"
+        />
+      </div>
 
       {/* Create/Edit Modal */}
       <Modal
