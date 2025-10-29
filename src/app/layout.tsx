@@ -6,6 +6,7 @@ import Chatbox from "@/components/chatbox/Chatbot";
 import AppProviders from "./providers";
 import CartDrawerOverlay from "@/components/common/CartDrawerOverlay";
 import GlobalRouteGuard from "@/lib/guards/GlobalRouteGuard";
+import Footer from "@/components/footer/Footer";
 
 
 export const metadata: Metadata = {
@@ -30,6 +31,7 @@ export default function RootLayout({
           {children}
           <Chatbox />
           <CartDrawerOverlay />
+          <Footer />
         </AppProviders>
       </body>
     </html>

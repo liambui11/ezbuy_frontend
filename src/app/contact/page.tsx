@@ -46,10 +46,10 @@ export default function ContactPage() {
       
       <div className="text-center mb-12">
         <h1 className="text-4xl font-extrabold text-primary-700 mb-3">
-          Contact EZPhone
+          Contact EZBuy
         </h1>
         <p className="text-lg text-secondary-600 max-w-2xl mx-auto">
-          We’re always ready to assist you 24/7. Below are EZPhone’s official and fastest contact channels.
+          We’re always ready to assist you 24/7. Below are EZBuy’s official and fastest contact channels.
         </p>
       </div>
 
@@ -59,7 +59,7 @@ export default function ContactPage() {
         <ContactItem
           icon={<FaPhoneAlt size={24} />}
           title="Support Hotline"
-          content="1900 1234"
+          content="01 2345 6789"
           link="tel:19001234"
           isLink={true}
         />
@@ -76,7 +76,7 @@ export default function ContactPage() {
           <ContactItem
             icon={<CiLocationOn size={28} />}
             title="Head Office Address"
-            content="123 The Road to Your Heart, District 1, Ho Chi Minh City"
+            content="97 Man Thien, Tang Nhon Phu, HCMC"
           />
         </div>
       </div>
