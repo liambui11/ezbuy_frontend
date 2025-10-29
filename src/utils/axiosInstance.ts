@@ -35,7 +35,14 @@ const refreshAccessToken = async (): Promise<string | null> => {
       { withCredentials: true }
     );
 
+    console.log("Test Token",res)
+
     const newAccessToken = res.data?.data?.accessToken || res.data?.accessToken;
+
+    Cookies.remove("accessToken");
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("accessToken");
+    }
 
     if (newAccessToken) {
       Cookies.set("accessToken", newAccessToken, {
@@ -99,6 +106,7 @@ axiosInstance.interceptors.request.use(
         isRefreshing = true;
         try {
           const newToken = await refreshAccessToken();
+          console.log("Test TOken 2", newToken);
           processQueue(null, newToken);
           if (newToken) token = newToken;
         } catch (err) {

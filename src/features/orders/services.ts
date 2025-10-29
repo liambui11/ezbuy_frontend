@@ -1,6 +1,7 @@
 // src/features/orders/services.ts
 import axios from "axios";
 import { OrderSummary, OrderDetail, OrderStatus } from "./types";
+import { axiosInstance } from "@/utils/axiosInstance";
 
 const API_BASE = "http://localhost:8081/api/orders";
 
@@ -40,7 +41,7 @@ export async function fetchMyOrders(
   const token = localStorage.getItem("accessToken");
 
   return handleResponse(
-    axios.get(`${API_BASE}/my-orders`, {
+    axiosInstance.get(`${API_BASE}/my-orders`, {
       params,
       headers: {
         "Content-Type": "application/json",
@@ -56,7 +57,7 @@ export async function fetchMyOrders(
 ---------------------------------------------------------- */
 export async function fetchOrderDetail(orderId: number) {
   return handleResponse(
-    axios.get(`${API_BASE}/${orderId}`, { withCredentials: true })
+    axiosInstance.get(`${API_BASE}/${orderId}`, { withCredentials: true })
   );
 }
 
@@ -65,7 +66,7 @@ export async function fetchOrderDetail(orderId: number) {
 ---------------------------------------------------------- */
 export async function createOrder(data: any) {
   return handleResponse(
-    axios.post(API_BASE, data, {
+    axiosInstance.post(API_BASE, data, {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
     })
@@ -78,7 +79,7 @@ export async function createOrder(data: any) {
 export async function cancelMyOrder(orderId: number) {
   const token = localStorage.getItem("accessToken");
   return handleResponse(
-    axios.post(`${API_BASE}/${orderId}/cancel`, null, {
+    axiosInstance.post(`${API_BASE}/${orderId}/cancel`, null, {
       headers:{
         "Content-Type": "application/json",
         ...(token? {Authorization: `Bearer ${token}`} : {}),
@@ -96,7 +97,7 @@ export async function updateOrderStatusByAdmin(
   status: OrderStatus
 ) {
   return handleResponse(
-    axios.put(
+    axiosInstance.put(
       `${API_BASE}/${orderId}/status`,
       { status },
       {
@@ -133,7 +134,7 @@ export async function fetchAllOrdersForAdmin(
 
   const token = localStorage.getItem("accessToken");
 
-  const res = await axios.get(`${API_BASE}/admin?${params.toString()}`, {
+  const res = await axiosInstance.get(`${API_BASE}/admin?${params.toString()}`, {
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
