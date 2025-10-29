@@ -8,6 +8,7 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Check,
   Loader2,
   Image as ImageIcon,
@@ -32,8 +33,10 @@ export default function ProductManagerPage() {
   const [manufacturers, setManufacturers] = useState<ProductClient[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [appliedQuery, setAppliedQuery] = useState("");
 
-  const pageSize = 8;
+  const pageSize = 6;
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -42,6 +45,9 @@ export default function ProductManagerPage() {
   const [submitting, setSubmitting] = useState(false);
 
   const { categories } = useCategoriesTree();
+
+  const [selectedCatId, setSelectedCatId] = useState("");
+  const [selectedManuId, setSelectedManuId] = useState("");
   // const [tree, setTree] = useState<CategoryNode[]>([]);
 
   // const idNameMap = useMemo(() => buildIdNameMap(tree), [tree]);
@@ -52,15 +58,23 @@ export default function ProductManagerPage() {
         setLoading(true);
         setError(null);
 
-        // gọi 3 API song song
         const [resProducts, resManufacturers] = await Promise.all([
-          api.get(`/api/products?page=${page}&size=${pageSize}`),
+          api.get(
+            `/api/products?categoryId=${selectedCatId}&manufacturerId=${selectedManuId}&page=${page}&size=${pageSize}&keyword=${appliedQuery}`
+          ),
           // api.get("/api/categories"),
           api.get("/api/manufacturers"),
         ]);
-        setData(resProducts.data.data.content);
+        const content = resProducts.data?.data?.content ?? [];
+        const total = resProducts.data?.data?.totalPages ?? 1;
+
+        setData(content);
         setManufacturers(resManufacturers.data.data);
-        setTotalPages(resProducts.data.data.totalPages || 1);
+        setTotalPages(total);
+
+        if (page >= total && total > 0) {
+          setPage(0);
+        }
       } catch {
       } finally {
         setLoading(false);
@@ -68,7 +82,7 @@ export default function ProductManagerPage() {
     };
 
     fetchData();
-  }, [page, pageSize]);
+  }, [page, pageSize, appliedQuery, selectedCatId, selectedManuId]);
 
   function openCreate() {
     setEditing(null);
@@ -91,6 +105,22 @@ export default function ProductManagerPage() {
     }
   };
 
+  const handleSearch = async () => {
+    const q = query.trim();
+    setAppliedQuery(q);
+    setPage(0);
+  };
+
+  const onChangeCategory = (id: string) => {
+    setSelectedCatId(id);
+    setPage(0);
+  };
+
+  const onChangeManufacturer = (id: string) => {
+    setSelectedManuId(id);
+    setPage(0);
+  };
+
   return (
     <div className="mx-auto max-w-7xl p-4 md:p-6">
       {/* Header */}
@@ -101,7 +131,61 @@ export default function ProductManagerPage() {
             Create, edit, delete and organize products.
           </p>
         </div>
+
         <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
+            {/* Category */}
+            <select
+              value={selectedCatId ?? ""}
+              onChange={(e) =>
+                onChangeCategory(
+                  e.target.value === "" ? "" : e.target.value
+                )
+              }
+              className="rounded-xl border px-3 py-2 bg-white text-sm"
+            >
+              <option value="">All categories</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+
+            {/* Manufacturer */}
+            <select
+              value={selectedManuId ?? ""}
+              onChange={(e) =>
+                onChangeManufacturer(
+                  e.target.value === "" ? "" : e.target.value
+                )
+              }
+              className="rounded-xl border px-3 py-2 bg-white text-sm"
+            >
+              <option value="">All manufacturers</option>
+              {manufacturers.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="relative w-60">
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search products..."
+              className="w-full rounded-xl border border-gray-300 px-4 py-2 pr-10 focus:border-primary/6 focus:ring-2 focus:ring-primary outline-none"
+            />
+            <button
+              onClick={handleSearch}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-primary cursor-pointer"
+            >
+              <Search className="h-5 w-5" />
+            </button>
+          </div>
           <button
             onClick={openCreate}
             className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 font-semibold text-white hover:opacity-90"
