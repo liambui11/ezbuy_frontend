@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { IoPersonOutline } from "react-icons/io5";
 import { usePathname } from "next/navigation";
+import Cookies from "js-cookie";
 
 type User = {
   fullName: string;
@@ -93,6 +94,7 @@ export default function UserButton() {
 
     localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
+    Cookies.remove("accessToken");
     document.cookie = "role=; Path=/; Max-Age=0; SameSite=Lax";
     document.cookie = "logged_in=; Path=/; Max-Age=0; SameSite=Lax";
 

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { IoMdExit } from "react-icons/io";
 import { useRouter, useParams } from "next/navigation";
+import { axiosInstance } from '@/utils/axiosInstance';
 
 export default function EditPromotion() {
   const router = useRouter();
@@ -24,7 +25,7 @@ export default function EditPromotion() {
     if (!promotionId) return;
 
     const token = localStorage.getItem("accessToken");
-    axios.get(`http://localhost:8081/api/promotions/${promotionId}`, {
+    axiosInstance.get(`http://localhost:8081/api/promotions/${promotionId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     .then(res => {
@@ -68,8 +69,8 @@ export default function EditPromotion() {
     };
 
     try {
-      const res = await axios.put(
-        `http://localhost:8081/api/promotions/${promotionId}`, // ✅ đúng endpoint
+      const res = await axiosInstance.put(
+        `http://localhost:8081/api/promotions/${promotionId}`,
         payload,
         {
           headers: {

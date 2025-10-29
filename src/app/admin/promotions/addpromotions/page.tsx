@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { IoMdExit } from "react-icons/io";
 import { useRouter } from "next/navigation";
+import { axiosInstance } from '@/utils/axiosInstance';
 
 export default function AddPromotion() {
   const router = useRouter();
@@ -45,7 +46,7 @@ export default function AddPromotion() {
     console.log("🚀 Payload gửi đi:", payload);
 
     try {
-      const res = await axios.post("http://localhost:8081/api/promotions", payload, {
+      const res = await axiosInstance.post("http://localhost:8081/api/promotions", payload, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

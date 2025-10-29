@@ -14,11 +14,38 @@ export default function EditProfilePage() {
     address: "",
     userAvatar: "",
   });
+  const [errors,setErrors] = useState<Record<string,string>>({});
   
-  
-
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+
+  function validate(){
+    const e: Record<string,string> = {};
+    if(!form.firstName.trim()){
+      e.firstName = "First name can't be empty!"
+    }
+    if(!form.lastName.trim()){
+      e.lastName = "Last name can't be empty!"
+    }
+    if(!form.email.trim()){
+      e.email = "Email can't be empty!"
+    }else{
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailRegex.test(form.email)) {
+        e.email = "Invalid email format!";
+      }
+    }
+    if(!form.phone.trim()){
+      e.phone = "Number phone can't be empty!"
+    }else if(form.phone.replace(/\D/g,"").length < 9){
+      e.phone="Invalid phone"
+    }else if(!/^\d+$/.test(form.phone)){
+      e.phone = "Phone number must contain digits only!"
+    }
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  }
   
   useEffect(() => {
     const loadProfile = async () => {
@@ -46,6 +73,9 @@ export default function EditProfilePage() {
     // 📌 Gửi cập nhật hồ sơ
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
+      if(!validate()){
+        return;
+      }
       setLoading(true);
       try {
         const updated = await fetchUpdateUsers(form, file || undefined);
@@ -99,6 +129,11 @@ export default function EditProfilePage() {
             onChange={handleChange}
             className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-primary outline-none"
           />
+          {errors.firstName && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.firstName}
+            </p>
+          )}
         </div>
         <div>
           <label className="block text-sm font-medium text-secondary mb-1">Last Name</label>
@@ -109,6 +144,11 @@ export default function EditProfilePage() {
             onChange={handleChange}
             className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-primary outline-none"
           />
+          {errors.lastName &&(
+              <p className="mt-1 text-sm text-red-600">
+                {errors.lastName}
+              </p>
+          )}
         </div>
 
         <div>
@@ -120,6 +160,11 @@ export default function EditProfilePage() {
             onChange={handleChange}
             className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-primary outline-none"
           />
+          {errors.email &&(
+              <p className="mt-1 text-sm text-red-600">
+                {errors.email}
+              </p>
+          )}
         </div>
 
         <div>
@@ -131,6 +176,11 @@ export default function EditProfilePage() {
             onChange={handleChange}
             className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-primary outline-none"
           />
+          {errors.phone &&(
+              <p className="mt-1 text-sm text-red-600">
+                {errors.phone}
+              </p>
+          )}
         </div>
 
         <div>

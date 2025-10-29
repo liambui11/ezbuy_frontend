@@ -57,8 +57,8 @@ export default function PromotionPage() {
                   }`}
                 >
                   {new Date(promo.endDate ?? "").getTime() > Date.now()
-                    ? "Đang diễn ra"
-                    : "Đã kết thúc"}
+                    ? "Happenning"
+                    : "Has ended"}
                 </span>
 
 
@@ -84,7 +84,7 @@ export default function PromotionPage() {
 
               <div className="mt-4 text-sm text-[var(--color-secondary-600)]">
                 <p>
-                  ⏰ From{" "}
+                  From{" "}
                   <b>
                     {promo.startDate
                       ? new Date(promo.startDate).toLocaleDateString()

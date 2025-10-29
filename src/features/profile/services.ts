@@ -8,6 +8,7 @@ const API_BASE = 'http://localhost:8081/api/users';
 
 export const fetchUsers = async () =>{
     const response = await axiosInstance.get(`${API_BASE}/me`)
+    console.log("test profile axios instance", response.data)
     return response.data.data;
 }
 
