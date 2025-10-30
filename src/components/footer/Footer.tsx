@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -19,25 +19,45 @@ import api from "@/lib/api/api";
 import { CategoryRef } from "@/features/categories/types";
 import { Manufacturer } from "@/features/manufacturers/types";
 
+type User = {
+  fullName: string;
+  imageUrl: string | null;
+  role: string;
+  email: string;
+};
+
 export default function Footer() {
   const year = new Date().getFullYear();
   const [categories, setCategories] = useState<CategoryRef[]>([]);
   const [manufacturers, setManufacturers] = useState<Manufacturer[]>([]);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const fetchData = async() => {
+    const load = () => {
+      const u = localStorage.getItem("user");
+      setUser(u ? JSON.parse(u) : null);
+    };
+    load();
+    window.addEventListener("auth:changed", load);
+    return () => window.removeEventListener("auth:changed", load);
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
       const [resCategories, resManufacturers] = await Promise.all([
         api.get(`/api/categories`),
         // api.get("/api/categories"),
         api.get("/api/manufacturers"),
       ]);
 
-      setCategories(resCategories.data.data.content)
-      setManufacturers(resManufacturers.data.data)
+      setCategories(resCategories.data.data.content);
+      setManufacturers(resManufacturers.data.data);
     };
 
     fetchData();
-  });
+  }, []);
+
+  if (user && user.role === "ADMIN") return null;
 
   return (
     <footer className="mt-12 border-t border-border/60 bg-gradient-to-b from-white to-slate-50 text-slate-700">
