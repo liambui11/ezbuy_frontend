@@ -4,15 +4,14 @@ import Link from "next/link";
 import { BsHandbag } from "react-icons/bs";
 import { useAppSelector } from "@/lib/redux/hook";
 import { selectCount } from "@/lib/redux/slices/cartSlice";
-import { useState } from "react";
-import dynamic from "next/dynamic";
+
 
 // tải chậm Drawer để giảm bundle cho navbar
 // const CartDrawer = dynamic(() => import("./CartDrawer"), { ssr: false });
 
 export default function CartButton() {
   const count = useAppSelector(selectCount);
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
