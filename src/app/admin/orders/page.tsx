@@ -9,12 +9,16 @@ import { cancelMyOrder, fetchAllOrdersForAdmin, updateOrderStatusByAdmin } from 
 import { OrderSummary, OrderStatus } from '@/features/orders/types';
 import { format } from 'date-fns';
 import { axiosInstance } from '@/utils/axiosInstance';
+import { FaSearch } from "react-icons/fa";
+import { searchOrders } from "@/features/orders/services";
+import { toast } from "react-hot-toast";
 
-/* 💵 Định dạng tiền tệ */
+
+/* Định dạng tiền tệ */
 const formatCurrency = (amount: number) =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
 
-/* 📊 Component thống kê */
+/* Component thống kê */
 const OrderStatCard: React.FC<{ icon: React.ElementType; title: string; value: string; color: string }> = ({
   icon: Icon,
   title,
@@ -36,6 +40,7 @@ export default function AdminOrderListPage() {
   const [orders, setOrders] = useState<OrderSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [search,setSearch] = useState('');
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -56,6 +61,19 @@ export default function AdminOrderListPage() {
     loadOrders();
   }, []);
 
+  // async function handleSearch(e?: React.FormEvent) {
+  //   if (e) e.preventDefault();
+  //   try {
+  //     setIsLoading(true);
+  //     const res = await searchOrders(search, 0, 10);
+  //     setOrders(res.content);
+  //   } catch (err: any) {
+  //     console.error(err);
+  //     toast.error("Search failed!");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }
 
   const handleUpdateStatus = async (id: number, newStatus: OrderStatus) => {
     if (!window.confirm(`Are you sure you want to mark order #${id} as "${newStatus}"?`)) return;
@@ -85,7 +103,7 @@ export default function AdminOrderListPage() {
   const tableData = orders.map(order => {
     const status = order.status as OrderStatus;
 
-    /* ✅ Quy tắc nút theo trạng thái */
+    /* Quy tắc nút theo trạng thái */
     const renderActionButtons = () => {
       switch (status) {
         case 'PENDING':
@@ -183,13 +201,31 @@ export default function AdminOrderListPage() {
         Order Management
       </h2>
 
-      {/* 📊 Thống kê */}
+      {/* Thống kê */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
         <OrderStatCard icon={DollarSign} title="Total Revenue" value={formatCurrency(totalRevenue)} color="#10b981" />
         <OrderStatCard icon={Truck} title="Completed Orders" value={completedCount.toString()} color="#0ea5e9" />
         <OrderStatCard icon={Clock} title="Pending Orders" value={pendingCount.toString()} color="#f59e0b" />
         <OrderStatCard icon={XCircle} title="Cancelled Orders" value={cancelledCount.toString()} color="#ef4444" />
       </div>
+
+      {/* <form 
+        onSubmit={handleSearch}
+        className="flex items-center pb-4"
+      >
+        <input
+          value={search}
+          onChange={(e)=>setSearch(e.target.value)}
+          className="border border-r-0 border-primary-400 p-1 rounded-l-xl focus:outline-none px-3 w-80"
+          placeholder="Search..."
+        />
+        <button
+          type='submit'
+          className="border border-l-0 border-primary-400 text-primary-400 p-2 rounded-r-xl hover:bg-primary-50"
+        >
+          <FaSearch />
+        </button>
+      </form> */}
 
       {/* Hiển thị bảng */}
       {isLoading ? (

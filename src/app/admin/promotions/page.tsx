@@ -57,11 +57,12 @@ export default function PromotionListPage() {
 
     try{
       const response = await axiosInstance.delete(
-        `http://localhost:8081/api/promotions/${promoId}`,{
-          headers:{
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        `http://localhost:8081/api/promotions/${promoId}`,
+        // {
+        //   headers:{
+        //     Authorization: `Bearer ${token}`,
+        //   },
+        // }
       );
       if (response.status === 200 || response.status === 204) {
         alert(" Promotion deleted successfully!");
@@ -95,7 +96,7 @@ export default function PromotionListPage() {
     await loadData(search.trim());
   };
 
-  const tableHeaders = ['Code', 'Description', 'Value', 'Timeframe', 'Status', 'Actions'];
+  const tableHeaders = ['Code', 'Description', 'Value', 'Timeframe', 'Status','Actions'];
 
   const tableData = promotions.map(promo => {
     const statusDisplay = getStatusDisplay(promo);
@@ -122,9 +123,19 @@ export default function PromotionListPage() {
         </div>,
         
         // STATUS
-        <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusDisplay.class}`}>
-            {statusDisplay.text}
-        </span>,
+        <div className="p-1">
+          <span
+            className={`rounded-lg font-semibold ${
+              promo.endDate && new Date(promo.endDate) < new Date()
+                ? "bg-red-100 text-red-600"
+                : "bg-green-100 text-green-600"
+            }`}
+          >
+            {promo.endDate && new Date(promo.endDate) < new Date()
+              ? "Ended"
+              : "Happening"}
+          </span>
+        </div>,
         
         // ACTIONS
         <div className="flex space-x-2">

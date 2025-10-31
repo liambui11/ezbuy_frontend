@@ -8,8 +8,9 @@ import { axiosInstance } from '@/utils/axiosInstance';
 
 export default function EditPromotion() {
   const router = useRouter();
-  const params = useParams(); // 👈 Lấy id từ URL
+  const params = useParams(); 
   const promotionId = params?.id;
+  const [errors,setErrors] = useState<Record<string,string>>({});
 
   const [promotion, setPromotion] = useState({
     code: "",
@@ -17,16 +18,46 @@ export default function EditPromotion() {
     discountValue: 0,
     startDate: "",
     endDate: "",
-    isActive: true,
+    // isActive: true,
   });
 
-  // ✅ Lấy dữ liệu khuyến mãi theo ID khi vào trang
+  function validate(){
+    const e: Record<string,string> = {};
+
+    if(!promotion.code.trim()){
+      e.code = "Promotion code can't be empty!"
+    }
+
+    if(!promotion.description.trim()){
+      e.description = "Description can't be empty!"
+    }
+
+    if (promotion.discountValue === null || promotion.discountValue === undefined) {
+      e.discountValue = "Discount value can't be empty!";
+    } else if (isNaN(Number(promotion.discountValue))) {
+      e.discountValue = "Discount value must be a number!";
+    } else if (Number(promotion.discountValue) <= 0) {
+      e.discountValue = "Discount value must be greater than 0!!";
+    }
+  
+    if (!promotion.startDate.trim()) {
+      e.startDate = "Start date can't be empty!";
+    }
+  
+    if (!promotion.endDate.trim()) {
+      e.endDate = "End date can't be empty!";
+    }
+
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  }
+
   useEffect(() => {
     if (!promotionId) return;
 
     const token = localStorage.getItem("accessToken");
-    axiosInstance.get(`http://localhost:8081/api/promotions/${promotionId}`, {
-      headers: { Authorization: `Bearer ${token}` },
+    axiosInstance.get(`http://localhost:8081/api/promotions/${promotionId}`, 
+      {headers: { Authorization: `Bearer ${token}` },
     })
     .then(res => {
       const data = res.data.data;
@@ -36,7 +67,7 @@ export default function EditPromotion() {
         discountValue: data.discountValue || 0,
         startDate: data.startDate?.slice(0, 16) || "",
         endDate: data.endDate?.slice(0, 16) || "",
-        isActive: data.isActive ?? true,
+        // isActive: data.isActive ?? true,
       });
     })
     .catch(err => {
@@ -60,6 +91,7 @@ export default function EditPromotion() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     const token = localStorage.getItem("accessToken");
 
     const payload = {
@@ -115,6 +147,11 @@ export default function EditPromotion() {
               placeholder="Input Code"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-400 focus:outline-none"
             />
+            {errors.code && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.code}
+            </p>
+            )}
           </div>
 
           <div>
@@ -126,6 +163,11 @@ export default function EditPromotion() {
               placeholder="Input Description"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-400 focus:outline-none"
             />
+            {errors.description && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.description}
+              </p>
+            )}
           </div>
 
           <div>
@@ -138,6 +180,11 @@ export default function EditPromotion() {
               type="number"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-400 focus:outline-none"
             />
+            {errors.discountValue && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.discountValue}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
@@ -150,6 +197,11 @@ export default function EditPromotion() {
                 onChange={handleChange}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-400 focus:outline-none"
               />
+              {errors.startDate && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.startDate}
+                </p>
+              )}
             </div>
 
             <div>
@@ -161,10 +213,15 @@ export default function EditPromotion() {
                 onChange={handleChange}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-400 focus:outline-none"
               />
+              {errors.endDate && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.endDate}
+                </p>
+              )}
             </div>
           </div>
 
-          <div className="flex items-center justify-between mb-6 pt-4">
+          {/* <div className="flex items-center justify-between mb-6 pt-4">
             <label className="font-medium text-gray-700">Active</label>
             <input
               type="checkbox"
@@ -173,11 +230,11 @@ export default function EditPromotion() {
               onChange={handleChange}
               className="w-5 h-5 text-primary-500 focus:ring-primary-400 border-gray-300 rounded"
             />
-          </div>
+          </div> */}
 
           <button
             type="submit"
-            className="w-full bg-primary-500 cursor-pointer font-semibold py-2 px-4 rounded-lg hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-400"
+            className="w-full bg-primary-500 mt-2 cursor-pointer font-semibold border border-primary py-2 px-4 rounded-lg hover:bg-primary-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-primary-400"
           >
             Save Changes
           </button>

@@ -8,6 +8,7 @@ import { axiosInstance } from '@/utils/axiosInstance';
 
 export default function AddPromotion() {
   const router = useRouter();
+  const [errors,setErrors] = useState<Record<string,string>>({});
 
   const [promotion, setPromotion] = useState({
     code: "",
@@ -15,8 +16,39 @@ export default function AddPromotion() {
     discountValue: 0,
     startDate: "",
     endDate: "",
-    active: false,
+    // active: false,
   });
+
+  function validate(){
+    const e: Record<string,string> = {};
+
+    if(!promotion.code.trim()){
+      e.code = "Promotion code can't be empty!"
+    }
+
+    if(!promotion.description.trim()){
+      e.description = "Description can't be empty!"
+    }
+
+    if (promotion.discountValue === null || promotion.discountValue === undefined) {
+      e.discountValue = "Discount value can't be empty!";
+    } else if (isNaN(Number(promotion.discountValue))) {
+      e.discountValue = "Discount value must be a number!";
+    } else if (Number(promotion.discountValue) <= 0) {
+      e.discountValue = "Discount value must be greater than 0!!";
+    }
+  
+    if (!promotion.startDate.trim()) {
+      e.startDate = "Start date can't be empty!";
+    }
+  
+    if (!promotion.endDate.trim()) {
+      e.endDate = "End date can't be empty!";
+    }
+
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -34,8 +66,12 @@ export default function AddPromotion() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const token = localStorage.getItem("accessToken");
 
+    if(!validate()){
+      return;
+    }
+
+    const token = localStorage.getItem("accessToken");
     const payload = {
       ...promotion,
       // chuẩn hóa ngày giờ: nếu backend yêu cầu ISO string thì dùng toISOString()
@@ -43,7 +79,7 @@ export default function AddPromotion() {
       endDate: promotion.endDate ? `${promotion.endDate}:00` : null,
     };
 
-    console.log("🚀 Payload gửi đi:", payload);
+    console.log("Payload gửi đi:", payload);
 
     try {
       const res = await axiosInstance.post("http://localhost:8081/api/promotions", payload, {
@@ -53,20 +89,20 @@ export default function AddPromotion() {
         },
       });
 
-      console.log("✅ Response:", res.data);
-      alert("✅ Promotion created successfully!");
+      console.log("Response:", res.data);
+      alert("Promotion created successfully!");
       router.push("/admin/promotions");
     } catch (error: any) {
       // Log chi tiết hơn để biết lỗi từ đâu
       if (axios.isAxiosError(error)) {
-        console.error("❌ Axios error:", {
+        console.error("Axios error:", {
           message: error.message,
           status: error.response?.status,
           data: error.response?.data,
           url: error.config?.url,
         });
       } else {
-        console.error("❌ Unknown error:", error);
+        console.error("Unknown error:", error);
       }
 
       alert("⚠️ Error creating promotion. Check console for details.");
@@ -100,6 +136,11 @@ export default function AddPromotion() {
               placeholder="Input Code"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-400 focus:outline-none"
             />
+            {errors.code && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.code}
+            </p>
+            )}
           </div>
 
           {/* Description */}
@@ -112,6 +153,11 @@ export default function AddPromotion() {
               placeholder="Input Description"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-400 focus:outline-none"
             />
+            {errors.description && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.description}
+              </p>
+            )}
           </div>
 
           {/* Discount */}
@@ -125,6 +171,11 @@ export default function AddPromotion() {
               placeholder="Input Discount Value"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-400 focus:outline-none"
             />
+            {errors.discountValue && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.discountValue}
+              </p>
+            )}
           </div>
 
           {/* Start - End Date */}
@@ -138,6 +189,11 @@ export default function AddPromotion() {
                 onChange={handleChange}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-400 focus:outline-none"
               />
+              {errors.startDate && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.startDate}
+                </p>
+              )}
             </div>
             <div>
               <label className="block font-medium text-gray-700 mb-2">End Date</label>
@@ -148,11 +204,16 @@ export default function AddPromotion() {
                 onChange={handleChange}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-400 focus:outline-none"
               />
+              {errors.endDate && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.endDate}
+                </p>
+              )}
             </div>
           </div>
 
           {/* Active */}
-          <div className="flex items-center justify-between mb-6 pt-4">
+          {/* <div className="flex items-center justify-between mb-6 pt-4">
             <label className="font-medium text-gray-700">Active</label>
             <input
               type="checkbox"
@@ -161,12 +222,12 @@ export default function AddPromotion() {
               onChange={handleChange}
               className="w-5 h-5 text-primary-500 focus:ring-primary-400 border-gray-300 rounded"
             />
-          </div>
+          </div> */}
 
           {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-primary-500 cursor-pointer font-semibold py-2 px-4 rounded-lg hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-400"
+            className="w-full bg-primary-500 cursor-pointer font-semibold border border-primary-400 py-2 px-4 rounded-lg hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-400 hover:bg-primary-400 hover:text-white"
           >
             Save Promotion
           </button>

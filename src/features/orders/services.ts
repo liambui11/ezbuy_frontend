@@ -1,6 +1,6 @@
 // src/features/orders/services.ts
 import axios from "axios";
-import { OrderSummary, OrderDetail, OrderStatus } from "./types";
+import { OrderSummary, OrderDetail, OrderStatus,PaginatedResponse } from "./types";
 import { axiosInstance } from "@/utils/axiosInstance";
 
 const API_BASE = "http://localhost:8081/api/orders";
@@ -144,3 +144,34 @@ export async function fetchAllOrdersForAdmin(
 
   return res.data.data;
 }
+
+/* ----------------------------------------------------------
+   🔍 7️⃣ (Admin) Tìm kiếm đơn hàng theo keyword
+---------------------------------------------------------- */
+export const searchOrders = async (
+  keyword: string = "",
+  page: number = 0,
+  size: number = 10,
+  status?: OrderStatus
+): Promise<PaginatedResponse<OrderSummary>> => {
+  // 🔧 Tạo params query
+  const params: any = { keyword, page, size };
+  if (status) params.status = status;
+
+  // 🔑 Lấy token (nếu có)
+  const token = localStorage.getItem("accessToken");
+
+  // 🧠 Gửi request
+  const response = await axiosInstance.get(`${API_BASE}`, {
+    params,
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    withCredentials: true,
+  });
+
+  // ✅ Trả về dữ liệu đúng định dạng PaginatedResponse
+  return response.data.data;
+};
+

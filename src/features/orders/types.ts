@@ -41,3 +41,12 @@ export interface OrderDetail {
   totalAmount: number;
   items: OrderItem[];
 }
+
+export interface PaginatedResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+}
+
