@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 
 export default function Hero() {
@@ -17,12 +18,12 @@ export default function Hero() {
             products, easy installment plans, and 12-month warranty included.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <a
-              href="#products"
+            <Link
+              href="/categories/1"
               className="px-6 py-3 rounded-2xl bg-primary text-white font-medium hover:bg-primary-700 transition"
             >
               Shop Now
-            </a>
+            </Link>
             <a
               href="#chat"
               className="px-6 py-3 rounded-2xl border border-primary text-primary font-medium hover:bg-primary-50 transition"

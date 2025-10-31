@@ -12,6 +12,8 @@ export function middleware(req: NextRequest) {
 
   const isAdminRoute = pathname.startsWith("/admin");
   const isAuthPage = pathname === "/login" || pathname === "/register";
+   const isCartRoute = pathname.startsWith("/cart");
+   const isCheckoutRoute = pathname.startsWith("/checkout");
 
   // Bỏ qua file tĩnh & API
   if (
@@ -26,7 +28,7 @@ export function middleware(req: NextRequest) {
 
   // 1) Chưa đăng nhập: chặn /admin/**
   if (!loggedIn || !role) {
-    if (isAdminRoute) {
+    if (isAdminRoute || isCartRoute || isCheckoutRoute) {
       const to = url.clone();
       to.pathname = "/login";
       to.searchParams.set(
