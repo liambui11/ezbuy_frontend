@@ -3,6 +3,7 @@
 
 import { ProductClient } from "@/features/products/types";
 import api from "@/lib/api/api";
+import { axiosInstance } from "@/utils/axiosInstance";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -15,20 +16,20 @@ const MANUFACTURERS = [
 
 export default function FeaturedProductsSection() {
   const [products, setProducts] = useState<ProductClient[]>([]);
-  const [selectedManufacturerId, setSelectedManufacturerId] = useState("2")
+  const [selectedManufacturerId, setSelectedManufacturerId] = useState("2");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true)
-        const res = await api.get(
-          `/api/products?manufacturerId=${selectedManufacturerId}&sortBy=id&sortDir=desc&page=0&size=4&keyword=`
+        setLoading(true);
+        const res = await axiosInstance.get(
+          `/products?manufacturerId=${selectedManufacturerId}&sortBy=id&sortDir=desc&page=0&size=4&keyword=`
         );
         setProducts(res.data.data.content);
       } catch {
-        setProducts([])
-      }finally {
+        setProducts([]);
+      } finally {
         setLoading(false);
       }
     };
@@ -37,18 +38,18 @@ export default function FeaturedProductsSection() {
   }, [selectedManufacturerId]);
 
   return (
-     <section className="w-full bg-gray-50 py-16 px-4 md:px-8">
+    <section className="w-full bg-gray-50 py-16 px-4 md:px-8">
       <div className="max-w-6xl mx-auto text-center">
         {/* Tiêu đề */}
         <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-3">
           Featured Products
         </h2>
         <p className="text-gray-600 text-sm md:text-base mb-8">
-          Explore some of our best-selling and most innovative products.
+          Explore some of our latest and most innovative products.
         </p>
 
         {/* Bộ lọc theo nhãn hàng */}
-         <div className="flex flex-wrap justify-center gap-3 mb-10">
+        <div className="flex flex-wrap justify-center gap-3 mb-10">
           {MANUFACTURERS.map((m) => (
             <button
               key={m.id}

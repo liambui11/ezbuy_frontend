@@ -9,7 +9,7 @@ import {
   createSelector,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
-import { Product } from "@/features/products/types";
+import { ProductClient } from "@/features/products/types";
 import { Cart } from "@/features/carts/types";
 import api from "@/lib/api/api";
 
@@ -46,7 +46,7 @@ export const fetchCartWithTotal = createAsyncThunk<CartPayload>(
 // 1) Thêm sản phẩm (hoặc cộng dồn) theo payload Product & qty
 export const addToCartServer = createAsyncThunk<
   void,
-  { product: Product; qty?: number },
+  { product: ProductClient; qty?: number },
   { state: RootLike }
 >(
   "cart/addToCartServer",
@@ -185,7 +185,7 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addItem: (state, action: PayloadAction<Product & { qty?: number }>) => {
+    addItem: (state, action: PayloadAction<ProductClient & { qty?: number }>) => {
       const { id, name, imageUrl, price, qty = 1 } = action.payload;
       const key = String(id);
       const existing = state.items[key];

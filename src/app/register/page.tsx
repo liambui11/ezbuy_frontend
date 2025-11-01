@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { CheckCircle } from "lucide-react";
+import { notify } from "@/lib/notification/notistack";
 
 type ApiRegisterResponse = {
   status: number;
@@ -92,11 +93,12 @@ export default function RegisterPage() {
       );
       window.dispatchEvent(new Event("auth:changed"));
       // setShowSuccess(true);
-
+      notify(`Registration Successful!`, {variant: "success"})
       router.replace("/");
     } catch (err) {
       console.error(err);
       setError("Something went wrong. Please try again.");
+      notify(`Something went wrong. Please try again.`, {variant: "error"})
     } finally {
       setLoading(false);
     }

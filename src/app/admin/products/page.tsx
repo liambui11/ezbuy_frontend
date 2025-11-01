@@ -25,6 +25,7 @@ import { useCategoriesTree } from "@/components/admin/categories/useCategoriesTr
 import ReactPaginate from "react-paginate";
 import { notify } from "@/lib/notification/notistack";
 import { confirmProductAction } from "@/components/admin/products/confirmProductAction";
+import { axiosInstance } from "@/utils/axiosInstance";
 
 /* ============================= Page ============================= */
 export default function ProductManagerPage() {
@@ -59,11 +60,11 @@ export default function ProductManagerPage() {
         setError(null);
 
         const [resProducts, resManufacturers] = await Promise.all([
-          api.get(
-            `/api/products?categoryId=${selectedCatId}&manufacturerId=${selectedManuId}&page=${page}&size=${pageSize}&keyword=${appliedQuery}`
+          axiosInstance.get(
+            `/products?categoryId=${selectedCatId}&manufacturerId=${selectedManuId}&page=${page}&size=${pageSize}&keyword=${appliedQuery}`
           ),
           // api.get("/api/categories"),
-          api.get("/api/manufacturers"),
+          axiosInstance.get("/manufacturers"),
         ]);
         const content = resProducts.data?.data?.content ?? [];
         const total = resProducts.data?.data?.totalPages ?? 1;
@@ -97,7 +98,7 @@ export default function ProductManagerPage() {
     try {
       const confirmed = await confirmProductAction("delete");
       if (!confirmed) return;
-      await api.delete(`/api/products/${id}`);
+      await axiosInstance.delete(`/products/${id}`);
       window.location.reload();
       notify("Delete succesfully", { variant: "success" });
     } catch {
@@ -337,13 +338,13 @@ export default function ProductManagerPage() {
               if (editing) {
                 const confirmed = await confirmProductAction("edit");
                 if (!confirmed) return;
-                await api.put(`/api/products/${editing.id}`, fd);
+                await axiosInstance.put(`/products/${editing.id}`, fd);
                 window.location.reload();
                 notify("Edit succesfully", { variant: "success" });
               } else {
                 const confirmed = await confirmProductAction("add");
                 if (!confirmed) return;
-                await api.post(`/api/products`, fd);
+                await axiosInstance.post(`/products`, fd);
                 window.location.reload();
                 notify("Add new product succesfully", { variant: "success" });
               }

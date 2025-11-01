@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import api from "@/lib/api/api";
 import type { CategoryNode } from "@/features/categories/types";
+import { axiosInstance } from "@/utils/axiosInstance";
 // import { flattenCategories } from "@/features/categories/utils"; // hoặc copy hàm flatten ở trên
 
 export interface CategoryOption {
@@ -40,8 +41,8 @@ export function useCategoriesTree() {
         setLoading(true);
         setError(null);
 
-        const res = await api.get<{ status: number; message: string; data: CategoryNode[] }>(
-          "/api/categories/tree"
+        const res = await axiosInstance.get<{ status: number; message: string; data: CategoryNode[] }>(
+          "/categories/tree"
         );
 
         const tree = res.data.data;

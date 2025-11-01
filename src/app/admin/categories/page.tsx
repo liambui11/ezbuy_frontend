@@ -22,6 +22,7 @@ import Image from "next/image";
 import { confirmCategoryAction } from "@/components/admin/categories/confirmCategoryAction";
 import { notify } from "@/lib/notification/notistack";
 import ReactPaginate from "react-paginate";
+import { axiosInstance } from "@/utils/axiosInstance";
 
 export default function CategoryManagerPage() {
   const [data, setData] = useState<Category[]>([]);
@@ -51,8 +52,8 @@ export default function CategoryManagerPage() {
         setLoading(true);
         setError(null);
 
-        const res = await api.get(
-          `/api/categories?page=${page}&size=${pageSize}&keyword=${appliedQuery}`
+        const res = await axiosInstance.get(
+          `/categories?page=${page}&size=${pageSize}&keyword=${appliedQuery}`
         );
 
         const content = res.data?.data?.content ?? [];
@@ -91,7 +92,7 @@ export default function CategoryManagerPage() {
         }
 
         try {
-          const res = await api.get(`/api/categories/${id}`);
+          const res = await axiosInstance.get(`/categories/${id}`);
           updatedCache[id!] = res.data?.data?.name ?? "—";
         } catch {
           updatedCache[id!] = "—";
@@ -108,7 +109,7 @@ export default function CategoryManagerPage() {
     try {
       const confirmed = await confirmCategoryAction("delete");
       if (!confirmed) return;
-      await api.delete(`/api/categories/${id}`);
+      await axiosInstance.delete(`/categories/${id}`);
       window.location.reload();
       notify("Delete succesfully", { variant: "success" });
     } catch {
@@ -303,13 +304,13 @@ export default function CategoryManagerPage() {
               if (editing) {
                 const confirmed = await confirmCategoryAction("edit");
                 if (!confirmed) return;
-                await api.put(`/api/categories/${editing.id}`, fd);
+                await axiosInstance.put(`/categories/${editing.id}`, fd);
                 window.location.reload();
                 notify("Edit succesfully", { variant: "success" });
               } else {
                 const confirmed = await confirmCategoryAction("add");
                 if (!confirmed) return;
-                await api.post(`/api/categories`, fd);
+                await axiosInstance.post(`/categories`, fd);
                 window.location.reload();
                 notify("Add new category succesfully", { variant: "success" });
               }
