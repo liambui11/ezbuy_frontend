@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useCallback, useRef, useState, forwardRef, useEffect } from "react";
+import React, {
+  useCallback,
+  useRef,
+  useState,
+  forwardRef,
+  useEffect,
+} from "react";
 import Image from "next/image";
 import { IoClose } from "react-icons/io5";
 import { FaImage } from "react-icons/fa6";
@@ -22,6 +28,7 @@ type BotResultsMsg = {
   role: "bot";
   type: "results";
   products: ProductClient[];
+  predictedCategoryName?: string;
 };
 type BotTypingMsg = { id: string; role: "bot"; type: "typing" };
 type ChatMsg = BotTextMsg | UserImageMsg | BotResultsMsg | BotTypingMsg;
@@ -43,16 +50,16 @@ export default function Chatbot() {
   const [errorMsg, setErrorMsg] = useState<string>("");
 
   const [user, setUser] = useState<User | null>(null);
-  
-    useEffect(() => {
-      const load = () => {
-        const u = localStorage.getItem("user");
-        setUser(u ? JSON.parse(u) : null);
-      };
-      load();
-      window.addEventListener("auth:changed", load);
-      return () => window.removeEventListener("auth:changed", load);
-    }, []);
+
+  useEffect(() => {
+    const load = () => {
+      const u = localStorage.getItem("user");
+      setUser(u ? JSON.parse(u) : null);
+    };
+    load();
+    window.addEventListener("auth:changed", load);
+    return () => window.removeEventListener("auth:changed", load);
+  }, []);
 
   const [messages, setMessages] = useState<ChatMsg[]>(() => [
     {
@@ -157,6 +164,7 @@ export default function Chatbot() {
       });
 
       const products = res.data.data.products;
+      const predicted = res.data.data.predictedCategoryName;
       // setResults(products);
       setState("done");
 
@@ -169,6 +177,7 @@ export default function Chatbot() {
             role: "bot",
             type: "results",
             products: products,
+            predictedCategoryName: predicted,
           },
         ];
       });
@@ -193,7 +202,7 @@ export default function Chatbot() {
     }
   };
 
-if (user && user.role === "ADMIN") return null;
+  if (user && user.role === "ADMIN") return null;
 
   return (
     <div className="fixed bottom-8 right-5 z-50">
@@ -384,7 +393,10 @@ function ChatBubble({ msg }: { msg: ChatMsg }) {
         <Avatar />
         <div className="bg-white border rounded-2xl px-3 py-2 shadow-sm max-w-full">
           <div className="text-sm text-gray-800 mb-1">
-            Here are my suggestions:
+            Here are my suggestions
+            {msg.predictedCategoryName
+              ? ` in ${msg.predictedCategoryName}:`
+              : ":"}
           </div>
           <div className="w-[18rem] sm:w-[26rem]">
             <HScroll step={300}>

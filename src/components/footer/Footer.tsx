@@ -45,14 +45,16 @@ export default function Footer() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const [resCategories, resManufacturers] = await Promise.all([
-        axiosInstance.get(`/categories`),
-        // api.get("/api/categories"),
-        axiosInstance.get("/manufacturers"),
-      ]);
+      try {
+        const [resCategories, resManufacturers] = await Promise.all([
+          axiosInstance.get(`/categories`),
+          // api.get("/api/categories"),
+          axiosInstance.get("/manufacturers"),
+        ]);
 
-      setCategories(resCategories.data.data.content);
-      setManufacturers(resManufacturers.data.data);
+        setCategories(resCategories.data.data.content);
+        setManufacturers(resManufacturers.data.data);
+      } catch {}
     };
 
     fetchData();
