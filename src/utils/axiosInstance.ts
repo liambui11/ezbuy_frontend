@@ -27,8 +27,25 @@ const isTokenExpired = (token: string) => {
 };
 
 // 🔁 Gọi API refresh token
-const refreshAccessToken = async (): Promise<string | null> => {
+export const refreshAccessToken = async (): Promise<string | null> => {
   try {
+    if (typeof window !== "undefined") {
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken && !Cookies.get("accessToken")) {
+        return null;
+      }
+    }
+
+    // if (typeof window !== "undefined") {
+    //   localStorage.setItem("user", JSON.stringify({}));
+    //   window.dispatchEvent(new Event("auth:changed"));
+    // }
+
+    // const refreshToken = Cookies.get("refreshToken");
+    // if (!refreshToken) {
+    //   return null;
+    // }
+
     const res = await axios.post(
       `${API_URL}/auth/refresh-token`,
       {},
@@ -36,13 +53,11 @@ const refreshAccessToken = async (): Promise<string | null> => {
     );
 
     console.log("Test Token",res)
+    console.log("🔍 accessToken hiện có:", Cookies.get("accessToken"));
+    console.log("🔍 refresh_token hiện có:", Cookies.get("refresh_token"));
+
 
     const newAccessToken = res.data?.data?.accessToken || res.data?.accessToken;
-
-    Cookies.remove("accessToken");
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("accessToken");
-    }
 
     if (newAccessToken) {
       Cookies.set("accessToken", newAccessToken, {
@@ -52,6 +67,17 @@ const refreshAccessToken = async (): Promise<string | null> => {
 
       if (typeof window !== "undefined") {
         localStorage.setItem("accessToken", newAccessToken);
+  
+        if (res?.data.data.fullName) {
+          localStorage.setItem(
+            "user",
+            JSON.stringify({
+              fullName: res.data.data.fullName,
+              imageUrl: res.data.data.imageUrl || null,
+              role: res.data.data.role,
+            })
+          );
+        }
       }
     }
 
@@ -163,4 +189,3 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-

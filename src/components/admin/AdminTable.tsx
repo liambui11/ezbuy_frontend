@@ -40,7 +40,7 @@ export const AdminTable: React.FC<AdminTableProps> = ({ headers, data }) => {
         </table>
         {data.length === 0 && (
           <div className="p-6 text-center text-[--color-secondary] bg-[--color-card]">
-            Không có dữ liệu để hiển thị.
+            Not Found.
           </div>
         )}
       </div>

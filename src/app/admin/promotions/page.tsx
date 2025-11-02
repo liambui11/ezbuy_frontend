@@ -105,10 +105,10 @@ export default function PromotionListPage() {
         <span className="font-mono text-primary font-extrabold">{promo.code || 'Auto'}</span>,
         
         // DESCRIPTION: Chữ bình thường nhưng hơi đậm
-        <span className="text-foreground">{promo.description}</span>,
+        <span className="text-foreground break-words whitespace-normal max-w-[300px]">{promo.description}</span>,
         
         // VALUE: Màu Success (Xanh lục) và đậm
-        <span className="font-bold text-[--color-success]">{formatDiscount(promo.discountValue)}</span>,
+        <span className="font-bold text-success">{promo.discountValue}%</span>,
         
         // TIMEFRAME
         <div className="flex flex-col text-sm space-y-1">

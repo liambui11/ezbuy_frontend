@@ -8,6 +8,8 @@ import { FcGoogle } from "react-icons/fc";
 import { useAppDispatch } from "@/lib/redux/hook";
 import { fetchCartWithTotal } from "@/lib/redux/slices/cartSlice";
 import { notify } from "@/lib/notification/notistack";
+import Cookies from "js-cookie";
+
 
 type ApiLoginResponse = {
   status: number;
@@ -60,7 +62,14 @@ export default function LoginPage() {
         return;
       }
 
-      localStorage.setItem("accessToken", data.data?.accessToken);
+      if (data.data?.accessToken) {
+        Cookies.set("accessToken", data.data.accessToken, {
+          expires: 0.02, // 30 phút
+          path: "/",
+        });
+        localStorage.setItem("accessToken", data.data.accessToken);
+      }
+      // localStorage.setItem("accessToken", data.data?.accessToken);
       localStorage.setItem(
         "user",
         JSON.stringify({

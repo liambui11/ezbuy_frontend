@@ -170,12 +170,13 @@ export default function AdminOrderListPage() {
     
     return [
     <span key="id" className="font-mono font-semibold">{order.id}</span>,
-    <span key="amount" className="font-bold text-success">{formatCurrency(order.totalAmount)}</span>,
+    
     // <span key="amount" className="font-bold text-ring">{order.receiverName}</span>,
     <div className="flex flex-col">
       <span className="font-medium text-ring">{order.receiverName}</span>
       <span className="text-xs text-secondary">{order.userEmail}</span>
     </div>,
+    <span key="amount" className="font-bold text-success">{formatCurrency(order.totalAmount)}</span>,
     <span key="date" className="text-gray-800">{format(new Date(order.orderDate), 'MM/dd/yyyy HH:mm')}</span>,
     <span key="payment" className="text-sm text-gray-700">Cash on Delivery</span>,
     <StatusBadge key="status" status={order.status as OrderStatus} />,

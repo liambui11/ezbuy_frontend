@@ -14,21 +14,48 @@ export const fetchUsers = async () =>{
 
 
 
-export const fetchUpdateUsers = async (profile: Profile, file?: File): Promise<Profile> => {
-    const formData = new FormData();
+// export const fetchUpdateUsers = async (profile: Profile, file?: File): Promise<Profile> => {
+//     const formData = new FormData();
   
-    // 🧩 gửi JSON profile đúng key mà backend chờ
-    formData.append("profile", new Blob([JSON.stringify(profile)], { type: "application/json" }));
+//     // 🧩 gửi JSON profile đúng key mà backend chờ
+//     formData.append("profile", new Blob([JSON.stringify(profile)], { type: "application/json" }));
   
-    // 🖼️ nếu có ảnh thì gửi đúng key 'file'
-    if (file) formData.append("file", file);
+//     // 🖼️ nếu có ảnh thì gửi đúng key 'file'
+//     if (file) formData.append("file", file);
   
-    const res = await axiosInstance.put(`${API_BASE}/me`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+//     const res = await axiosInstance.put(`${API_BASE}/me`, formData, {
+//       headers: { "Content-Type": "multipart/form-data" },
+//     });
   
-    return res.data.data;
-  };
+//     return res.data.data;
+//   };
+
+export async function fetchUpdateUsers(profile: Profile, file?: File) {
+  const formData = new FormData();
+
+  // append object JSON vào form-data
+  formData.append(
+    "profile",
+    new Blob([JSON.stringify({
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      phone: profile.phone,
+      address: profile.address,
+    })], { type: "application/json" })
+  );
+
+  if (file) {
+    formData.append("file", file);
+  }
+
+  const res = await axiosInstance.put(`${API_BASE}/me`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return res.data.data;
+}
 
 // 🔒 Đổi mật khẩu
 // export interface ChangePasswordRequest {

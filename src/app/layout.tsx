@@ -7,7 +7,9 @@ import AppProviders from "./providers";
 import CartDrawerOverlay from "@/components/common/CartDrawerOverlay";
 import GlobalRouteGuard from "@/lib/guards/GlobalRouteGuard";
 import Footer from "@/components/footer/Footer";
-
+import AutoRefreshProvider from "@/components/common/AutoRefreshProvider";
+import SyncToken from "@/components/common/SyncToken";
+import Cookies from "js-cookie";
 
 export const metadata: Metadata = {
   title: "EZBuy",
@@ -17,17 +19,21 @@ export const metadata: Metadata = {
   },
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // const accessToken = Cookies.get("accessToken") || (typeof window !== "undefined" && localStorage.getItem("accessToken"));
   return (
     <html lang="en">
       <body className="bg-white">
         <AppProviders>
           {/* <GlobalRouteGuard /> */}
           <Navbar />
+          <SyncToken />
+          <AutoRefreshProvider />
           {children}
           <Chatbox />
           <CartDrawerOverlay />

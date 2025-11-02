@@ -32,6 +32,17 @@ export default function UserButton() {
     }
   }, []);
 
+  useEffect(() => {
+      const handleAuthChange = () => {
+        const storedUser = localStorage.getItem("user");
+        setUser(storedUser ? JSON.parse(storedUser) : null);
+      };
+    
+      window.addEventListener("auth:changed", handleAuthChange);
+      handleAuthChange(); // Gọi 1 lần ban đầu
+      return () => window.removeEventListener("auth:changed", handleAuthChange);
+    }, []);
+
   // Lắng nghe thay đổi auth và popstate để reload user (nếu bạn cần)
   useEffect(() => {
     const load = () => {

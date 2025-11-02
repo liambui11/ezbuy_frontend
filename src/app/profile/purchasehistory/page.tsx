@@ -56,19 +56,19 @@ export default function PurchaseHistoryPage() {
   return (
     <div className="max-w-4xl mx-auto bg-card border border-border shadow-lg rounded-2xl p-8 mt-8">
       <h1 className="text-2xl font-bold text-primary mb-6">
-        Lịch sử mua hàng
+        Purchase History
       </h1>
 
       {isLoading ? (
         <div className="flex justify-center items-center h-48">
           <Loader2 className="w-6 h-6 animate-spin text-primary mr-2" />
-          <span className="text-secondary-600">Đang tải lịch sử mua hàng...</span>
+          <span className="text-secondary-600">Loading...</span>
         </div>
       ) : error ? (
         <div className="text-center text-red-500 font-medium">{error}</div>
       ) : orders.length === 0 ? (
         <div className="text-center text-muted-foreground font-medium">
-          Bạn chưa có đơn hàng nào hoàn thành.
+          Not Found.
         </div>
       ) : (
         <ClientPurchaseHistoryTable orders={orders} onCancel={handleCancel} />

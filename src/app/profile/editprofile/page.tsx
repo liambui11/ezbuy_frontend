@@ -91,34 +91,35 @@ export default function EditProfilePage() {
 
   return (
     <div className="max-w-2xl mx-auto bg-card border border-border shadow-lg rounded-2xl p-8 mt-8">
-      <h1 className="text-2xl font-semibold text-primary mb-6 text-center">
+      <h1 className="text-2xl font-medium text-primary mb-6 text-center">
         Edit Profile
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-5">
-        {/* <div className="flex justify-center items-center">
-          <Image 
-            src={form?.userAvatar || "/images/profile/default-avatar.jpg"}
-            alt="avatar"
-            width={100}
-            height={100}
-            className="rounded-full border-2 border-primary"
-          />
-          
-          <label
-            htmlFor="avatar"
-            className="block mt-3 cursor-pointer text-primary hover:underline"
-          >
-            Change Avatar
-          </label>
-          <input
-            id="avatar"
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleFileChange}
-          />
-        </div> */}
+      <div className="flex flex-col items-center">
+        <Image
+          src={file ? URL.createObjectURL(file) : form.userAvatar || "/images/profile/default-avatar.jpg"}
+          alt="avatar"
+          width={100}
+          height={100}
+          className="rounded-full border-2 border-primary mb-2"
+        />
+        
+        <label
+          htmlFor="avatar"
+          className="cursor-pointer rounded text-white text-underline font-medium bg-primary-400 p-2 hover:bg-primary-200"
+        >
+          Change Avatar
+        </label>
+        <input
+          id="avatar"
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleFileChange}
+        />
+      </div>
+
 
         <div>
           <label className="block text-sm font-medium text-secondary mb-1">First Name</label>
