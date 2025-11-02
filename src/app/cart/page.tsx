@@ -186,10 +186,10 @@ function CartPage() {
               <span>Shipping</span>
               <span>Free</span>
             </div>
-            <div className="flex justify-between">
+            {/* <div className="flex justify-between">
               <span>Discount</span>
               <span className="text-gray-500">—</span>
-            </div>
+            </div> */}
             <div className="my-2 h-px bg-gray-100" />
             <div className="flex justify-between text-base font-semibold text-danger">
               <span>Total</span>

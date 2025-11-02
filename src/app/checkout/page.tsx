@@ -12,6 +12,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { fetchCartWithTotal } from "@/lib/redux/slices/cartSlice";
 import Swal from "sweetalert2";
+import { axiosInstance } from "@/utils/axiosInstance";
 
 // ---- Types ---------------------------------------------------------------
 
@@ -114,7 +115,7 @@ export default function CheckoutPage() {
     setPlacing(true);
 
     try {
-      await api.post(`${process.env.NEXT_PUBLIC_API_URL}/api/orders`, {
+      await axiosInstance.post(`/orders`, {
         receiverName: form.receiverName,
         shippingAddress: form.shippingAddress,
         phone: form.phone,

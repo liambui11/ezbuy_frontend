@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import api from "@/lib/api/api";
 import { CategoryRef } from "@/features/categories/types";
 import { Manufacturer } from "@/features/manufacturers/types";
+import { axiosInstance } from "@/utils/axiosInstance";
 
 type User = {
   fullName: string;
@@ -45,9 +46,9 @@ export default function Footer() {
   useEffect(() => {
     const fetchData = async () => {
       const [resCategories, resManufacturers] = await Promise.all([
-        api.get(`/api/categories`),
+        axiosInstance.get(`/categories`),
         // api.get("/api/categories"),
-        api.get("/api/manufacturers"),
+        axiosInstance.get("/manufacturers"),
       ]);
 
       setCategories(resCategories.data.data.content);

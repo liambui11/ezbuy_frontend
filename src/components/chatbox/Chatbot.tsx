@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useRef, useState, forwardRef } from "react";
+import React, { useCallback, useRef, useState, forwardRef, useEffect } from "react";
 import Image from "next/image";
 import { IoClose } from "react-icons/io5";
 import { FaImage } from "react-icons/fa6";
@@ -8,6 +8,7 @@ import ProductCard from "@/components/product/ProductCard";
 import { ProductClient } from "@/features/products/types";
 import HScroll from "@/components/common/HScroll";
 import api from "@/lib/api/api";
+import { axiosInstance } from "@/utils/axiosInstance";
 
 type BotTextMsg = { id: string; role: "bot"; type: "text"; text: string };
 type UserImageMsg = {
@@ -27,6 +28,12 @@ type ChatMsg = BotTextMsg | UserImageMsg | BotResultsMsg | BotTypingMsg;
 
 type SearchState = "idle" | "preview" | "loading" | "done" | "error";
 
+type User = {
+  fullName: string;
+  imageUrl: string | null;
+  role: string;
+  email: string;
+};
 /* ===================== Main Chatbot ===================== */
 
 export default function Chatbot() {
@@ -35,6 +42,18 @@ export default function Chatbot() {
   const [state, setState] = useState<SearchState>("idle");
   const [errorMsg, setErrorMsg] = useState<string>("");
 
+  const [user, setUser] = useState<User | null>(null);
+  
+    useEffect(() => {
+      const load = () => {
+        const u = localStorage.getItem("user");
+        setUser(u ? JSON.parse(u) : null);
+      };
+      load();
+      window.addEventListener("auth:changed", load);
+      return () => window.removeEventListener("auth:changed", load);
+    }, []);
+
   const [messages, setMessages] = useState<ChatMsg[]>(() => [
     {
       id: crypto.randomUUID(),
@@ -42,7 +61,7 @@ export default function Chatbot() {
       type: "text",
       text:
         "Hi! I’m the EZBuy Visual Assistant 👋\n" +
-        "Upload a phone image and I’ll suggest the 3 most similar products.",
+        "Upload a product image and I’ll suggest the most similar products.",
     },
   ]);
 
@@ -62,7 +81,7 @@ export default function Chatbot() {
         type: "text",
         text:
           "Hi! I’m the EZBuy Visual Assistant 👋\n" +
-          "Upload a phone image and I’ll suggest the 3 most similar products.",
+          "Upload a product image and I’ll suggest the most similar products.",
       },
     ]);
   }, []);
@@ -131,7 +150,7 @@ export default function Chatbot() {
       ]);
       scrollToBottom();
 
-      const res = await api.post("/api/search/by-image", formData, {
+      const res = await axiosInstance.post("/search/by-image", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -173,6 +192,8 @@ export default function Chatbot() {
       scrollToBottom();
     }
   };
+
+if (user && user.role === "ADMIN") return null;
 
   return (
     <div className="fixed bottom-8 right-5 z-50">
@@ -279,7 +300,7 @@ const UploadBubble = forwardRef<HTMLInputElement, UploadBubbleProps>(
       <div className="max-w-[80%]">
         <div className="bg-white border rounded-2xl px-3 py-2 shadow-sm">
           <p className="text-sm text-gray-800">
-            Drop a phone image here and I’ll find similar products for you 📸
+            Drop a product image here and I’ll find similar products for you 📸
           </p>
           <div
             onDrop={onDrop}
