@@ -61,7 +61,7 @@ export default function Chatbot() {
       type: "text",
       text:
         "Hi! I’m the EZBuy Visual Assistant 👋\n" +
-        "Upload a phone image and I’ll suggest the 3 most similar products.",
+        "Upload a product image and I’ll suggest the most similar products.",
     },
   ]);
 
@@ -81,7 +81,7 @@ export default function Chatbot() {
         type: "text",
         text:
           "Hi! I’m the EZBuy Visual Assistant 👋\n" +
-          "Upload a phone image and I’ll suggest the 3 most similar products.",
+          "Upload a product image and I’ll suggest the most similar products.",
       },
     ]);
   }, []);
@@ -300,7 +300,7 @@ const UploadBubble = forwardRef<HTMLInputElement, UploadBubbleProps>(
       <div className="max-w-[80%]">
         <div className="bg-white border rounded-2xl px-3 py-2 shadow-sm">
           <p className="text-sm text-gray-800">
-            Drop a phone image here and I’ll find similar products for you 📸
+            Drop a product image here and I’ll find similar products for you 📸
           </p>
           <div
             onDrop={onDrop}
