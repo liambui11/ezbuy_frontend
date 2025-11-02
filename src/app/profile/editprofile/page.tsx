@@ -4,6 +4,8 @@ import { Profile } from "@/features/profile/types";
 import { useEffect, useState } from "react";
 import { fetchUpdateUsers,fetchUsers } from "@/features/profile/services";
 import Image from "next/image";
+import Swal from "sweetalert2";
+
 
 export default function EditProfilePage() {
   const [form, setForm] = useState<Profile>({
@@ -80,10 +82,20 @@ export default function EditProfilePage() {
       try {
         const updated = await fetchUpdateUsers(form, file || undefined);
         setForm(updated);
-        alert("Profile updated successfully!");
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Profile updated successfully!",
+          timer: 2000,
+          showConfirmButton: false,
+        });
       } catch (error) {
         console.error("Error updating profile:", error);
-        alert("Error updating profile!");
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Error updating profile!",
+        });
       } finally {
         setLoading(false);
       }

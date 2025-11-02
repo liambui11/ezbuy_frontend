@@ -111,39 +111,22 @@ export async function updateOrderStatusByAdmin(
 /* ----------------------------------------------------------
    📋 6️⃣ (Admin) Lấy tất cả đơn hàng
 ---------------------------------------------------------- */
-export async function fetchAllOrdersForAdmin(
-  page: number = 0,
-  size: number = 10,
-  sortBy: string = "orderDate",
-  sortDir: string = "desc",
-  status?: OrderStatus
-): Promise<{
-  content: OrderSummary[];
-  pageNumber: number;
-  totalPages: number;
-  totalElements: number;
-  last: boolean;
-}> {
-  const params = new URLSearchParams({
-    page: String(page),
-    size: String(size),
-    sortBy,
-    sortDir,
-  });
-  if (status) params.append("status", status);
-
+export async function fetchAllOrdersForAdmin(params: URLSearchParams) {
   const token = localStorage.getItem("accessToken");
 
-  const res = await axiosInstance.get(`${API_BASE}/admin?${params.toString()}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    withCredentials: true,
-  });
+  const res = await axiosInstance.get(
+    `${API_BASE}/admin?${params.toString()}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    }
+  );
 
   return res.data.data;
 }
+
 
 /* ----------------------------------------------------------
    🔍 7️⃣ (Admin) Tìm kiếm đơn hàng theo keyword

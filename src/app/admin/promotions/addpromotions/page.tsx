@@ -5,6 +5,10 @@ import axios from 'axios';
 import { IoMdExit } from "react-icons/io";
 import { useRouter } from "next/navigation";
 import { axiosInstance } from '@/utils/axiosInstance';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+const MySwal = withReactContent(Swal);
 
 export default function AddPromotion() {
   const router = useRouter();
@@ -90,7 +94,12 @@ export default function AddPromotion() {
       });
 
       console.log("Response:", res.data);
-      alert("Promotion created successfully!");
+      await MySwal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Promotion created successfully!',
+        confirmButtonColor: '#3085d6',
+      });
       router.push("/admin/promotions");
     } catch (error: any) {
       // Log chi tiết hơn để biết lỗi từ đâu
@@ -105,7 +114,12 @@ export default function AddPromotion() {
         console.error("Unknown error:", error);
       }
 
-      alert("⚠️ Error creating promotion. Check console for details.");
+      await MySwal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: '⚠️ Error creating promotion. Check console for details.',
+        confirmButtonColor: '#d33',
+      });
     }
   };
 

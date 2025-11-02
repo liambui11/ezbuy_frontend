@@ -2,9 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import { IoMdExit } from "react-icons/io";
 import { useRouter, useParams } from "next/navigation";
 import { axiosInstance } from '@/utils/axiosInstance';
+
+const MySwal = withReactContent(Swal);
 
 export default function EditPromotion() {
   const router = useRouter();
@@ -18,7 +22,6 @@ export default function EditPromotion() {
     discountValue: 0,
     startDate: "",
     endDate: "",
-    // isActive: true,
   });
 
   function validate(){
@@ -67,12 +70,15 @@ export default function EditPromotion() {
         discountValue: data.discountValue || 0,
         startDate: data.startDate?.slice(0, 16) || "",
         endDate: data.endDate?.slice(0, 16) || "",
-        // isActive: data.isActive ?? true,
       });
     })
     .catch(err => {
       console.error("Error fetching promotion:", err.response?.data || err.message);
-      alert("Failed to load promotion data");
+      MySwal.fire({
+        icon: 'error',
+        title: 'Failed to load promotion data',
+        text: err.response?.data?.message || err.message,
+      });
     });
   }, [promotionId]);
 
@@ -113,11 +119,20 @@ export default function EditPromotion() {
       );
 
       console.log("Response:", res.data);
-      alert("Promotion updated successfully!");
+      await MySwal.fire({
+        icon: 'success',
+        title: 'Promotion updated successfully!',
+        timer: 1500,
+        showConfirmButton: false,
+      });
       router.push("/admin/promotions");
     } catch (error: any) {
       console.error("Error updating promotion:", error.response?.data || error.message);
-      alert("Error updating promotion");
+      MySwal.fire({
+        icon: 'error',
+        title: 'Error updating promotion',
+        text: error.response?.data?.message || error.message,
+      });
     }
   };
 
@@ -220,17 +235,6 @@ export default function EditPromotion() {
               )}
             </div>
           </div>
-
-          {/* <div className="flex items-center justify-between mb-6 pt-4">
-            <label className="font-medium text-gray-700">Active</label>
-            <input
-              type="checkbox"
-              name="isActive"
-              checked={promotion.isActive}
-              onChange={handleChange}
-              className="w-5 h-5 text-primary-500 focus:ring-primary-400 border-gray-300 rounded"
-            />
-          </div> */}
 
           <button
             type="submit"

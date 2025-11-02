@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { axiosInstance } from "@/utils/axiosInstance";
+import Swal from "sweetalert2";
 
 export default function ChangePasswordPage() {
   const [form, setForm] = useState({
@@ -21,7 +22,11 @@ export default function ChangePasswordPage() {
     e.preventDefault();
 
     if (form.newPassword !== form.confirmPassword) {
-      alert("New passwords do not match!");
+      Swal.fire({
+        icon: "warning",
+        title: "Oops!",
+        text: "New passwords do not match!",
+      });
       return;
     }
 
@@ -33,13 +38,23 @@ export default function ChangePasswordPage() {
         confirmPassword: form.confirmPassword,
       });
 
-      alert("Password changed successfully!");
       setForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Password updated successfully!",
+                timer: 2000,
+                showConfirmButton: false,
+              });
     } catch (error: any) {
       console.error("Error changing password:", error);
       const msg =
-        error.response?.data?.message || "Failed to change password. Please try again.";
-      alert(msg);
+      error.response?.data?.message || "Failed to change password. Please try again.";
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: msg,
+      });
     } finally {
       setLoading(false);
     }
