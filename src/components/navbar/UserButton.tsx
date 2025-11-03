@@ -105,7 +105,8 @@ export default function UserButton() {
 
     localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
-    Cookies.remove("accessToken");
+    Cookies.remove("accessToken", { path: "/" });
+    Cookies.remove("refresh_token", { path: "/" });
     document.cookie = "role=; Path=/; Max-Age=0; SameSite=Lax";
     document.cookie = "logged_in=; Path=/; Max-Age=0; SameSite=Lax";
 

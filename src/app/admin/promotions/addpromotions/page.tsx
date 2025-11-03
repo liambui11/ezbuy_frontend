@@ -50,6 +50,21 @@ export default function AddPromotion() {
       e.endDate = "End date can't be empty!";
     }
 
+    if (promotion.startDate && promotion.endDate) {
+      const start = new Date(promotion.startDate);
+      const end = new Date(promotion.endDate);
+      const now = new Date();
+  
+      if (end < now) {
+        e.endDate = "End date cannot be in the past!";
+      }
+  
+      if (start >= end) {
+        e.startDate = "Start date must be before end date!";
+      }
+    }
+  
+
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -73,6 +88,18 @@ export default function AddPromotion() {
 
     if(!validate()){
       return;
+    }
+
+    const start = new Date(promotion.startDate);
+    const now = new Date();
+
+    if (start > now) {
+      await MySwal.fire({
+        icon: 'info',
+        title: 'Notice',
+        text: 'This promotion will start in the future (Upcoming).',
+        confirmButtonColor: '#3085d6',
+      });
     }
 
     const token = localStorage.getItem("accessToken");

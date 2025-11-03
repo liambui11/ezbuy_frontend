@@ -49,7 +49,7 @@ export default function PromotionPage() {
             <div className="flex flex-col justify-between h-full">
               <div>
                 <div className="flex justify-between items-center mb-4">
-                <span
+                {/* <span
                   className={`text-xs font-semibold px-3 py-1 rounded-full ${
                     new Date(promo.endDate ?? "").getTime() > Date.now()
                       ? "bg-[var(--color-primary)] text-white"
@@ -59,7 +59,33 @@ export default function PromotionPage() {
                   {new Date(promo.endDate ?? "").getTime() > Date.now()
                     ? "Happenning"
                     : "Has ended"}
-                </span>
+                </span> */}
+                {(() => {
+                  const now = new Date();
+                  const start = promo.startDate ? new Date(promo.startDate) : null;
+                  const end = promo.endDate ? new Date(promo.endDate) : null;
+
+                  let statusText = "Unknown";
+                  let statusColor = "bg-gray-400 text-white";
+
+                  if (start && start > now) {
+                    statusText = "Upcoming";
+                    statusColor = "bg-primary-400 text-white";
+                  } else if (start && end && start <= now && end >= now) {
+                    statusText = "Happening";
+                    statusColor = "bg-success text-white";
+                  } else if (end && end < now) {
+                    statusText = "Has ended";
+                    statusColor = "bg-red-500 text-white";
+                  }
+
+                  return (
+                    <span className={`text-xs font-semibold px-3 py-1 rounded-full ${statusColor}`}>
+                      {statusText}
+                    </span>
+                  );
+                })()}
+
 
 
 
