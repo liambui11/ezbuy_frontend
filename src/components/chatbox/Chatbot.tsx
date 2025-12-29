@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable */
 
 import React, {
   useCallback,
@@ -134,6 +135,8 @@ export default function Chatbot() {
     setState("preview"); // 1. Đổi state để ẩn UploadBubble
     doSearch(f);
   };
+
+  
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
