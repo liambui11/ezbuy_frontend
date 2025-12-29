@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FcGoogle } from "react-icons/fc";
+// import { FcGoogle } from "react-icons/fc";
 import { useAppDispatch } from "@/lib/redux/hook";
 import { fetchCartWithTotal } from "@/lib/redux/slices/cartSlice";
 import { notify } from "@/lib/notification/notistack";
@@ -193,13 +193,13 @@ export default function LoginPage() {
                 {submitting ? "Signing in…" : "Sign in"}
               </button>
 
-              <div className="relative py-2 text-center text-xs text-muted-foreground">
+              {/* <div className="relative py-2 text-center text-xs text-muted-foreground">
                 <span className="px-2 bg-card relative z-[1]">or</span>
-                <span className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-px bg-border" />
-              </div>
+                <span className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-px bg-border" ></span>
+              </div> */}
 
               {/* Social auth (optional) */}
-              <div className="grid gap-3">
+              {/* <div className="grid gap-3">
                 <button
                   type="button"
                   className="flex items-center justify-center gap-3 h-11 rounded-lg border border-gray-300 bg-background font-medium hover:bg-accent transition"
@@ -208,7 +208,7 @@ export default function LoginPage() {
                   <FcGoogle size={30} />
                   Continue with Google
                 </button>
-              </div>
+              </div> */}
             </form>
           </div>
         </div>

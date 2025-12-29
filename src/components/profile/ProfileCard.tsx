@@ -4,29 +4,47 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FaShoppingCart } from "react-icons/fa";
 import { MdAttachMoney } from "react-icons/md";
-import {useRouter} from "next/navigation"
+import { useRouter } from "next/navigation";
 import { fetchUsers } from "@/features/profile/services";
 import type { Profile } from "@/features/profile/types";
-
 
 export default function ProfileCard() {
   const [user, setUser] = useState<Profile | null>(null);
 
   const router = useRouter();
 
-  useEffect(()=>{
-    const getUser = async () =>{
-      try{
+  useEffect(() => {
+    const getUser = async () => {
+      try {
         const data = await fetchUsers();
         console.log(data);
         setUser(data);
-      }catch(err){
+      } catch (err) {
         console.error("Failed to fetch user:", err);
       }
     };
     getUser();
-  },[]);
+  }, []);
 
+  useEffect(() => {
+    if (!user) return;
+    if (typeof window === "undefined") return;
+
+    const stored = localStorage.getItem("user");
+    const oldUser = stored ? JSON.parse(stored) : {};
+
+    const fullName = `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim();
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        ...oldUser,
+        fullName: fullName || oldUser.fullName,
+        imageUrl: user.userAvatar ?? oldUser.imageUrl ?? null,
+        email: user.email ?? oldUser.email,
+      })
+    );
+  }, [user]);
 
   // useEffect(()=>{
   //   const getTest = async () =>{
@@ -40,19 +58,18 @@ export default function ProfileCard() {
   //   };
   //   getTest();
   // },[]);
-  
 
   const handleEditClick = () => {
-    router.push("/profile/editprofile")
-  }
+    router.push("/profile/editprofile");
+  };
 
   const handleChangePassClick = () => {
-    router.push("/profile/changepassword")
-  }
+    router.push("/profile/changepassword");
+  };
 
   const handlePurchaseHistory = () => {
-    router.push("/profile/purchasehistory")
-  }
+    router.push("/profile/purchasehistory");
+  };
 
   return (
     <div className="bg-card shadow-lg rounded-2xl p-8 w-full max-w-4xl mx-auto border border-border">
@@ -68,7 +85,9 @@ export default function ProfileCard() {
             className="rounded-full border-2 border-primary"
           />
           <div>
-            <h1 className="text-2xl font-semibold">{user?.firstName} {user?.lastName}</h1>
+            <h1 className="text-2xl font-semibold">
+              {user?.firstName} {user?.lastName}
+            </h1>
             <p className="text-secondary text-sm">EZBuy Member</p>
           </div>
         </div>
@@ -96,35 +115,42 @@ export default function ProfileCard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6 text-foreground">
         <div>
           <p className="font-semibold text-primary">Email</p>
-          <p className="bg-muted rounded-lg p-3 mt-1 text-foreground">{user?.email}</p>
+          <p className="bg-muted rounded-lg p-3 mt-1 text-foreground">
+            {user?.email}
+          </p>
         </div>
         <div>
           <p className="font-semibold text-primary">Phone Number</p>
-          <p className="bg-muted rounded-lg p-3 mt-1 text-foreground">{user?.phone}</p>
+          <p className="bg-muted rounded-lg p-3 mt-1 text-foreground">
+            {user?.phone}
+          </p>
         </div>
         <div className="sm:col-span-2">
           <p className="font-semibold text-primary">Address</p>
-          <p className="bg-muted rounded-lg p-3 mt-1 text-foreground">{user?.address}</p>
+          <p className="bg-muted rounded-lg p-3 mt-1 text-foreground">
+            {user?.address}
+          </p>
         </div>
       </div>
 
       {/* Actions */}
       <div className="flex flex-wrap gap-4 mt-8">
         <button
-          onClick={handleEditClick} 
+          onClick={handleEditClick}
           className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary-700 transition font-medium"
         >
           Edit Profile
         </button>
         <button
-          onClick={handleChangePassClick} 
+          onClick={handleChangePassClick}
           className="bg-muted text-foreground px-6 py-2 rounded-lg hover:bg-primary-200 transition font-medium"
         >
           Change Password
         </button>
         <button
-          onClick={handlePurchaseHistory} 
-          className="bg-success text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition font-medium">
+          onClick={handlePurchaseHistory}
+          className="bg-success text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition font-medium"
+        >
           Purchase History
         </button>
       </div>
