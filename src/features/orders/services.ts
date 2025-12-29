@@ -24,10 +24,38 @@ async function handleResponse<T>(promise: Promise<any>): Promise<T> {
 /* ----------------------------------------------------------
    🧾 1️⃣ Lấy danh sách đơn hàng của người dùng hiện tại
 ---------------------------------------------------------- */
+// export async function fetchMyOrders(
+//   page: number = 0,
+//   size: number = 10,
+//   status?: OrderStatus
+// ): Promise<{
+//   content: OrderSummary[];
+//   pageNumber: number;
+//   totalPages: number;
+//   totalElements: number;
+//   last: boolean;
+// }> {
+//   const params: any = { page, size };
+//   if (status) params.status = status;
+
+//   const token = localStorage.getItem("accessToken");
+
+//   return handleResponse(
+//     axiosInstance.get(`${API_BASE}/my-orders`, {
+//       params,
+//       headers: {
+//         "Content-Type": "application/json",
+//         ...(token ? { Authorization: `Bearer ${token}` } : {}),
+//       },
+//       withCredentials: true,
+//     })
+//   );
+// }
 export async function fetchMyOrders(
   page: number = 0,
   size: number = 10,
-  status?: OrderStatus
+  status?: string,
+  keyword?: string
 ): Promise<{
   content: OrderSummary[];
   pageNumber: number;
@@ -35,22 +63,37 @@ export async function fetchMyOrders(
   totalElements: number;
   last: boolean;
 }> {
-  const params: any = { page, size };
-  if (status) params.status = status;
+  const params: any = {
+    page,
+    size,
+  };
+
+  if (status && status !== "ALL") {
+    params.status = status;
+  }
+
+  if (keyword && !isNaN(Number(keyword))) {
+    params.id = Number(keyword);
+  }
 
   const token = localStorage.getItem("accessToken");
 
-  return handleResponse(
+  return handleResponse<{
+    content: OrderSummary[];
+    pageNumber: number;
+    totalPages: number;
+    totalElements: number;
+    last: boolean;
+  }>(
     axiosInstance.get(`${API_BASE}/my-orders`, {
       params,
       headers: {
-        "Content-Type": "application/json",
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      withCredentials: true,
     })
   );
 }
+
 
 /* ----------------------------------------------------------
    📦 2️⃣ Lấy chi tiết một đơn hàng

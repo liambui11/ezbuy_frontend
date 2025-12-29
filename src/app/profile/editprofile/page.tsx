@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 import { fetchUpdateUsers,fetchUsers } from "@/features/profile/services";
 import Image from "next/image";
 import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 
 export default function EditProfilePage() {
+  const router = useRouter();
   const [form, setForm] = useState<Profile>({
     firstName: "",
     lastName: "",
@@ -38,7 +40,7 @@ export default function EditProfilePage() {
         e.email = "Invalid email format!";
       }
     }
-    if(!form.phone.trim()){
+    if(!form.phone.trim() || !form.phone.trim()){
       e.phone = "Number phone can't be empty!"
     }else if(form.phone.replace(/\D/g,"").length < 9){
       e.phone="Invalid phone"
@@ -88,6 +90,8 @@ export default function EditProfilePage() {
           text: "Profile updated successfully!",
           timer: 2000,
           showConfirmButton: false,
+        }).then(() => {
+            router.push("/profile"); 
         });
       } catch (error) {
         console.error("Error updating profile:", error);
@@ -209,9 +213,10 @@ export default function EditProfilePage() {
 
         <button
           type="submit"
-          className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-700 transition font-medium"
+          disabled={loading}
+          className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-700 transition font-medium disabled:opacity-70"
         >
-          Save Changes
+          {loading ? "Saving..." : "Save Changes"}
         </button>
       </form>
     </div>
