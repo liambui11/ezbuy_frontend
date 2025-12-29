@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 import { Eye, Loader2, DollarSign, Truck, Clock, XCircle, CheckCircle, PackageCheck } from 'lucide-react';
 import { AdminTable } from '@/components/admin/AdminTable';
 import { StatusBadge } from '@/components/admin/StatusBadge';
-import { fetchAllOrdersForAdmin } from '@/features/orders/services';
+import { fetchAllOrdersForAdmin, fetchAllOrdersNoPaging } from '@/features/orders/services';
 import { OrderSummary, OrderStatus } from '@/features/orders/types';
 import { format } from 'date-fns';
 import { axiosInstance } from '@/utils/axiosInstance';
@@ -48,6 +48,9 @@ export default function AdminOrderListPage() {
   const [size, setSize] = useState(5);
   const [totalPages, setTotalPages] = useState(0);
 
+  const [allOrders, setAllOrders] = useState<OrderSummary[]>([]);
+
+
 
 
   async function loadOrders() {
@@ -86,6 +89,16 @@ export default function AdminOrderListPage() {
       setIsLoading(false);
     }
   }
+
+  useEffect(() => {
+  const loadAllOrders = async () => {
+    const all = await fetchAllOrdersNoPaging();
+    setAllOrders(all);
+  };
+
+  loadAllOrders();
+}, []);
+
   
   useEffect(() => {
     loadOrders();
@@ -128,10 +141,11 @@ export default function AdminOrderListPage() {
   };
 
   /* Thống kê */
-  const totalRevenue = orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
-  const pendingCount = orders.filter(o => o.status === 'PENDING').length;
-  const completedCount = orders.filter(o => o.status === 'COMPLETED').length;
-  const cancelledCount = orders.filter(o => o.status === 'CANCELLED').length;
+  const totalRevenue = allOrders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+  const pendingCount = allOrders.filter(o => o.status === 'PENDING').length;
+  const completedCount = allOrders.filter(o => o.status === 'COMPLETED').length;
+  const cancelledCount = allOrders.filter(o => o.status === 'CANCELLED').length;
+
 
   const tableHeaders = ['Order ID', 'Customer', 'Total Amount', 'Order Date', 'Payment', 'Status', 'Actions'];
 

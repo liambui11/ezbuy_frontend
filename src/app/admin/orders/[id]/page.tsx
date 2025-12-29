@@ -8,6 +8,8 @@ import { format } from 'date-fns';
 import { axiosInstance } from '@/utils/axiosInstance';
 import { StatusBadge } from '@/components/admin/StatusBadge';
 import { OrderStatus } from '@/features/orders/types';
+import Swal from 'sweetalert2';
+
 
 /* 💰 Định dạng tiền */
 const formatCurrency = (amount: number) =>
@@ -39,13 +41,38 @@ export default function AdminOrderDetailPage() {
 
   /* ⚙️ Cập nhật trạng thái */
   const handleUpdateStatus = async (newStatus: OrderStatus) => {
-    if (!window.confirm(`Mark order #${id} as "${newStatus}"?`)) return;
+    // if (!window.confirm(`Mark order #${id} as "${newStatus}"?`)) return;
+    const result = await Swal.fire({
+      title: 'Confirm action',
+      text: `Are you sure you want to mark this order as "${newStatus}"?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, update',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#2563eb',
+      cancelButtonColor: '#dc2626',
+    });
+
+    if (!result.isConfirmed) return;
+
     try {
       await axiosInstance.put(`http://localhost:8081/api/orders/${id}/status`, { status: newStatus });
       setOrder({ ...order, status: newStatus });
-      alert(`Order updated to ${newStatus} successfully!`);
+      // alert(`Order updated to ${newStatus} successfully!`);
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: `Order status updated to ${newStatus}.`,
+        timer: 1500,
+        showConfirmButton: false,
+      });
     } catch (err: any) {
-      alert(err.message || 'Error updating order status');
+      // alert(err.message || 'Error updating order status');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: err?.message || 'Failed to update order status',
+      });
     }
   };
 
@@ -124,7 +151,7 @@ export default function AdminOrderDetailPage() {
 
   return (
     <div className="max-w-5xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
-      {/* 🔙 Quay lại */}
+      
       <div className="flex justify-between items-center mb-6">
         <Link
           href="/admin/orders"
@@ -176,7 +203,7 @@ export default function AdminOrderDetailPage() {
           </thead>
           <tbody>
             {order.items?.map((item: any) => (
-              <tr key={item.productId} className="border-t">
+              <tr key={item.id} className="border-t">
                 <td className="p-3">{item.productName}</td>
                 <td className="p-3 text-right">{item.quantity}</td>
                 <td className="p-3 text-right">{formatCurrency(item.price)}</td>
