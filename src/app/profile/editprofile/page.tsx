@@ -40,7 +40,7 @@ export default function EditProfilePage() {
         e.email = "Invalid email format!";
       }
     }
-    if(!form.phone.trim() || !form.phone.trim()){
+    if(!form.phone.trim()){
       e.phone = "Number phone can't be empty!"
     }else if(form.phone.replace(/\D/g,"").length < 9){
       e.phone="Invalid phone"
@@ -187,7 +187,7 @@ export default function EditProfilePage() {
         <div>
           <label className="block text-sm font-medium text-secondary mb-1">Phone Number</label>
           <input
-            type="text"
+            type="tel"
             name="phone"
             value={form?.phone || ""}
             onChange={handleChange}
