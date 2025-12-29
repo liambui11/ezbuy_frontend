@@ -24,12 +24,12 @@ export default function Hero() {
             >
               Shop Now
             </Link>
-            <a
-              href="#chat"
+            <Link
+              href="/contact"
               className="px-6 py-3 rounded-2xl border border-primary text-primary font-medium hover:bg-primary-50 transition"
             >
               Free Consultation
-            </a>
+            </Link>
           </div>
         </div>
 

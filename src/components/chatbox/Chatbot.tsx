@@ -13,8 +13,9 @@ import { FaImage } from "react-icons/fa6";
 import ProductCard from "@/components/product/ProductCard";
 import { ProductClient } from "@/features/products/types";
 import HScroll from "@/components/common/HScroll";
-import api from "@/lib/api/api";
+// import api from "@/lib/api/api";
 import { axiosInstance } from "@/utils/axiosInstance";
+import { notify } from "@/lib/notification/notistack";
 
 type BotTextMsg = { id: string; role: "bot"; type: "text"; text: string };
 type UserImageMsg = {
@@ -116,6 +117,13 @@ export default function Chatbot() {
       setState("error");
       return;
     }
+
+    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+    if (f.size > MAX_SIZE) {
+      notify("File must be smaller than 5MB", { variant: "warning" });
+      return;
+    }
+
     const url = URL.createObjectURL(f);
     setFile(f);
     setMessages((prev) => [

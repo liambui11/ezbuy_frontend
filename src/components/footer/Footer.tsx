@@ -15,10 +15,11 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import api from "@/lib/api/api";
+// import api from "@/lib/api/api";
 import { CategoryRef } from "@/features/categories/types";
 import { Manufacturer } from "@/features/manufacturers/types";
-import { axiosInstance } from "@/utils/axiosInstance";
+// import { axiosInstance } from "@/utils/axiosInstance";
+import axios from "axios";
 
 type User = {
   fullName: string;
@@ -47,9 +48,9 @@ export default function Footer() {
     const fetchData = async () => {
       try {
         const [resCategories, resManufacturers] = await Promise.all([
-          axiosInstance.get(`/categories`),
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/categories`),
           // api.get("/api/categories"),
-          axiosInstance.get("/manufacturers"),
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/manufacturers`),
         ]);
 
         setCategories(resCategories.data.data.content);
