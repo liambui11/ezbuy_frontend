@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 // import { axiosInstance } from "@/utils/axiosInstance";
-import axios from "axios";
+// import axios from "axios";
+import api from "@/lib/api/api";
 import { notify } from "@/lib/notification/notistack";
 
 /*
@@ -37,7 +38,7 @@ export default function ForgotPasswordFlow() {
 
     setLoading(true);
     try {
-      const res = await axios.post(`/api/auth/forgot-password`, {
+      const res = await api.post(`/api/auth/forgot-password`, {
         email: trimmed,
       });
       const ok = res.status === 200 || res.data?.status === 200;
@@ -67,7 +68,7 @@ export default function ForgotPasswordFlow() {
 
     setLoading(true);
     try {
-      const res = await axios.post(`/api/auth/verify-otp`, {
+      const res = await api.post(`/api/auth/verify-otp`, {
         email: email,
         otp: otp.trim(),
       });
@@ -112,7 +113,7 @@ export default function ForgotPasswordFlow() {
     try {
       // 👇 tùy backend bạn có thể phải gửi cả OTP ở đây
       // mình sẽ gửi: { email, otp, newPassword }
-      const res = await axios.post("/api/auth/reset-password", {
+      const res = await api.post("/api/auth/reset-password", {
         email: email,
         otp: otp.trim(),
         newPassword: password.trim(),
@@ -285,7 +286,7 @@ export default function ForgotPasswordFlow() {
               <button
                 type="button"
                 onClick={() => {
-                  axios
+                  api
                     .post("/api/auth/forgot-password", { email })
                     .then(() =>
                       notify("OTP resent to your email.", {
