@@ -187,7 +187,7 @@ export default function EditProfilePage() {
         <div>
           <label className="block text-sm font-medium text-secondary mb-1">Phone Number</label>
           <input
-            type="number"
+            type="tel"
             name="phone"
             value={form?.phone || ""}
             onChange={handleChange}
