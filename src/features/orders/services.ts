@@ -24,33 +24,7 @@ async function handleResponse<T>(promise: Promise<any>): Promise<T> {
 /* ----------------------------------------------------------
    🧾 1️⃣ Lấy danh sách đơn hàng của người dùng hiện tại
 ---------------------------------------------------------- */
-// export async function fetchMyOrders(
-//   page: number = 0,
-//   size: number = 10,
-//   status?: OrderStatus
-// ): Promise<{
-//   content: OrderSummary[];
-//   pageNumber: number;
-//   totalPages: number;
-//   totalElements: number;
-//   last: boolean;
-// }> {
-//   const params: any = { page, size };
-//   if (status) params.status = status;
 
-//   const token = localStorage.getItem("accessToken");
-
-//   return handleResponse(
-//     axiosInstance.get(`${API_BASE}/my-orders`, {
-//       params,
-//       headers: {
-//         "Content-Type": "application/json",
-//         ...(token ? { Authorization: `Bearer ${token}` } : {}),
-//       },
-//       withCredentials: true,
-//     })
-//   );
-// }
 export async function fetchMyOrders(
   page: number = 0,
   size: number = 10,
@@ -152,7 +126,7 @@ export async function updateOrderStatusByAdmin(
 }
 
 /* ----------------------------------------------------------
-   📋 6️⃣ (Admin) Lấy tất cả đơn hàng
+   📋 6️⃣ (Admin) Lấy số lương đơn hàng dùng params
 ---------------------------------------------------------- */
 export async function fetchAllOrdersForAdmin(params: URLSearchParams) {
   const token = localStorage.getItem("accessToken");
@@ -169,6 +143,23 @@ export async function fetchAllOrdersForAdmin(params: URLSearchParams) {
 
   return res.data.data;
 }
+
+/* ----------------------------------------------------------
+   🔍 7️⃣ (Admin) Lấy tất cả đơn hàng tạm thời để tính dùng cho data nhỏ
+---------------------------------------------------------- */
+
+export async function fetchAllOrdersNoPaging() {
+  const token = localStorage.getItem("accessToken");
+
+  const res = await axiosInstance.get(`${API_BASE}/admin`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return res.data.data.content ?? res.data.data;
+}
+
 
 
 /* ----------------------------------------------------------

@@ -14,7 +14,7 @@ export default function PurchaseHistoryPage() {
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [page,setPage] = useState(0);
-  const [size,setSize] = useState(2);
+  const [size,setSize] = useState(5);
   const [totalPages,setTotalPages] = useState(0);
 
   // const loadOrders = async () => {
