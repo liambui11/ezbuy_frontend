@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { axiosInstance } from "@/utils/axiosInstance";
 import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 export default function ChangePasswordPage() {
+  const router = useRouter();
   const [form, setForm] = useState({
     currentPassword: "",
     newPassword: "",
@@ -45,7 +47,9 @@ export default function ChangePasswordPage() {
                 text: "Password updated successfully!",
                 timer: 2000,
                 showConfirmButton: false,
-              });
+              }).then(() => {
+            router.push("/profile"); 
+      });
     } catch (error: any) {
       console.error("Error changing password:", error);
       const msg =

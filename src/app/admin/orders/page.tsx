@@ -45,7 +45,7 @@ export default function AdminOrderListPage() {
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
 
   const [page, setPage] = useState(0);
-  const [size, setSize] = useState(10);
+  const [size, setSize] = useState(5);
   const [totalPages, setTotalPages] = useState(0);
 
 

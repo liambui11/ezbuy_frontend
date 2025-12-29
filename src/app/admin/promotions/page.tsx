@@ -19,7 +19,7 @@ export default function PromotionListPage() {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const [page,setPage] = useState(0);
-  const [size,setSize] = useState(10);
+  const [size,setSize] = useState(5);
   const [totalPages,setTotalPages] = useState(0);
 
   // Fetch promotions (no isActive)

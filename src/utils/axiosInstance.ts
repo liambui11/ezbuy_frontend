@@ -8,12 +8,31 @@ import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
 const API_URL ="http://localhost:8081/api";
+const LOGIN_URL = "/login";
 
 declare module "axios" {
   export interface InternalAxiosRequestConfig {
     _retry?: boolean;
   }
 }
+
+const handleLogout = () => {
+  // 1. Xóa Cookies
+  Cookies.remove("accessToken");
+  Cookies.remove("refresh_token");
+
+  // 2. Xóa LocalStorage
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
+    
+    // 3. Chuyển hướng về trang login
+    // Kiểm tra để tránh reload loop nếu đang ở trang login rồi
+    if (window.location.pathname !== LOGIN_URL) {
+      window.location.href = LOGIN_URL;
+    }
+  }
+};
 
 // 🧠 Kiểm tra token hết hạn
 const isTokenExpired = (token: string) => {
@@ -79,11 +98,14 @@ export const refreshAccessToken = async (): Promise<string | null> => {
           );
         }
       }
+      return newAccessToken;
     }
 
-    return newAccessToken;
+    handleLogout();
+    return null;
   } catch (err) {
     console.error("🔴 Refresh token failed:", err);
+    handleLogout();
     return null;
   }
 };
@@ -189,3 +211,4 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+

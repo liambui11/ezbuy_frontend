@@ -17,35 +17,61 @@ export default function PurchaseHistoryPage() {
   const [size,setSize] = useState(2);
   const [totalPages,setTotalPages] = useState(0);
 
+  // const loadOrders = async () => {
+  //   try {
+  //     setIsLoading(true);
+  //     setError(null);
+
+  //     const response = await fetchMyOrders(page, size); 
+  //     let filtered = response.content;
+
+  //     // 🔍 Áp dụng lọc theo status
+  //     if (statusFilter !== "ALL") {
+  //       filtered = filtered.filter((o) => o.status === statusFilter);
+  //     }
+
+  //     if (searchTerm.trim() !== "") {
+  //       const lower = searchTerm.toLowerCase();
+  //       filtered = filtered.filter((o) =>
+  //         o.id.toString().includes(lower)
+  //       );
+  //     }
+
+  //     setOrders(filtered);
+  //     setTotalPages(response.totalPages)
+  //   } catch (err) {
+  //     console.error("Failed to fetch purchase history:", err);
+  //     setError("Unable to load purchase history. Please try again later!");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const loadOrders = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
+  try {
+    setIsLoading(true);
+    setError(null);
 
-      const response = await fetchMyOrders(page, size); // lấy 50 đơn hàng đầu
-      let filtered = response.content;
+    const response = await fetchMyOrders(
+      page,
+      size,
+      statusFilter,
+      searchTerm
+    );
 
-      // 🔍 Áp dụng lọc theo status
-      if (statusFilter !== "ALL") {
-        filtered = filtered.filter((o) => o.status === statusFilter);
-      }
+    setOrders(response.content);
+    setTotalPages(response.totalPages);
+  } catch (err) {
+    setError("Unable to load purchase history.");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-      if (searchTerm.trim() !== "") {
-        const lower = searchTerm.toLowerCase();
-        filtered = filtered.filter((o) =>
-          o.id.toString().includes(lower)
-        );
-      }
+useEffect(() => {
+  setPage(0);
+}, [statusFilter, searchTerm]);
 
-      setOrders(filtered);
-      setTotalPages(response.totalPages)
-    } catch (err) {
-      console.error("Failed to fetch purchase history:", err);
-      setError("Unable to load purchase history. Please try again later!");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   useEffect(() => {
     loadOrders();
@@ -105,6 +131,7 @@ export default function PurchaseHistoryPage() {
           >
             <option value="ALL">All</option>
             <option value="PENDING">Pending</option>
+            <option value="CONFIRMED">confirmed</option>
             <option value="SHIPPING">Shipping</option>
             <option value="COMPLETED">Completed</option>
             <option value="CANCELLED">Canceled</option>
@@ -113,8 +140,8 @@ export default function PurchaseHistoryPage() {
 
         <div className="flex-1">
           <input
-            type="text"
-            placeholder="Search id..."
+            type="number"
+            placeholder="Search order ID..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full border rounded-lg px-3 py-2 text-sm"
