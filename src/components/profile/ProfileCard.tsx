@@ -44,6 +44,8 @@ export default function ProfileCard() {
         email: user.email ?? oldUser.email,
       })
     );
+
+    window.dispatchEvent(new Event("auth:changed"));
   }, [user]);
 
   // useEffect(()=>{

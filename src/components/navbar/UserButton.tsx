@@ -33,15 +33,15 @@ export default function UserButton() {
   }, []);
 
   useEffect(() => {
-      const handleAuthChange = () => {
-        const storedUser = localStorage.getItem("user");
-        setUser(storedUser ? JSON.parse(storedUser) : null);
-      };
-    
-      window.addEventListener("auth:changed", handleAuthChange);
-      handleAuthChange(); // Gọi 1 lần ban đầu
-      return () => window.removeEventListener("auth:changed", handleAuthChange);
-    }, []);
+    const handleAuthChange = () => {
+      const storedUser = localStorage.getItem("user");
+      setUser(storedUser ? JSON.parse(storedUser) : null);
+    };
+
+    window.addEventListener("auth:changed", handleAuthChange);
+    handleAuthChange(); // Gọi 1 lần ban đầu
+    return () => window.removeEventListener("auth:changed", handleAuthChange);
+  }, []);
 
   // Lắng nghe thay đổi auth và popstate để reload user (nếu bạn cần)
   useEffect(() => {
@@ -101,7 +101,9 @@ export default function UserButton() {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
-    }).catch(() => { /* ignore network error on logout */ });
+    }).catch(() => {
+      /* ignore network error on logout */
+    });
 
     localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
@@ -118,7 +120,7 @@ export default function UserButton() {
     <div className="relative" ref={menuRef}>
       <button
         type="button"
-        onClick={() => setOpen(v => !v)}
+        onClick={() => setOpen((v) => !v)}
         className="flex items-center gap-2 group cursor-pointer"
         aria-haspopup="menu"
         aria-expanded={open}

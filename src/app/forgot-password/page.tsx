@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { axiosInstance } from "@/utils/axiosInstance";
+// import { axiosInstance } from "@/utils/axiosInstance";
+import axios from "axios";
 import { notify } from "@/lib/notification/notistack";
 
 /*
@@ -36,7 +37,9 @@ export default function ForgotPasswordFlow() {
 
     setLoading(true);
     try {
-      const res = await axiosInstance.post(`/auth/forgot-password`, { email: trimmed });
+      const res = await axios.post(`/api/auth/forgot-password`, {
+        email: trimmed,
+      });
       const ok = res.status === 200 || res.data?.status === 200;
       if (ok) {
         setSuccess(res.data?.message || "OTP has been sent to your email.");
@@ -64,13 +67,15 @@ export default function ForgotPasswordFlow() {
 
     setLoading(true);
     try {
-      const res = await axiosInstance.post(`/auth/verify-otp`, {
+      const res = await axios.post(`/api/auth/verify-otp`, {
         email: email,
         otp: otp.trim(),
       });
       const ok = res.status === 200 || res.data?.status === 200;
       if (ok) {
-        notify("OTP verified. Please set a new password.", { variant: "success" });
+        notify("OTP verified. Please set a new password.", {
+          variant: "success",
+        });
         setSuccess("");
         setError(null);
         setStep(3); // 👉 sang bước nhập mật khẩu mới
@@ -107,7 +112,7 @@ export default function ForgotPasswordFlow() {
     try {
       // 👇 tùy backend bạn có thể phải gửi cả OTP ở đây
       // mình sẽ gửi: { email, otp, newPassword }
-      const res = await axiosInstance.post("/auth/reset-password", {
+      const res = await axios.post("/api/auth/reset-password", {
         email: email,
         otp: otp.trim(),
         newPassword: password.trim(),
@@ -119,7 +124,7 @@ export default function ForgotPasswordFlow() {
           variant: "success",
         });
         setSuccess("Password has been reset.");
-        
+
         router.push("/");
       } else {
         setError(res.data?.message || "Failed to reset password.");
@@ -155,8 +160,16 @@ export default function ForgotPasswordFlow() {
               />
             </label>
 
-            {error && <p className="text-sm text-red-600 bg-red-50 p-2 rounded">{error}</p>}
-            {success && <p className="text-sm text-green-700 bg-green-50 p-2 rounded">{success}</p>}
+            {error && (
+              <p className="text-sm text-red-600 bg-red-50 p-2 rounded">
+                {error}
+              </p>
+            )}
+            {success && (
+              <p className="text-sm text-green-700 bg-green-50 p-2 rounded">
+                {success}
+              </p>
+            )}
 
             <div className="flex items-center justify-between">
               <button
@@ -171,8 +184,19 @@ export default function ForgotPasswordFlow() {
                     fill="none"
                     viewBox="0 0 24 24"
                   >
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8z"
+                    ></path>
                   </svg>
                 ) : (
                   "Send OTP"
@@ -193,7 +217,10 @@ export default function ForgotPasswordFlow() {
           <h2 className="text-2xl font-semibold mb-2">Enter OTP</h2>
           <p className="text-sm text-muted-foreground mb-6">
             We’ve sent a one-time password to{" "}
-            <span className="font-medium text-foreground break-all">{email}</span>.
+            <span className="font-medium text-foreground break-all">
+              {email}
+            </span>
+            .
           </p>
 
           <form onSubmit={handleVerifyOtp} className="space-y-4">
@@ -211,8 +238,16 @@ export default function ForgotPasswordFlow() {
               />
             </label>
 
-            {error && <p className="text-sm text-red-600 bg-red-50 p-2 rounded">{error}</p>}
-            {success && <p className="text-sm text-green-700 bg-green-50 p-2 rounded">{success}</p>}
+            {error && (
+              <p className="text-sm text-red-600 bg-red-50 p-2 rounded">
+                {error}
+              </p>
+            )}
+            {success && (
+              <p className="text-sm text-green-700 bg-green-50 p-2 rounded">
+                {success}
+              </p>
+            )}
 
             <button
               type="submit"
@@ -226,8 +261,19 @@ export default function ForgotPasswordFlow() {
                   fill="none"
                   viewBox="0 0 24 24"
                 >
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8z"
+                  ></path>
                 </svg>
               ) : (
                 "Verify OTP"
@@ -239,10 +285,16 @@ export default function ForgotPasswordFlow() {
               <button
                 type="button"
                 onClick={() => {
-                  axiosInstance
-                    .post("/auth/forgot-password", { email })
-                    .then(() => notify("OTP resent to your email.", { variant: "success" }))
-                    .catch(() => notify("Failed to resend OTP.", { variant: "error" }));
+                  axios
+                    .post("/api/auth/forgot-password", { email })
+                    .then(() =>
+                      notify("OTP resent to your email.", {
+                        variant: "success",
+                      })
+                    )
+                    .catch(() =>
+                      notify("Failed to resend OTP.", { variant: "error" })
+                    );
                 }}
                 className="text-primary hover:underline"
               >
@@ -272,7 +324,10 @@ export default function ForgotPasswordFlow() {
           <h2 className="text-2xl font-semibold mb-2">Set New Password</h2>
           <p className="text-sm text-muted-foreground mb-6">
             You are resetting password for{" "}
-            <span className="font-medium text-foreground break-all">{email}</span>.
+            <span className="font-medium text-foreground break-all">
+              {email}
+            </span>
+            .
           </p>
 
           <form onSubmit={handleResetPassword} className="space-y-4">
@@ -300,8 +355,16 @@ export default function ForgotPasswordFlow() {
               />
             </label>
 
-            {error && <p className="text-sm text-red-600 bg-red-50 p-2 rounded">{error}</p>}
-            {success && <p className="text-sm text-green-700 bg-green-50 p-2 rounded">{success}</p>}
+            {error && (
+              <p className="text-sm text-red-600 bg-red-50 p-2 rounded">
+                {error}
+              </p>
+            )}
+            {success && (
+              <p className="text-sm text-green-700 bg-green-50 p-2 rounded">
+                {success}
+              </p>
+            )}
 
             <button
               type="submit"
@@ -315,8 +378,19 @@ export default function ForgotPasswordFlow() {
                   fill="none"
                   viewBox="0 0 24 24"
                 >
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8z"
+                  ></path>
                 </svg>
               ) : (
                 "Reset password"
