@@ -4,6 +4,7 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
+import { error } from "console";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
@@ -48,67 +49,38 @@ const isTokenExpired = (token: string) => {
 // 🔁 Gọi API refresh token
 export const refreshAccessToken = async (): Promise<string | null> => {
   try {
-    if (typeof window !== "undefined") {
-      const accessToken = localStorage.getItem("accessToken");
-      if (!accessToken && !Cookies.get("accessToken")) {
-        return null;
-      }
-    }
-
-    // if (typeof window !== "undefined") {
-    //   localStorage.setItem("user", JSON.stringify({}));
-    //   window.dispatchEvent(new Event("auth:changed"));
-    // }
-
-    // const refreshToken = Cookies.get("refreshToken");
-    // if (!refreshToken) {
-    //   return null;
-    // }
-
     const res = await axios.post(
       `${API_URL}/auth/refresh-token`,
       {},
       { withCredentials: true }
     );
 
-    console.log("Test Token",res)
-    console.log("🔍 accessToken hiện có:", Cookies.get("accessToken"));
-    console.log("🔍 refresh_token hiện có:", Cookies.get("refresh_token"));
+    const data = res.data?.data;
+    if (!data?.accessToken) return null;
 
+    //  lưu accessToken
+    localStorage.setItem("accessToken", data.accessToken);
 
-    const newAccessToken = res.data?.data?.accessToken || res.data?.accessToken;
+    //  lưu user
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        fullName: data.fullName,
+        imageUrl: data.imageUrl,
+        role: data.role,
+      })
+    );
 
-    if (newAccessToken) {
-      Cookies.set("accessToken", newAccessToken, {
-        expires: 0.02, // 30 phút
-        path: "/",
-      });
+    window.dispatchEvent(new Event("auth:changed"));
 
-      if (typeof window !== "undefined") {
-        localStorage.setItem("accessToken", newAccessToken);
-  
-        if (res?.data.data.fullName) {
-          localStorage.setItem(
-            "user",
-            JSON.stringify({
-              fullName: res.data.data.fullName,
-              imageUrl: res.data.data.imageUrl || null,
-              role: res.data.data.role,
-            })
-          );
-        }
-      }
-      return newAccessToken;
-    }
-
-    handleLogout();
-    return null;
+    return data.accessToken;
   } catch (err) {
-    console.error("🔴 Refresh token failed:", err);
     handleLogout();
     return null;
   }
 };
+
+
 
 // 🚀 axios instance
 export const axiosInstance = axios.create({
@@ -143,9 +115,10 @@ axiosInstance.interceptors.request.use(
     let token: string | null = null;
 
     try {
-      token = Cookies.get("accessToken") || localStorage.getItem("accessToken");
-    } catch {
-      token = Cookies.get("accessToken") || null;
+      token = localStorage.getItem("accessToken");
+    } catch(error) {
+      token = null;
+      console.error(error)
     }
 
     // Nếu token hết hạn → refresh

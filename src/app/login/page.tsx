@@ -63,10 +63,10 @@ export default function LoginPage() {
       }
 
       if (data.data?.accessToken) {
-        Cookies.set("accessToken", data.data.accessToken, {
-          expires: 0.02, // 30 phút
-          path: "/",
-        });
+        // Cookies.set("accessToken", data.data.accessToken, {
+        //   expires: 0.02, // 30 phút
+        //   path: "/",
+        // });
         localStorage.setItem("accessToken", data.data.accessToken);
       }
       // localStorage.setItem("accessToken", data.data?.accessToken);
