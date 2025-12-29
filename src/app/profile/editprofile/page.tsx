@@ -25,6 +25,9 @@ export default function EditProfilePage() {
 
   function validate(){
     const e: Record<string,string> = {};
+
+    const phone = form.phone?.trim() || "";
+
     if(!form.firstName.trim()){
       e.firstName = "First name can't be empty!"
     }
@@ -40,7 +43,7 @@ export default function EditProfilePage() {
         e.email = "Invalid email format!";
       }
     }
-    if(!form.phone.trim()){
+    if(!phone){
       e.phone = "Number phone can't be empty!"
     }else if(form.phone.replace(/\D/g,"").length < 9){
       e.phone="Invalid phone"
