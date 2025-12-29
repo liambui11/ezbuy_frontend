@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛒 EZBuy Frontend – Website thương mại điện tử hiện đại
 
-## Getting Started
+## 📘 Giới thiệu
+**EZBuy** là hệ thống **website thương mại điện tử** cho phép người dùng mua sắm điện thoại và thiết bị điện tử trực tuyến.  
+Dự án được tích hợp **mô-đun chatbot thông minh** hỗ trợ **tìm kiếm sản phẩm bằng hình ảnh**, giúp nâng cao trải nghiệm người dùng và tối ưu hóa quá trình mua sắm.
 
-First, run the development server:
+### 🔧 Công nghệ sử dụng
+- **Next.js 14** (TypeScript, React Server Components, Tailwind CSS 4)
+- **Redux Toolkit** – quản lý trạng thái người dùng & giỏ hàng  
+- **Axios** – giao tiếp với backend Spring Boot REST API  
+- **Chatbot AI** – gợi ý sản phẩm dựa trên hình ảnh (CNN Classifier)
 
+---
+
+## 🚀 Cài đặt và chạy dự án Frontend
+
+### 1️⃣ Clone repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/liambui11/ezbuy_frontend.git
+cd ezbuy_frontend
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Cài đặt phụ thuộc
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Cấu hình các biến môi trường
+Tạo file `.env` tại thư mục gốc và thêm nội dung:
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:8081
+```
+⚠️ Thay đổi URL tùy theo địa chỉ backend của bạn.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Khởi chạy dự án
+```bash
+npm run dev
+```
 
-## Learn More
+## 👥 Nhóm Thực Hiện
+- Nguyễn Ngọc Long - N22DCCN149
+- Bùi Kinh Luân - N22DCCN151
+- Bùi Minh Quân - N22DCCN163
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📄 License
+Dự án được thực hiện với mục đích học tập
