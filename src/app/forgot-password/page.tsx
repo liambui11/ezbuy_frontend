@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 // import axios from "axios";
 import api from "@/lib/api/api";
 import { notify } from "@/lib/notification/notistack";
+import { axiosInstance } from "@/utils/axiosInstance";
 
 /*
    Flow:
@@ -113,7 +114,7 @@ export default function ForgotPasswordFlow() {
     try {
       // 👇 tùy backend bạn có thể phải gửi cả OTP ở đây
       // mình sẽ gửi: { email, otp, newPassword }
-      const res = await api.post("/api/auth/reset-password", {
+      const res = await axiosInstance.post("/auth/reset-password", {
         email: email,
         otp: otp.trim(),
         newPassword: password.trim(),
@@ -121,12 +122,12 @@ export default function ForgotPasswordFlow() {
       const ok = res.status === 200 || res.data?.status === 200;
 
       if (ok) {
-        notify("Password has been reset. You can login now.", {
+        notify("Password has been reset.", {
           variant: "success",
         });
         setSuccess("Password has been reset.");
 
-        router.push("/");
+        router.push("/login");
       } else {
         setError(res.data?.message || "Failed to reset password.");
       }
