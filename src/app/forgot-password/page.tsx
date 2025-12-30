@@ -112,8 +112,6 @@ export default function ForgotPasswordFlow() {
 
     setLoading(true);
     try {
-      // 👇 tùy backend bạn có thể phải gửi cả OTP ở đây
-      // mình sẽ gửi: { email, otp, newPassword }
       const res = await axiosInstance.post("/auth/reset-password", {
         email: email,
         otp: otp.trim(),
@@ -122,12 +120,12 @@ export default function ForgotPasswordFlow() {
       const ok = res.status === 200 || res.data?.status === 200;
 
       if (ok) {
-        notify("Password has been reset.", {
+        notify("Password has been reset. You are login now!", {
           variant: "success",
         });
         setSuccess("Password has been reset.");
 
-        router.push("/login");
+        window.location.replace("/");
       } else {
         setError(res.data?.message || "Failed to reset password.");
       }
