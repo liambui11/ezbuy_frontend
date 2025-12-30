@@ -1,19 +1,27 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { Loader2, ArrowLeft, Truck, XCircle, CheckCircle, PackageCheck } from 'lucide-react';
-import { format } from 'date-fns';
-import { axiosInstance } from '@/utils/axiosInstance';
-import { StatusBadge } from '@/components/admin/StatusBadge';
-import { OrderStatus } from '@/features/orders/types';
-import Swal from 'sweetalert2';
-
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+  Loader2,
+  ArrowLeft,
+  Truck,
+  XCircle,
+  CheckCircle,
+  PackageCheck,
+} from "lucide-react";
+import { format } from "date-fns";
+import { axiosInstance } from "@/utils/axiosInstance";
+import { StatusBadge } from "@/components/admin/StatusBadge";
+import { OrderStatus } from "@/features/orders/types";
+import Swal from "sweetalert2";
 
 /* 💰 Định dạng tiền */
 const formatCurrency = (amount: number) =>
-  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(
+    amount
+  );
 
 export default function AdminOrderDetailPage() {
   const { id } = useParams();
@@ -27,11 +35,13 @@ export default function AdminOrderDetailPage() {
     const fetchOrderDetail = async () => {
       try {
         setIsLoading(true);
-        const res = await axiosInstance.get(`http://localhost:8081/api/orders/${id}`);
+        const res = await axiosInstance.get(
+          `http://localhost:8081/api/orders/${id}`
+        );
         setOrder(res?.data?.data);
       } catch (err: any) {
-        console.error('Error loading order:', err);
-        setError(err.message || 'Failed to load order details');
+        console.error("Error loading order:", err);
+        setError(err.message || "Failed to load order details");
       } finally {
         setIsLoading(false);
       }
@@ -43,25 +53,27 @@ export default function AdminOrderDetailPage() {
   const handleUpdateStatus = async (newStatus: OrderStatus) => {
     // if (!window.confirm(`Mark order #${id} as "${newStatus}"?`)) return;
     const result = await Swal.fire({
-      title: 'Confirm action',
+      title: "Confirm action",
       text: `Are you sure you want to mark this order as "${newStatus}"?`,
-      icon: 'question',
+      icon: "question",
       showCancelButton: true,
-      confirmButtonText: 'Yes, update',
-      cancelButtonText: 'Cancel',
-      confirmButtonColor: '#2563eb',
-      cancelButtonColor: '#dc2626',
+      confirmButtonText: "Yes, update",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#2563eb",
+      cancelButtonColor: "#dc2626",
     });
 
     if (!result.isConfirmed) return;
 
     try {
-      await axiosInstance.put(`http://localhost:8081/api/orders/${id}/status`, { status: newStatus });
+      await axiosInstance.put(`http://localhost:8081/api/orders/${id}/status`, {
+        status: newStatus,
+      });
       setOrder({ ...order, status: newStatus });
       // alert(`Order updated to ${newStatus} successfully!`);
       Swal.fire({
-        icon: 'success',
-        title: 'Success!',
+        icon: "success",
+        title: "Success!",
         text: `Order status updated to ${newStatus}.`,
         timer: 1500,
         showConfirmButton: false,
@@ -69,9 +81,9 @@ export default function AdminOrderDetailPage() {
     } catch (err: any) {
       // alert(err.message || 'Error updating order status');
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: err?.message || 'Failed to update order status',
+        icon: "error",
+        title: "Error",
+        text: err?.message || "Failed to update order status",
       });
     }
   };
@@ -80,51 +92,51 @@ export default function AdminOrderDetailPage() {
   const renderActionButtons = () => {
     if (!order) return null;
     switch (order.status) {
-      case 'PENDING':
+      case "PENDING":
         return (
           <>
             <button
-              onClick={() => handleUpdateStatus('CONFIRMED')}
+              onClick={() => handleUpdateStatus("CONFIRMED")}
               className="flex items-center gap-1 text-green-600 hover:text-green-800 p-2 px-3 bg-green-100 rounded-lg transition"
             >
               <CheckCircle className="w-4 h-4" /> Confirm
             </button>
             <button
-              onClick={() => handleUpdateStatus('CANCELLED')}
+              onClick={() => handleUpdateStatus("CANCELLED")}
               className="flex items-center gap-1 text-red-600 hover:text-red-800 p-2 px-3 bg-red-100 rounded-lg transition"
             >
               <XCircle className="w-4 h-4" /> Cancel
             </button>
           </>
         );
-      case 'CONFIRMED':
+      case "CONFIRMED":
         return (
           <>
             <button
-              onClick={() => handleUpdateStatus('SHIPPING')}
+              onClick={() => handleUpdateStatus("SHIPPING")}
               className="flex items-center gap-1 text-blue-600 hover:text-blue-800 p-2 px-3 bg-blue-100 rounded-lg transition"
             >
               <Truck className="w-4 h-4" /> Shipping
             </button>
             <button
-              onClick={() => handleUpdateStatus('CANCELLED')}
+              onClick={() => handleUpdateStatus("CANCELLED")}
               className="flex items-center gap-1 text-red-600 hover:text-red-800 p-2 px-3 bg-red-100 rounded-lg transition"
             >
               <XCircle className="w-4 h-4" /> Cancel
             </button>
           </>
         );
-      case 'SHIPPING':
+      case "SHIPPING":
         return (
           <>
             <button
-              onClick={() => handleUpdateStatus('COMPLETED')}
+              onClick={() => handleUpdateStatus("COMPLETED")}
               className="flex items-center gap-1 text-green-600 hover:text-green-800 p-2 px-3 bg-green-100 rounded-lg transition"
             >
               <PackageCheck className="w-4 h-4" /> Complete
             </button>
             <button
-              onClick={() => handleUpdateStatus('CANCELLED')}
+              onClick={() => handleUpdateStatus("CANCELLED")}
               className="flex items-center gap-1 text-red-600 hover:text-red-800 p-2 px-3 bg-red-100 rounded-lg transition"
             >
               <XCircle className="w-4 h-4" /> Cancel
@@ -144,14 +156,17 @@ export default function AdminOrderDetailPage() {
     );
 
   if (error)
-    return <div className="text-center text-red-600 bg-red-50 py-4 rounded-lg">{error}</div>;
+    return (
+      <div className="text-center text-red-600 bg-red-50 py-4 rounded-lg">
+        {error}
+      </div>
+    );
 
   if (!order)
     return <div className="text-center text-gray-500">Order not found.</div>;
 
   return (
     <div className="max-w-5xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
-      
       <div className="flex justify-between items-center mb-6">
         <Link
           href="/admin/orders"
@@ -170,12 +185,15 @@ export default function AdminOrderDetailPage() {
           <StatusBadge status={order.status} />
         </div>
         <div>
-            <p className="text-sm text-gray-500">Order Date</p>
-            <p className="font-medium">
-                {order.orderDate
-                ? format(new Date(order.orderDate.replace(' ', 'T')), 'MM/dd/yyyy HH:mm')
-                : 'N/A'}
-            </p>
+          <p className="text-sm text-gray-500">Order Date</p>
+          <p className="font-medium">
+            {order.orderDate
+              ? format(
+                  new Date(order.orderDate.replace(" ", "T")),
+                  "MM/dd/yyyy HH:mm"
+                )
+              : "N/A"}
+          </p>
         </div>
 
         <div>
@@ -203,7 +221,7 @@ export default function AdminOrderDetailPage() {
           </thead>
           <tbody>
             {order.items?.map((item: any) => (
-              <tr key={item.id} className="border-t">
+              <tr key={item._id} className="border-t">
                 <td className="p-3">{item.productName}</td>
                 <td className="p-3 text-right">{item.quantity}</td>
                 <td className="p-3 text-right">{formatCurrency(item.price)}</td>

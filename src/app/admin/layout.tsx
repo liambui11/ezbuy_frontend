@@ -206,7 +206,15 @@ function NavList({ onNavigate }: { onNavigate?: () => void } = {}) {
 /* ============================= User Menu ============================= */
 function UserMenu() {
   const [open, setOpen] = React.useState(false);
-  const logOutHandle = () => {
+  const logOutHandle = async () => {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    }).catch(() => {
+      /* ignore network error on logout */
+    });
+
     localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
     Cookies.remove("accessToken", { path: "/" });

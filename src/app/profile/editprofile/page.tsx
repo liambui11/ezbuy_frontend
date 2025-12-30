@@ -184,6 +184,7 @@ export default function EditProfilePage() {
             value={form.email || ""}
             onChange={handleChange}
             className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-primary outline-none"
+            disabled
           />
           {errors.email &&(
               <p className="mt-1 text-sm text-red-600">
